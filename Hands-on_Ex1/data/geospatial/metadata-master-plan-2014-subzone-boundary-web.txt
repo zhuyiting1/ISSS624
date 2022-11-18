@@ -1,0 +1,43 @@
+# Metadata for Master Plan 2014 Subzone Boundary (Web)
+---
+Identifier: '2998fad4-ef95-483c-bdf8-a50437446681'
+Name: 'master-plan-2014-subzone-boundary-web'
+Title: 'Master Plan 2014 Subzone Boundary (Web)'
+Description: 'Indicative polygon of subzone boundary. Subzones are divisions within
+  a planning area which are usually centred around a focal point such as neighbourhood
+  centre or activity node. There can be more than 10 subzones within a Planning Area.
+  The Master Plan 20014 is a forward looking guiding plan for Singapore''''s development
+  in the medium term over the next 10 to 15 years and the planning boundaries may
+  not coincide with existing developments for some areas. This is the version as published
+  at URA website and OneMap.'
+Topics:
+  - 'Infrastructure'
+Keywords:
+  - 'MP14'
+  - 'MP2014'
+  - 'Master Plan 2014 Planning Boundary'
+  - 'Subzone Boundary'
+Publisher:
+  Name: 'Urban Redevelopment Authority'
+  Admin 1:
+    Name: 'Pamela Poh'
+    Department: 'Urban Redevelopment Authority'
+    Email: 'pamela_poh@ura.gov.sg'
+Sources:
+  - 'Urban Redevelopment Authority'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Ad-hoc'
+Last Updated: '2016-11-04T07:58:02.318162'
+Resources:
+  -
+    Identifier: '1f7498f8-0132-4e74-81b2-3fe3199afecf'
+    Title: 'Master Plan 2014 Subzone Boundary (Web) (KML)'
+    Url: 'https://geo.data.gov.sg/mp14-subzone-web-pl/2014/12/05/kml/mp14-subzone-web-pl.zip'
+    Format: 'KML'
+    Last Updated: '2014-12-04T16:00:00'
+  -
+    Identifier: '1c6b586b-61ca-45a9-b704-df4c9057fbd6'
+    Title: 'Master Plan 2014 Subzone Boundary (Web) (SHP)'
+    Url: 'https://geo.data.gov.sg/mp14-subzone-web-pl/2014/12/05/shp/mp14-subzone-web-pl.zip'
+    Format: 'SHP'
+    Last Updated: '2014-12-04T16:00:00'

@@ -1,17 +1,31 @@
 [
   {
-    "objectID": "index.html",
-    "href": "index.html",
-    "title": "ISSS624",
-    "section": "",
-    "text": "In this webpage, I am going to share with you my learning journey of geospatial analytics."
-  },
-  {
     "objectID": "about.html",
     "href": "about.html",
     "title": "About",
     "section": "",
     "text": "1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Hands-on_Ex1/Hands-on_Ex01.html",
+    "href": "Hands-on_Ex1/Hands-on_Ex01.html",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R",
+    "section": "",
+    "text": "In this hands-on exercise, I learned how to import and wrangle geospatial data using the appropriate R packages."
+  },
+  {
+    "objectID": "Hands-on_Ex1/Hands-on_Ex01.html#getting-started",
+    "href": "Hands-on_Ex1/Hands-on_Ex01.html#getting-started",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R",
+    "section": "Getting Started",
+    "text": "Getting Started\nThe code chunk below installs and loads sf and tidyverse packages into the R environment.\n\npacman::p_load(sf, tidyverse)"
+  },
+  {
+    "objectID": "Hands-on_Ex1/Hands-on_Ex01.html#importing-geospatial-data",
+    "href": "Hands-on_Ex1/Hands-on_Ex01.html#importing-geospatial-data",
+    "title": "Hands-on Exercise 1: Geospatial Data Wrangling with R",
+    "section": "Importing Geospatial Data",
+    "text": "Importing Geospatial Data\n\nImporting Polygon Feature Data\n\nmpsz <- st_read(dsn = \"data/geospatial\", layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `C:\\zhuyiting1\\ISSS624\\Hands-on_Ex1\\data\\geospatial' using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21"
   },
   {
     "objectID": "Hands-on_Ex1.html",
@@ -26,5 +40,12 @@
     "title": "Hands-on Exercise 1",
     "section": "Getting Started",
     "text": "Getting Started\nThis is the paragraph for getting started."
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ISSS624",
+    "section": "",
+    "text": "In this webpage, I am going to share with you my learning journey of geospatial analytics."
   }
 ]
