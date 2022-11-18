@@ -506,7 +506,7 @@ style1 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style2 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -517,7 +517,7 @@ style2 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style3 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -528,7 +528,7 @@ style3 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style4 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -540,7 +540,7 @@ style4 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style5 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -551,7 +551,7 @@ style5 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style6 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -562,7 +562,7 @@ style6 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style7 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -573,7 +573,7 @@ style7 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 style8 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -584,7 +584,7 @@ style8 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.25,
+            legend.width = 0.35,
             frame = TRUE)
 
 tmap_arrange(style1, style2, style3, style4, style5, style6, style7, style8, ncol = 4)
