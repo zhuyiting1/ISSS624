@@ -12,5 +12,19 @@
     "title": "About",
     "section": "",
     "text": "1 + 1\n\n[1] 2"
+  },
+  {
+    "objectID": "Hands-on_Ex1.html",
+    "href": "Hands-on_Ex1.html",
+    "title": "Hands-on Exercise 1",
+    "section": "",
+    "text": "This is the paragraph for overview."
+  },
+  {
+    "objectID": "Hands-on_Ex1.html#getting-started",
+    "href": "Hands-on_Ex1.html#getting-started",
+    "title": "Hands-on Exercise 1",
+    "section": "Getting Started",
+    "text": "Getting Started\nThis is the paragraph for getting started."
   }
 ]
