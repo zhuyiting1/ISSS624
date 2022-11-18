@@ -425,9 +425,9 @@ tm_shape(mpsz_pop2020)+
              position = c("left", "bottom"))
 ```
 
-#### Step-by-Step
+### Step-by-Step Break-Down
 
-##### 1) Base Map
+### 1) Base Map
 
 We first use the *tm_shape()* function to define the input data and *tm_polygons()* function to draw the planning subzone polygons:
 
@@ -436,7 +436,7 @@ tm_shape(mpsz_pop2020) +
   tm_polygons()
 ```
 
-##### 2) Adding Colours (Choropleth Map)
+### 2) Adding Colours (Choropleth Map)
 
 Next, we assign the target variable Dependency to *tm_polygons()* function to display a choropleth map showing the geographical distribution (like a map-based histogram):
 
@@ -453,7 +453,7 @@ Some points to note for [*tm_polygons()*](https://www.rdocumentation.org/package
 
 -   By default, missing values will be shaded in grey.
 
-##### 3) Using *tm_fill()* and *tm_border()* instead
+### 3) Using *tm_fill()* and *tm_border()* instead
 
 *tm_polygons()* is a wrapper of [*tm_fill()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tm_fill) (shading) and [*tm_border()*](https://www.rdocumentation.org/packages/tmap/versions/0.7/topics/tm_borders) (borders).
 
@@ -472,7 +472,7 @@ tm_shape(mpsz_pop2020) +
 
 Using *tm_borders*, we have added light grey borders (default colour "grey40") with 0.1 line width and 1 for not transparent (default alpha uses that of the colour and is typically 1).
 
-##### 4) Data Classification
+### 4) Data Classification
 
 Quantile data classification:
 
@@ -506,7 +506,7 @@ style1 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style2 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -517,7 +517,7 @@ style2 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style3 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -528,7 +528,7 @@ style3 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style4 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -540,7 +540,7 @@ style4 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style5 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -551,7 +551,7 @@ style5 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style6 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -562,7 +562,7 @@ style6 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style7 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -573,7 +573,7 @@ style7 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 style8 <- tm_shape(mpsz_pop2020) +
   tm_fill("DEPENDENCY",
@@ -584,7 +584,7 @@ style8 <- tm_shape(mpsz_pop2020) +
             main.title.position = "center",
             main.title.size = 1,
             legend.height = 0.25, 
-            legend.width = 0.3,
+            legend.width = 0.25,
             frame = TRUE)
 
 tmap_arrange(style1, style2, style3, style4, style5, style6, style7, style8, ncol = 4)
@@ -645,7 +645,7 @@ tmap_arrange(n2, n6, n10, n20, ncol = 2)
 
 The larger the number of classes, the finer the data classification and the more colours are seen in the choropleth map. For style = "jenks", 6-10 classes appear to be optimal visually in differentiating the different gradients.
 
-##### 5) Custom Breaks
+### 5) Custom Breaks
 
 Getting some descriptive statistics of the DEPENDENCY field:
 
@@ -664,7 +664,7 @@ tm_shape(mpsz_pop2020) +
 
 We note that the cutoffs are similar to our top pick for style ("kmeans"), which uses \~c(0, 0.5, 0.7, 0.8, 10, 19), and our first runner-up ("quantile"), at \~c(0, 0.6, 0.7, 0.8, 19).
 
-##### 6) Colour Scheme
+### 6) Colour Scheme
 
 Using ColorBrewer palette = "Blues":
 
@@ -688,7 +688,7 @@ tm_shape(mpsz_pop2020) +
   tm_borders(alpha = 0.5)
 ```
 
-##### 7) Map Layouts - Legend
+### 7) Map Layouts - Legend
 
 ```{r}
 tm_shape(mpsz_pop2020)+
@@ -722,7 +722,7 @@ tm_shape(mpsz_pop2020)+
 
 The default *tmap_style()* is "white".
 
-##### 8) Map Layouts - Cartographic Furniture
+### 8) Map Layouts - Cartographic Furniture
 
 Cartographic furniture refers to features such as compass, scale bar and grid lines.
 
@@ -750,7 +750,7 @@ tm_shape(mpsz_pop2020)+
 tmap_style("white")
 ```
 
-##### 9) Multiple Choropleth Maps
+### 9) Multiple Choropleth Maps
 
 Assigning multiple values to at least 1 of the aesthetic arguments:
 
@@ -806,7 +806,7 @@ agedmap <- tm_shape(mpsz_pop2020)+
 tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
 ```
 
-##### 10) Mapping Spatial Object Meeting a Selection Criterion
+### 10) Mapping Spatial Object Meeting a Selection Criterion
 
 Here, we select the "CENTRAL REGION" within REGION_N for display:
 
