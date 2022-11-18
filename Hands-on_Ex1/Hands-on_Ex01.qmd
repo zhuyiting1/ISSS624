@@ -5,11 +5,27 @@ editor: visual
 
 ## Overview
 
-In this hands-on exercise, I learned how to import and wrangle geospatial data using the appropriate R packages.
+In this hands-on exercise, I learned how to import, wrangle and visualise geospatial data using the appropriate R packages.
+
+# Part 1
+
+## Data Sources
+
+The data used in this exercise are obtained from the following sources on 18 November 2022:
+
+1.  [Master Plan 2014 Subzone Boundary (Web)](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web)
+
+2.  [Pre-schools Location](https://data.gov.sg/dataset/pre-schools-location)
+
+3.  [Cycling Path](https://datamall.lta.gov.sg/content/datamall/en/static-data.html)
+
+4.  [Airbnb Singapore Listings](http://insideairbnb.com/get-the-data) - scroll down to Singapore, download listings.csv
+
+#1-3 are geospatial data while #4 is in .csv with latitude and longitude information.
 
 ## Getting Started
 
-The code chunk below installs and loads **sf** and **tidyverse** packages into the R environment.
+The code chunk below installs and loads [**sf**](https://cran.r-project.org/web/packages/sf/index.html) and [**tidyverse**](https://cran.r-project.org/web/packages/tidyverse/index.html) packages into the R environment.
 
 ```{r}
 pacman::p_load(sf, tidyverse)
@@ -19,6 +35,795 @@ pacman::p_load(sf, tidyverse)
 
 ### Importing Polygon Feature Data
 
+From the **sf** package, use [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) function to import MP14_SUBZONE_WEB_PL shapefile into R as a polygon feature dataframe.
+
 ```{r}
-mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_WEB_PL")
+mpsz <- st_read(dsn = "data/geospatial", 
+                layer = "MP14_SUBZONE_WEB_PL")
 ```
+
+There are 323 features and 15 fields in the $mpsz$ dataframe. The geometry type is **multipolygon**. It is in the **svy21** projected coordinates system.
+
+### Importing Polyline Feature Data
+
+From the **sf** package, similarly use *st_read()* function to import CyclingPathGazette shapefile into R as a line feature dataframe.
+
+```{r}
+cyclingpath = st_read(dsn = "data/geospatial",
+                      layer = "CyclingPathGazette")
+```
+
+There are 2248 features and 2 fields in the $cyclingpath$ dataframe. The geometry type is **multilinestring**. It is also in the **svy21** projected coordinates system.
+
+### Importing KML Data
+
+As above, from the **sf** package, use *st_read()* function to import pre-schools-location-kml file into R. However, as the data format is .kml, we will use the following format instead of the earlier dsn and layer arguments:
+
+```{r}
+preschool = st_read("data/geospatial/pre-schools-location-kml.kml")
+```
+
+There are 1925 features and 2 fields in the $preschool$ dataframe. The geometry type is **point**. Unlike $mpsz$ and $cyclingpath$, it is in the **wgs84** geodetic coordinates system. We will need to transform the data to **svy21** coordinates system later.
+
+### Knowing the Data
+
+Top-line geometry information of the mpsz dataframe:
+
+```{r}
+st_geometry(mpsz)
+```
+
+The multipolygon information of the first 5 geometries are shown.
+
+Next, we will use *glimpse()* of the **dplyr** package:
+
+```{r}
+glimpse(mpsz)
+```
+
+*glimpse()* shows the data type of each field (int, chr, date, dbl (double-precision values)) and the first few entries for each field.
+
+For complete information of a feature object, *head()* from R's built-in package can give us the first n rows of the dataframe:
+
+```{r}
+head(mpsz, n=5)
+```
+
+## Plotting the Geospatial Data
+
+*plot()* from R Graphic allows us to visualise the geospatial features of the data that we cannot easily pick up in plain rows and columns.
+
+```{r}
+plot(mpsz)
+```
+
+The default plot of an **sf** object is a multi-plot of all attributes, up to a reasonable maximum. We can also specify only plotting the geometry or a specific attribute (like the 6th plot above) as shown below:
+
+```{r}
+plot(st_geometry(mpsz))
+plot(mpsz["PLN_AREA_N"])
+```
+
+## Map Projection
+
+Similar to data preprocessing for the usual dataframe, geoprocessing should be done to ensure that the data are projected using the same coordinate system. We will be using **projection transformation** to project a simple feature dataframe from one coordinate system to another.
+
+### Assigning EPSG Code
+
+Always check for the coordinate system of the source data, which can be done as such:
+
+```{r}
+st_crs(mpsz)
+```
+
+With reference to the last part of the output (CS\[Cartesian,2\]), the EPSG code is 9001. However, for **svy21**, the correct EPSG code should be [3414](https://epsg.io/3414). We want to assign the correct EPSG code to the $mpsz$ dataframe, using *st_set_crs()* of the **sf** package.
+
+```{r}
+mpsz3414 <- st_set_crs(mpsz, 3414)
+```
+
+Checking that it has been performed successfully:
+
+```{r}
+st_crs(mpsz3414)
+```
+
+Now the ID under USAGE indicates "EPSG", 3414.
+
+### Transforming Projection from **wgs84** to **svy21**
+
+Geographic coordinate system is transformed to projected coordinate system here to allow for analysis using distance and/or area measurements. For the $preschool$ dataframe, as we saw earlier that the geodetic CRS is wgs84, it is not appropriate to use *st_set_crs()* like we did for \$mpsz\$. Instead, st_transform() from the same sf package can help us do the job. This is because we need to reproject $preschool$ from one coordinate system to another [mathematically]{.underline}.
+
+```{r}
+preschool3414 <- st_transform(preschool, 
+                              crs = 3414)
+# In practice, we need to find the appropriate projection coordinate system to use before perfroming the projection transformation.
+```
+
+Checking the projected coordinate system:
+
+```{r}
+st_geometry(preschool3414)
+st_crs(preschool3414)
+```
+
+The projected coordinate system has been revised to **svy21**. USAGE ID is now "EPSG", 3414.
+
+## Working with Aspatial Data
+
+Recall we are also using the listings.csv file from Inside Airbnb. The data is aspatial, as the data itself is not geospatial but it has data fields that capture the x- and y-coordinates of the data points.
+
+### Step 1
+
+Load the data into a dataframe $listings$:
+
+```{r}
+listings <- read_csv("data/aspatial/listings.csv")
+```
+
+Using *read_csv()* from the [**readr**](https://readr.tidyverse.org/) package within **tidyverse**, we see that the dataframe with 4161 rows and 18 columns is imported to R.
+
+### Step 2
+
+To look at it in a bit more detail:
+
+```{r}
+list(listings)
+```
+
+We see that the $latitude$ and $longitude$ data fields form 2 of the columns, and are in [decimal degree format](https://www.maptools.com/tutorials/lat_lon/formats). As a best guess, we will assume that the data is in **wgs84** geographic coordinate system.
+
+### Step 3
+
+Convert $listings$ dataframe into a simple feature dataframe and perform transformation to projected coordinate system:
+
+```{r}
+listings_sf <- st_as_sf(listings, 
+                        coords = c("longitude", "latitude"), # coords argument takes in x-coordinates before y-coordinates
+                        crs = 4326) %>% # 4326 is the wgs84 geographic coordinate system
+  st_transform(crs = 3414) # %>% performs nested st_transform() to svy21 projected coordinate system
+
+glimpse(listings_sf) # shows the topline info of the transformed data
+```
+
+$latitude$ and $longitude$ columns are dropped as they have been used to generate the new $geometry$ column in **svy21** projected coordinate system.
+
+## Geoprocessing - Buffering
+
+To compute a 5-metre buffer on both ends of the current cycling path using the $cyclingpath$ dataframe:
+
+```{r}
+buffer_cycling_5m <- st_buffer(cyclingpath,
+                               dist = 5,
+                               nQuadSegs = 30)
+```
+
+We can see that buffer_cycling_5m is as follows:
+
+```{r}
+buffer_cycling_5m
+```
+
+We then add a new variable in buffer_cycling_5m to calculate the area of the buffer:
+
+```{r}
+buffer_cycling_5m$AREA <- st_area(buffer_cycling_5m)
+buffer_cycling_5m
+```
+
+We can see that the new variable $AREA$ in square metres is added.
+
+Finally, we will derive the total land involved by summing up all the $AREA$:
+
+```{r}
+sum(buffer_cycling_5m$AREA)
+```
+
+We get 1,556,978 m^2^ of area in total.
+
+## Geoprocessing - Point-in-Polygon Count
+
+Another analysis that we can do is to find the number of pre-schools in each planning subzone. We will first identify pre-schools located within each planning subzone by using *st_intersects()* from the **sf** package. Next, *length()* of Base R is used to return the number of pre-schools by planning subzone.
+
+```{r}
+mpsz3414$`PreSch Count` <- lengths(st_intersects(mpsz3414, preschool3414))
+```
+
+Note that the symbol used is " \` " (backtick) and not " ' " (apostrophe).
+
+The summary statistics of the newly derived $PreSch Count$ is as follows:
+
+```{r}
+summary(mpsz3414$`PreSch Count`)
+```
+
+To list the planning subzone with the most number of pre-schools, *top_n()* from the **dplyr** package is used. In this case, the 1 planning subzone with the highest number of pre-school count and its information are displayed:
+
+```{r}
+top_n(mpsz3414, 1, `PreSch Count`)
+```
+
+Next, we try to calculate the density of pre-school by planning subzone:
+
+```{r}
+mpsz3414$Area <- mpsz3414 %>%
+  st_area()
+
+mpsz3414 <- mpsz3414 %>%
+  mutate(`PreSch Density` = `PreSch Count` / Area * 1000000)
+# mutate() adds new variables and preserves existing ones, 
+# whereas transmute() adds new variables and drops existing ones
+# * 1,000,000 converts the unit from per m sq to per km sq
+```
+
+```{r}
+summary(mpsz3414$`PreSch Density`)
+```
+
+## Exploratory Data Analysis (EDA)
+
+To study the $PreSch Density$ data further, we will use appropriate [*ggplot2*](https://ggplot2.tidyverse.org/) function from the **tidyverse** package to visualise the data.
+
+For distribution, we use the *hist()* function of R Graphics to plot a histogram:
+
+```{r}
+hist(mpsz3414$`PreSch Density`)
+```
+
+However, this is only suitable for a quick glance of the histogram. To make the plot more presentable and usable (for publication), we tap on *ggplot2* functions:
+
+```{r}
+ggplot(data = mpsz3414,
+       aes(x = as.numeric(`PreSch Density`))) +
+  geom_histogram(bins = 20,
+                 color = "black",
+                 fill = "light blue") +
+  labs(title = "Pre-school distribution in Singapore",
+       subtitle = "There are many planning sub-zones with only 1 single pre-school. \n On the other hand, there are 2 planning sub-zones with at least 20 pre-schools.",
+       x = "Pre-school density (per km sq)",
+       y = "Frequency")
+```
+
+Showing a scatterplot between pre-school density and pre-school count:
+
+```{r}
+ggplot(data = mpsz3414, 
+       aes(x = as.numeric(`PreSch Density`), 
+           y = as.numeric(`PreSch Count`))) + 
+  geom_point() +
+  labs(x = "Pre-school density (per km sq)",
+       y = "Pre-school count")
+```
+
+# Part 2
+
+## Choropleth Mapping
+
+We will now use [**tmap**](https://cran.r-project.org/web/packages/tmap/) (thematic maps) package in addition to **sf** and **tidyverse** that we used. Installing and loading all 3:
+
+```{r}
+pacman::p_load(sf, tmap, tidyverse)
+```
+
+## Data Sources
+
+The data used in this exercise are obtained from the following sources on 18 November 2022:
+
+1.  [Master Plan 2014 Subzone Boundary (Web)](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web)
+2.  [Singapore Residents by Planning Area / Subzone, Age Group, Sex and Type of Dwelling, June 2011-2020 in csv format](https://www.singstat.gov.sg/find-data/search-by-theme/population/geographic-distribution/latest-data) - scroll down and download respopagesextod2011to2020.csv
+
+## Importing Data
+
+### Geospatial Data
+
+Using what we have learned:
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial",
+                layer = "MP14_SUBZONE_WEB_PL")
+
+mpsz
+```
+
+### Attribute Data
+
+Importing and examining the population data that we downloaded in data source #2:
+
+```{r}
+popdata <- read_csv("data/aspatial/respopagesextod2011to2020.csv")
+
+popdata
+```
+
+## Data Wrangling
+
+We only want to use the 2022 values, and include the following variables:
+
+1.  PA: Planning Area
+
+2.  SZ: Subzone
+
+3.  From AG (age group), create the following new variables:
+
+    -   YOUNG: age group 0-4 to 20-24
+
+    -   ECONOMY ACTIVE: age group 25-29 to 60-64
+
+    -   AGED: age group 65 and above
+
+    -   TOTAL: all age group
+
+    -   DEPENDENCY: ratio between young + aged against economy active group
+
+```{r}
+popdata2020 <- popdata %>%
+  filter(Time == 2020) %>%
+  group_by(PA, SZ, AG) %>%
+  summarise(`POP` = sum(`Pop`)) %>%
+  ungroup() %>%
+  pivot_wider(names_from=AG, 
+              values_from=POP) %>%
+  mutate(YOUNG = rowSums(.[3:6])
+         +rowSums(.[12])) %>%
+  mutate(`ECONOMY ACTIVE` = rowSums(.[7:11])+ 
+         rowSums(.[13:15])) %>%
+  mutate(`AGED`=rowSums(.[16:21])) %>%
+  mutate(`TOTAL`=rowSums(.[3:21])) %>%
+  mutate(`DEPENDENCY` = (`YOUNG` + `AGED`)/`ECONOMY ACTIVE`) %>%
+  select(`PA`, `SZ`, `YOUNG`, `ECONOMY ACTIVE`, `AGED`, `TOTAL`, `DEPENDENCY`)
+```
+
+## Joining Data
+
+We want to first convert the PA and SZ data fields to uppercase to be consistent with the SUBZONE_N and PLN_AREA_N data fields in $mpsz$.
+
+```{r}
+popdata2020 <- popdata2020 %>%
+  mutate_at(.vars = vars(PA, SZ),
+            .funs = funs(toupper)) %>%
+  filter(`ECONOMY ACTIVE` > 0)
+```
+
+Next, *left_join()* from **dplyr** is used to join the geographical data from $mpsz$ and attribute table from $popdata2020$ using planning subzone names, in this case SUBZONE_N and SZ, as common identifiers. Left join with reference to $mpsz$ is used to ensure that the output mpsz_pop2020 will be a simple features dataframe.
+
+```{r}
+mpsz_pop2020 <- left_join(mpsz, popdata2020,
+                          by = c("SUBZONE_N" = "SZ"))
+```
+
+## Choropleth Mapping using *tmap*
+
+### Quick plot using *qtm()*
+
+Doing a cartographic standard choropleth map:
+
+```{r}
+tmap_mode("plot") # gives static map; "view" for interactive mode
+qtm(mpsz_pop2020,
+    fill = "DEPENDENCY")
+```
+
+### Customisable thematic map using *tmap()*'s elements
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "Dependency ratio") +
+  tm_layout(main.title = "Distribution of Dependency Ratio by Planning Subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar() +
+  tm_grid(alpha =0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA) and\n Population data from Department of Statistics (DOS)", 
+             position = c("left", "bottom"))
+```
+
+#### Step-by-Step
+
+##### 1) Base Map
+
+We first use the *tm_shape()* function to define the input data and *tm_polygons()* function to draw the planning subzone polygons:
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_polygons()
+```
+
+##### 2) Adding Colours (Choropleth Map)
+
+Next, we assign the target variable Dependency to *tm_polygons()* function to display a choropleth map showing the geographical distribution (like a map-based histogram):
+
+```{r}
+tm_shape(mpsz_pop2020) + 
+  tm_polygons("DEPENDENCY")
+```
+
+Some points to note for [*tm_polygons()*](https://www.rdocumentation.org/packages/tmap/versions/1.11-2/topics/tm_fill):
+
+-   The default interval binning used to draw the choropleth map is called "pretty". This style rounds breaks into whole numbers where possible and spaces them evenly.
+
+-   The default [colour scheme](https://renenyffenegger.ch/notes/development/languages/R/packages/tmaptools/index) used is YlOrRd (Yellow Orange Red) of ColorBrewer.
+
+-   By default, missing values will be shaded in grey.
+
+##### 3) Using *tm_fill()* and *tm_border()* instead
+
+*tm_polygons()* is a wrapper of [*tm_fill()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tm_fill) (shading) and [*tm_border()*](https://www.rdocumentation.org/packages/tmap/versions/0.7/topics/tm_borders) (borders).
+
+```{r}
+tm_shape(mpsz_pop2020) + 
+  tm_fill("DEPENDENCY")
+```
+
+Above is a map with fill only (coloured by dependencies in each planning subzone), no borders.
+
+```{r}
+tm_shape(mpsz_pop2020) + 
+  tm_fill("DEPENDENCY") +
+  tm_borders(lwd = 0.1, alpha = 1)
+```
+
+Using *tm_borders*, we have added light grey borders (default colour "grey40") with 0.1 line width and 1 for not transparent (default alpha uses that of the colour and is typically 1).
+
+##### 4) Data Classification
+
+Quantile data classification:
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "jenks") +
+  tm_borders(alpha = 0.5)
+```
+
+Data classification into 5 equal intervals between the minimum and the maximum values:
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "equal") +
+  tm_borders(alpha = 0.5)
+```
+
+Comparing the different styles available:
+
+```{r}
+style1 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "sd") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: SD",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style2 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "equal") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Equal",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style3 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "pretty") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Pretty",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style4 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "quantile",
+          title = "Style: Quantile") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Quantile",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style5 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "kmeans") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Kmeans",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style6 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "fisher") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Fisher",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style7 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "jenks") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Jenks",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+style8 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 5,
+          style = "headtails") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Style: Headtails",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.25, 
+            legend.width = 0.3,
+            frame = TRUE)
+
+tmap_arrange(style1, style2, style3, style4, style5, style6, style7, style8, ncol = 4)
+```
+
+Between the styles shown above, Kmeans appear to give a more evenly balanced set of colours across subzones, followed by quantile.
+
+Comparing same classification method with different number of classes:
+
+```{r}
+n2 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 2,
+          style = "jenks") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "2 Classes",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.height = 0.5, 
+            legend.width = 0.4,
+            frame = TRUE)
+n6 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 6,
+          style = "jenks") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "6 Classes",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.height = 0.5, 
+            legend.width = 0.4,
+            frame = TRUE)
+n10 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 10,
+          style = "jenks") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "10 Classes",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.height = 0.5, 
+            legend.width = 0.4,
+            frame = TRUE)
+n20 <- tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 20,
+          style = "jenks") +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "20 Classes",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.height = 0.5, 
+            legend.width = 0.4,
+            frame = TRUE)
+
+tmap_arrange(n2, n6, n10, n20, ncol = 2)
+```
+
+The larger the number of classes, the finer the data classification and the more colours are seen in the choropleth map. For style = "jenks", 6-10 classes appear to be optimal visually in differentiating the different gradients.
+
+##### 5) Custom Breaks
+
+Getting some descriptive statistics of the DEPENDENCY field:
+
+```{r}
+summary(mpsz_pop2020$DEPENDENCY)
+```
+
+With reference to the summary statistics, we set break points at 0.60, 0.70, 0.80 and 0.90. In addition, we also need to include a minimum and maximum, which we set at 0 and 100. Our *breaks* vector is thus c(0, 0.60, 0.70, 0.80, 0.90, 100).
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          breaks = c(0, 0.60, 0.70, 0.80, 0.90, 100)) +
+  tm_borders(alpha = 0.5)
+```
+
+We note that the cutoffs are similar to our top pick for style ("kmeans"), which uses \~c(0, 0.5, 0.7, 0.8, 10, 19), and our first runner-up ("quantile"), at \~c(0, 0.6, 0.7, 0.8, 19).
+
+##### 6) Colour Scheme
+
+Using ColorBrewer palette = "Blues":
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 6,
+          style = "quantile",
+          palette = "Blues") +
+  tm_borders(alpha = 0.5)
+```
+
+Inverse green:
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          n = 6,
+          style = "quantile",
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5)
+```
+
+##### 7) Map Layouts - Legend
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "jenks", 
+          palette = "Blues", 
+          legend.hist = TRUE, 
+          legend.is.portrait = TRUE,
+          legend.hist.z = 0.1) +
+  tm_layout(main.title = "Distribution of Dependency Ratio by Planning Subzone\n(Jenks Classification)",
+            main.title.position = "center",
+            main.title.size = 1,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            legend.outside = FALSE,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
+```
+
+##### 8) Map Layouts - Style
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "-Greens") +
+  tm_borders(alpha = 0.5) +
+  tmap_style("classic")
+```
+
+The default *tmap_style()* is "white".
+
+##### 8) Map Layouts - Cartographic Furniture
+
+Cartographic furniture refers to features such as compass, scale bar and grid lines.
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues",
+          title = "No. of persons") +
+  tm_layout(main.title = "Distribution of Dependency Ratio \nby Planning Subzone",
+            main.title.position = "center",
+            main.title.size = 1.2,
+            legend.height = 0.45, 
+            legend.width = 0.35,
+            frame = TRUE) +
+  tm_borders(alpha = 0.5) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.2) +
+  tm_credits("Source: Planning Sub-zone boundary from Urban Redevelopment Authorithy (URA) and\n Population data from Department of Statistics (DOS)", 
+             position = c("left", "bottom"))
+```
+
+```{r}
+tmap_style("white")
+```
+
+##### 9) Multiple Choropleth Maps
+
+Assigning multiple values to at least 1 of the aesthetic arguments:
+
+```{r}
+tm_shape(mpsz_pop2020)+
+  tm_fill(c("YOUNG", "AGED"),
+          style = "equal", 
+          palette = "Blues") +
+  tm_layout(legend.position = c("right", "bottom")) +
+  tm_borders(alpha = 0.5)
+```
+
+Assigning different styles and colour palettes to each plot:
+
+```{r}
+tm_shape(mpsz_pop2020)+ 
+  tm_polygons(c("DEPENDENCY","AGED"),
+          style = c("equal", "quantile"), 
+          palette = list("Blues","Greens")) +
+  tm_layout(legend.position = c("right", "bottom"))
+```
+
+Defining group-by variable in *tm_facets()*:
+
+```{r}
+tm_shape(mpsz_pop2020) +
+  tm_fill("DEPENDENCY",
+          style = "quantile",
+          palette = "Blues",
+          thres.poly = 0) + 
+  tm_facets(by="REGION_N", 
+            free.coords=TRUE, 
+            drop.shapes=TRUE) +
+  tm_layout(legend.show = FALSE,
+            title.position = c("center", "center"), 
+            title.size = 20) +
+  tm_borders(alpha = 0.5)
+```
+
+Creating multiple stand-alone maps with *tmap_arrange()* as we have done above:
+
+```{r}
+youngmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("YOUNG", 
+              style = "quantile", 
+              palette = "Blues")
+
+agedmap <- tm_shape(mpsz_pop2020)+ 
+  tm_polygons("AGED", 
+              style = "quantile", 
+              palette = "Blues")
+
+tmap_arrange(youngmap, agedmap, asp=1, ncol=2)
+```
+
+##### 10) Mapping Spatial Object Meeting a Selection Criterion
+
+Here, we select the "CENTRAL REGION" within REGION_N for display:
+
+```{r}
+tm_shape(mpsz_pop2020[mpsz_pop2020$REGION_N=="CENTRAL REGION", ])+
+  tm_fill("DEPENDENCY", 
+          style = "quantile", 
+          palette = "Blues", 
+          legend.hist = TRUE, 
+          legend.is.portrait = TRUE,
+          legend.hist.z = 0.1) +
+  tm_layout(legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 5.0,
+            legend.position = c("right", "bottom"),
+            frame = FALSE) +
+  tm_borders(alpha = 0.5)
+```
+
+The end :)
