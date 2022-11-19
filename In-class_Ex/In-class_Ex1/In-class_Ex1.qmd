@@ -1,0 +1,107 @@
+---
+title: "In-class Exercise 1"
+editor: visual
+---
+
+## Overview
+
+This is my first in-class exercise for geospatial analytics! We will review the key components of Hands-on Exercise 1 and learn more using the data from the In-class Exercise 1 zip file.
+
+## Getting Started
+
+### R packages
+
+The code chunk below will install and load **tidyverse** and **sf** packages.
+
+```{r}
+pacman::p_load(tidyverse, sf)
+```
+
+**pacman** is a wrapper that wraps an installation package and a loading package, so that the package(s) is/are installed and loaded in one breath without having to use *install.packages()* + *library()*.
+
+The syntax *pacman::* is necessary because while the package **pacman** is installed, it is not loaded. Hence, it needs to be specified so that R knows to use *p_load()* from **pacman** package.
+
+When rendering, R is making sure that **tidyverse** and **sf** packages are installed.
+
+To view the (local) webpage in web browser, using the bottom right-hand quadrant of the RStudio \> Files \> ISSS624 folder \> \_site \> In-class Ex \> In-class Ex1 \> In-class Ex1.html \> left-click select View in Web Browser.
+
+### Data
+
+Unzip **Hands-on_Ex1**, copy the **data** folder to C:/zhuyiting1/ISSS624/In-class_Ex/In-class_Ex1. It should be in the same folder as In-class_Ex1.qmd.
+
+## Importing Geospatial Data
+
+### Importing Polygon Features
+
+This code chunk will import ESRI shapefile into R.
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial",
+                layer = "MP14_SUBZONE_WEB_PL")
+```
+
+To read the syntax of the function, select the function name in the code and press F1. The Help page in the bottom right-hand quadrant of RStudio will open up.
+
+The *dsn* argument is to tell st_read() where is the destination (relative path). As the code document (qmd file) is in the same directory as the data folder, we can start from "data/" to call the data folder within.
+
+*Pro tip: Using the bottom right-hand quadrant, go to Files tab, go to the folder/subfolder that we are trying to import the data (in this case* data/geospatial*) and look at the folder and file names to key in as inputs for* st_read()*.*
+
+From the output, we can obtain a couple of information including:
+
+-   Projected CRS: SVY21 (Singapore-based projected coordinates system). Not in degrees format.
+
+-   Unit of measurement: metres.
+
+Under Environment tab in the top right-hand quadrant of RStudio, mpsz data is loaded in R. Clicking on the blue \|\> button to the left of *mpsz*, we can take a quick peek of the dataframe. Up to the first 10 records are displayed (to save space). To look at the dataframe in greater detail, click on the dataframe name *mpsz* to open the full data table.
+
+### Importing and Transforming into Projected Coordinate System
+
+Decimal degree format (between 0^o^ and 360^o^) good for exact location but not for distance measurement. This is because the Earth is ellipsoid and the distance gets closer further away from the equator in this format.
+
+On the other hand, projected coordinate system flattens the Earth. This makes the distance roughly equivalent no matter where we are.
+
+*Reading:* [Geographic vs Projected Coordinate Systems](https://www.esri.com/arcgis-blog/products/arcgis-pro/mapping/gcs_vs_pcs/)
+
+To convert **wgs84** (geographic coordinate system) to **svy21** (Singapore projected coordinate system), use the function *st_transform()* and argument *crs = 3414.*
+
+The following code chunk imports the pre-schools location data (kml file) and pipes it into the transformation step in one sitting.
+
+```{r}
+preschool = st_read("data/geospatial/pre-schools-location-kml.kml") %>% 
+  st_transform(crs = 3414)
+```
+
+While the output above still indicates geodetic CRS **wgs84**, when we click on preschool in the Environment tab to open the data table, we can see that the geometry values are no longer in degree decimal format.
+
+![](images/paste-1345DB90.png)
+
+Now, let's add the In-class Ex 1 data in the data folder.
+
+We will also need the **spdep** package for this exercise. We do it by including it in the *p_load()* function.
+
+```{r}
+pacman::p_load(tidyverse, sf, spdep)
+```
+
+We also want to do some housekeeping to keep our laptop memory freed up from unused datasets. In the Environment tab, click on the broom logo to remove unused datasets.
+
+![](images/paste-58FFA92D.png)
+
+Now we want to import the Hunan shapefile into R.
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial",
+                layer = "Hunan")
+```
+
+We can see that the data is in geodetic CRS **wgs84**.
+
+## Importing Attribute Data in CSV
+
+### Aspatial Hunan data
+
+The code chunk below imports the aspatial Hunan 2012 data.
+
+```{r}
+hunan <- read_csv("data/aspatial/Hunan_2012.csv")
+```
