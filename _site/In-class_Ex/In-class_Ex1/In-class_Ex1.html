@@ -149,6 +149,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../Hands-on_Ex1/Hands-on_Ex01.html">
  <span class="dropdown-text">Hands-on Exercise 1</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../Hands-on_Ex2/Hands-on_Ex2.html">
+ <span class="dropdown-text">Hands-on Exercise 2</span></a>
+  </li>  
     </ul>
   </li>
   <li class="nav-item dropdown ">
@@ -194,9 +198,17 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <li><a href="#importing-polygon-features" id="toc-importing-polygon-features" class="nav-link" data-scroll-target="#importing-polygon-features">Importing Polygon Features</a></li>
   <li><a href="#importing-and-transforming-into-projected-coordinate-system" id="toc-importing-and-transforming-into-projected-coordinate-system" class="nav-link" data-scroll-target="#importing-and-transforming-into-projected-coordinate-system">Importing and Transforming into Projected Coordinate System</a></li>
   </ul></li>
+  <li><a href="#in-class-exercise-1" id="toc-in-class-exercise-1" class="nav-link" data-scroll-target="#in-class-exercise-1">In-class Exercise 1</a></li>
+  <li><a href="#importing-shapefile-data" id="toc-importing-shapefile-data" class="nav-link" data-scroll-target="#importing-shapefile-data">Importing Shapefile Data</a></li>
   <li><a href="#importing-attribute-data-in-csv" id="toc-importing-attribute-data-in-csv" class="nav-link" data-scroll-target="#importing-attribute-data-in-csv">Importing Attribute Data in CSV</a>
   <ul class="collapse">
-  <li><a href="#aspatial-hunan-data" id="toc-aspatial-hunan-data" class="nav-link" data-scroll-target="#aspatial-hunan-data">Aspatial Hunan data</a></li>
+  <li><a href="#aspatial-hunan-data" id="toc-aspatial-hunan-data" class="nav-link" data-scroll-target="#aspatial-hunan-data">Aspatial Hunan Data</a></li>
+  </ul></li>
+  <li><a href="#joining-hunan-data" id="toc-joining-hunan-data" class="nav-link" data-scroll-target="#joining-hunan-data">Joining Hunan Data</a></li>
+  <li><a href="#visualising-regional-development-indicator" id="toc-visualising-regional-development-indicator" class="nav-link" data-scroll-target="#visualising-regional-development-indicator">Visualising Regional Development Indicator</a></li>
+  <li><a href="#global-spatial-autocorrelation" id="toc-global-spatial-autocorrelation" class="nav-link" data-scroll-target="#global-spatial-autocorrelation">Global Spatial Autocorrelation</a>
+  <ul class="collapse">
+  <li><a href="#contiguity-spatial-weights" id="toc-contiguity-spatial-weights" class="nav-link" data-scroll-target="#contiguity-spatial-weights">Contiguity Spatial Weights</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -266,10 +278,10 @@ Projected CRS: SVY21</code></pre>
 <p><em>Pro tip: Using the bottom right-hand quadrant, go to Files tab, go to the folder/subfolder that we are trying to import the data (in this case</em> data/geospatial<em>) and look at the folder and file names to key in as inputs for</em> st_read()<em>.</em></p>
 <p>From the output, we can obtain a couple of information including:</p>
 <ul>
-<li><p>Projected CRS: SVY21 (Singapore-based projected coordinates system). Not in degrees format.</p></li>
+<li><p>Projected CRS: <strong>SVY21</strong> (Singapore-based projected coordinates system). Not in degrees format.</p></li>
 <li><p>Unit of measurement: metres.</p></li>
 </ul>
-<p>Under Environment tab in the top right-hand quadrant of RStudio, mpsz data is loaded in R. Clicking on the blue |&gt; button to the left of <em>mpsz</em>, we can take a quick peek of the dataframe. Up to the first 10 records are displayed (to save space). To look at the dataframe in greater detail, click on the dataframe name <em>mpsz</em> to open the full data table.</p>
+<p>Under Environment tab in the top right-hand quadrant of RStudio, <code>mpsz</code> data is loaded in R. Clicking on the blue |&gt; button to the left of <code>mpsz</code>, we can take a quick peek of the dataframe. Up to the first 10 records are displayed (to save space). To look at the dataframe in greater detail, click on the dataframe name <code>mpsz</code> to open the full data table.</p>
 </section>
 <section id="importing-and-transforming-into-projected-coordinate-system" class="level3">
 <h3 class="anchored" data-anchor-id="importing-and-transforming-into-projected-coordinate-system">Importing and Transforming into Projected Coordinate System</h3>
@@ -295,54 +307,24 @@ Geodetic CRS:  WGS 84</code></pre>
 </div>
 <p>While the output above still indicates geodetic CRS <strong>wgs84</strong>, when we click on preschool in the Environment tab to open the data table, we can see that the geometry values are no longer in degree decimal format.</p>
 <p><img src="images/paste-1345DB90.png" class="img-fluid"></p>
+</section>
+</section>
+<section id="in-class-exercise-1" class="level2">
+<h2 class="anchored" data-anchor-id="in-class-exercise-1">In-class Exercise 1</h2>
+</section>
+<section id="importing-shapefile-data" class="level2">
+<h2 class="anchored" data-anchor-id="importing-shapefile-data">Importing Shapefile Data</h2>
 <p>Now, let’s add the In-class Ex 1 data in the data folder.</p>
-<p>We will also need the <strong>spdep</strong> package for this exercise. We do it by including it in the <em>p_load()</em> function.</p>
+<p>We will also need the <strong>spdep</strong> package for this exercise. We do it by including it in the <em>p_load()</em> function. As it requires the <strong>spData</strong> package, we will install and load it as well. Finally, we need the <strong>tmap</strong> package for quick plots.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(tidyverse, sf, spdep)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Installing package into 'C:/R/R-4.2.2/library'
-(as 'lib' is unspecified)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>also installing the dependency 'spData'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: unable to access index for repository http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.2:
-  cannot open URL 'http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.2/PACKAGES'</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-  There is a binary version available but the source version is later:
-       binary source needs_compilation
-spData  2.2.0  2.2.1             FALSE
-
-package 'spdep' successfully unpacked and MD5 sums checked
-
-The downloaded binary packages are in
-    C:\Users\zhuyi\AppData\Local\Temp\RtmpMhlVOr\downloaded_packages</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>installing the source package 'spData'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in utils::install.packages(package, ...): installation of package
-'spData' had non-zero exit status</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-spdep installed</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning in pacman::p_load(tidyverse, sf, spdep): Failed to install/load:
-spdep</code></pre>
-</div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(spData, tidyverse, sf, spdep, tmap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <p>We also want to do some housekeeping to keep our laptop memory freed up from unused datasets. In the Environment tab, click on the broom logo to remove unused datasets.</p>
-<p><img src="images/paste-58FFA92D.png" class="img-fluid"></p>
+<p><img src="images/paste-58FFA92D.png" class="img-fluid" width="371"></p>
 <p>Now we want to import the Hunan shapefile into R.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>mpsz <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">st_read</span>(<span class="at">dsn =</span> <span class="st">"data/geospatial"</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">layer =</span> <span class="st">"Hunan"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `Hunan' from data source 
   `C:\zhuyiting1\ISSS624\In-class_Ex\In-class_Ex1\data\geospatial' 
@@ -356,14 +338,13 @@ Geodetic CRS:  WGS 84</code></pre>
 </div>
 <p>We can see that the data is in geodetic CRS <strong>wgs84</strong>.</p>
 </section>
-</section>
 <section id="importing-attribute-data-in-csv" class="level2">
 <h2 class="anchored" data-anchor-id="importing-attribute-data-in-csv">Importing Attribute Data in CSV</h2>
 <section id="aspatial-hunan-data" class="level3">
-<h3 class="anchored" data-anchor-id="aspatial-hunan-data">Aspatial Hunan data</h3>
+<h3 class="anchored" data-anchor-id="aspatial-hunan-data">Aspatial Hunan Data</h3>
 <p>The code chunk below imports the aspatial Hunan 2012 data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>hunan2012 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/aspatial/Hunan_2012.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Rows: 88 Columns: 29
 ── Column specification ────────────────────────────────────────────────────────
@@ -375,6 +356,57 @@ dbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="joining-hunan-data" class="level2">
+<h2 class="anchored" data-anchor-id="joining-hunan-data">Joining Hunan Data</h2>
+<p>The code chunk below joins the spatial and aspatial data for Hunan using the <a href="https://dplyr.tidyverse.org/reference/mutate-joins.html"><em>left_join()</em></a> function of the <strong>dplyr</strong> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, hunan2012)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining, by = "County"</code></pre>
+</div>
+</div>
+<p>R recognises the variable “County” to be the only common variable between the two dataframes and performs the join accordingly. As the two dataframes have the exact same number of observations with matching county, <em>left_join()</em> here works the same as a <em>inner_join()</em>, <em>right_join()</em> and <em>full_join()</em>. It appends the <code>hunan2012</code> data to the right of the original <code>hunan</code> data. Notably, the geometry column from the original <code>hunan</code> dataframe remains at the rightmost column of the new <code>hunan</code> dataframe.</p>
+</section>
+<section id="visualising-regional-development-indicator" class="level2">
+<h2 class="anchored" data-anchor-id="visualising-regional-development-indicator">Visualising Regional Development Indicator</h2>
+<p>With some data about the Hunan province, we want to create a quick thematic map to visualise the distribution of Gross Domestic Product Per Capita (GDPPC) in 2012, using the <a href="https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/qtm"><em>qtm()</em></a> function from the <strong>tmap</strong> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>equal <span class="ot">&lt;-</span> <span class="fu">tm_shape</span>(hunan) <span class="sc">+</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"GDPPC"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>          <span class="at">n =</span> <span class="dv">5</span>,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"equal"</span>) <span class="sc">+</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Equal interval classification"</span>,</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.height =</span> <span class="fl">0.3</span>, </span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.width =</span> <span class="fl">0.7</span>)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>quantile <span class="ot">&lt;-</span> tmap<span class="sc">::</span><span class="fu">tm_shape</span>(hunan) <span class="sc">+</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>(<span class="st">"GDPPC"</span>,</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>          <span class="at">n =</span> <span class="dv">5</span>,</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"quantile"</span>) <span class="sc">+</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title =</span> <span class="st">"Equal quantile classification"</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.size =</span> <span class="dv">1</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.height =</span> <span class="fl">0.3</span>, </span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>            <span class="at">legend.width =</span> <span class="fl">0.7</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(equal, quantile, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that the equal interval classification map shows that most regions (~60%) have GDPPC of only 1/5 of the wealthiest region. In addition, we observe that the wealth is mostly concentrated in the Northeast region of the Hunan province.</p>
+</section>
+<section id="global-spatial-autocorrelation" class="level2">
+<h2 class="anchored" data-anchor-id="global-spatial-autocorrelation">Global Spatial Autocorrelation</h2>
+<p>We want to know whether such a distribution of GDPPC is by pure chance (randomness), and if not, whether there is a positive/negative correlation between neighbouring regions or outliers. To do this, we will compute the global spatial autocorrelation statistics and perform spatial complete randomness test for global spatial autocorrelation.</p>
+<section id="contiguity-spatial-weights" class="level3">
+<h3 class="anchored" data-anchor-id="contiguity-spatial-weights">Contiguity Spatial Weights</h3>
 
 
 </section>

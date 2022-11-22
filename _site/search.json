@@ -133,6 +133,55 @@
     "text": "Getting Started\nThis is the paragraph for getting started."
   },
   {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html",
+    "title": "Hands-on_Ex2",
+    "section": "",
+    "text": "This is my second hands-on exercise for geospatial analytics! I will apply what I learnt on global and local indicators of spatial association from my second geospatial lecture on the Hunan dataset from my earlier in-class exercise."
+  },
+  {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html#data",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html#data",
+    "title": "Hands-on_Ex2",
+    "section": "Data",
+    "text": "Data\nUnzip Hands-on_Ex1, copy the data folder to C:/zhuyiting1/ISSS624/Hands-on_Ex2. It should be in the same folder as Hands-on_Ex2.qmd."
+  },
+  {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html#importing-shapefile-data",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html#importing-shapefile-data",
+    "title": "Hands-on_Ex2",
+    "section": "Importing Shapefile Data",
+    "text": "Importing Shapefile Data\nIn addition to tidyverse (which includes dplyr) and sf packages that we used earlier, we will need the spdep package for this exercise. We do it by including it in the p_load() function. As it requires the spData package, we will install and load it as well. Finally, we need the tmap package for quick plots.\n\npacman::p_load(spData, tidyverse, sf, spdep, tmap)\n\nNow we want to import the Hunan shapefile into R.\n\nhunan <- st_read(dsn = \"data/geospatial\",\n                layer = \"Hunan\")\n\nReading layer `Hunan' from data source \n  `C:\\zhuyiting1\\ISSS624\\Hands-on_Ex2\\data\\geospatial' using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\n\n\nWe can see that the data is in geodetic CRS wgs84."
+  },
+  {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html#importing-attribute-data-in-csv",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html#importing-attribute-data-in-csv",
+    "title": "Hands-on_Ex2",
+    "section": "Importing Attribute Data in CSV",
+    "text": "Importing Attribute Data in CSV\n\nAspatial Hunan Data\nThe code chunk below imports the aspatial Hunan 2012 data.\n\nhunan2012 <- read_csv(\"data/aspatial/Hunan_2012.csv\")\n\nRows: 88 Columns: 29\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (2): County, City\ndbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html#joining-hunan-data",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html#joining-hunan-data",
+    "title": "Hands-on_Ex2",
+    "section": "Joining Hunan Data",
+    "text": "Joining Hunan Data\nThe code chunk below joins the spatial and aspatial data for Hunan using the left_join() function of the dplyr package.\n\nhunan <- left_join(hunan, hunan2012)\n\nJoining, by = \"County\"\n\n\nR recognises the variable “County” to be the only common variable between the two dataframes and performs the join accordingly. As the two dataframes have the exact same number of observations with matching county, left_join() here works the same as a inner_join(), right_join() and full_join(). It appends the hunan2012 data to the right of the original hunan data. Notably, the geometry column from the original hunan dataframe remains at the rightmost column of the new hunan dataframe."
+  },
+  {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html#visualising-regional-development-indicator",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html#visualising-regional-development-indicator",
+    "title": "Hands-on_Ex2",
+    "section": "Visualising Regional Development Indicator",
+    "text": "Visualising Regional Development Indicator\nWith some data about the Hunan province, we want to create a quick thematic map to visualise the distribution of Gross Domestic Product Per Capita (GDPPC) in 2012, using the qtm() function from the tmap package.\n\nequal <- tm_shape(hunan) +\n  tm_fill(\"GDPPC\",\n          n = 5,\n          style = \"equal\") +\n  tm_borders(alpha = 0.5) +\n  tm_layout(main.title = \"Equal interval classification\",\n            main.title.size = 1,\n            main.title.position = \"center\",\n            legend.height = 0.3, \n            legend.width = 0.7)\n  \nquantile <- tmap::tm_shape(hunan) +\n  tm_fill(\"GDPPC\",\n          n = 5,\n          style = \"quantile\") +\n  tm_borders(alpha = 0.5) +\n  tm_layout(main.title = \"Equal quantile classification\",\n            main.title.size = 1,\n            main.title.position = \"center\",\n            legend.height = 0.3, \n            legend.width = 0.7)\n\ntmap_arrange(equal, quantile, asp = 1, ncol = 2)\n\n\n\n\nWe see that the equal interval classification map shows that most regions (~60%) have GDPPC of only 1/5 of the wealthiest region. In addition, we observe that the wealth is mostly concentrated in the Northeast region of the Hunan province."
+  },
+  {
+    "objectID": "Hands-on_Ex2/Hands-on_Ex2.html#global-spatial-autocorrelation",
+    "href": "Hands-on_Ex2/Hands-on_Ex2.html#global-spatial-autocorrelation",
+    "title": "Hands-on_Ex2",
+    "section": "Global Spatial Autocorrelation",
+    "text": "Global Spatial Autocorrelation\nWe want to know whether such a distribution of GDPPC is by pure chance (randomness), and if not, whether there is a positive/negative correlation between neighbouring regions or outliers. To do this, we will compute the global spatial autocorrelation statistics and perform spatial complete randomness test for global spatial autocorrelation.\n\nContiguity Spatial Weights"
+  },
+  {
     "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html",
     "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html",
     "title": "In-class Exercise 1",
@@ -151,14 +200,49 @@
     "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#importing-geospatial-data",
     "title": "In-class Exercise 1",
     "section": "Importing Geospatial Data",
-    "text": "Importing Geospatial Data\n\nImporting Polygon Features\nThis code chunk will import ESRI shapefile into R.\n\nmpsz <- st_read(dsn = \"data/geospatial\",\n                layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `C:\\zhuyiting1\\ISSS624\\In-class_Ex\\In-class_Ex1\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\nTo read the syntax of the function, select the function name in the code and press F1. The Help page in the bottom right-hand quadrant of RStudio will open up.\nThe dsn argument is to tell st_read() where is the destination (relative path). As the code document (qmd file) is in the same directory as the data folder, we can start from “data/” to call the data folder within.\nPro tip: Using the bottom right-hand quadrant, go to Files tab, go to the folder/subfolder that we are trying to import the data (in this case data/geospatial) and look at the folder and file names to key in as inputs for st_read().\nFrom the output, we can obtain a couple of information including:\n\nProjected CRS: SVY21 (Singapore-based projected coordinates system). Not in degrees format.\nUnit of measurement: metres.\n\nUnder Environment tab in the top right-hand quadrant of RStudio, mpsz data is loaded in R. Clicking on the blue |> button to the left of mpsz, we can take a quick peek of the dataframe. Up to the first 10 records are displayed (to save space). To look at the dataframe in greater detail, click on the dataframe name mpsz to open the full data table.\n\n\nImporting and Transforming into Projected Coordinate System\nDecimal degree format (between 0o and 360o) good for exact location but not for distance measurement. This is because the Earth is ellipsoid and the distance gets closer further away from the equator in this format.\nOn the other hand, projected coordinate system flattens the Earth. This makes the distance roughly equivalent no matter where we are.\nReading: Geographic vs Projected Coordinate Systems\nTo convert wgs84 (geographic coordinate system) to svy21 (Singapore projected coordinate system), use the function st_transform() and argument crs = 3414.\nThe following code chunk imports the pre-schools location data (kml file) and pipes it into the transformation step in one sitting.\n\npreschool = st_read(\"data/geospatial/pre-schools-location-kml.kml\") %>% \n  st_transform(crs = 3414)\n\nReading layer `PRESCHOOLS_LOCATION' from data source \n  `C:\\zhuyiting1\\ISSS624\\In-class_Ex\\In-class_Ex1\\data\\geospatial\\pre-schools-location-kml.kml' \n  using driver `KML'\nSimple feature collection with 1359 features and 2 fields\nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 103.6824 ymin: 1.248403 xmax: 103.9897 ymax: 1.462134\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\n\n\nWhile the output above still indicates geodetic CRS wgs84, when we click on preschool in the Environment tab to open the data table, we can see that the geometry values are no longer in degree decimal format.\n\nNow, let’s add the In-class Ex 1 data in the data folder.\nWe will also need the spdep package for this exercise. We do it by including it in the p_load() function.\n\npacman::p_load(tidyverse, sf, spdep)\n\nInstalling package into 'C:/R/R-4.2.2/library'\n(as 'lib' is unspecified)\n\n\nalso installing the dependency 'spData'\n\n\nWarning: unable to access index for repository http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.2:\n  cannot open URL 'http://www.stats.ox.ac.uk/pub/RWin/bin/windows/contrib/4.2/PACKAGES'\n\n\n\n  There is a binary version available but the source version is later:\n       binary source needs_compilation\nspData  2.2.0  2.2.1             FALSE\n\npackage 'spdep' successfully unpacked and MD5 sums checked\n\nThe downloaded binary packages are in\n    C:\\Users\\zhuyi\\AppData\\Local\\Temp\\RtmpMhlVOr\\downloaded_packages\n\n\ninstalling the source package 'spData'\n\n\nWarning in utils::install.packages(package, ...): installation of package\n'spData' had non-zero exit status\n\n\n\nspdep installed\n\n\nWarning in pacman::p_load(tidyverse, sf, spdep): Failed to install/load:\nspdep\n\n\nWe also want to do some housekeeping to keep our laptop memory freed up from unused datasets. In the Environment tab, click on the broom logo to remove unused datasets.\n\nNow we want to import the Hunan shapefile into R.\n\nmpsz <- st_read(dsn = \"data/geospatial\",\n                layer = \"Hunan\")\n\nReading layer `Hunan' from data source \n  `C:\\zhuyiting1\\ISSS624\\In-class_Ex\\In-class_Ex1\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\n\n\nWe can see that the data is in geodetic CRS wgs84."
+    "text": "Importing Geospatial Data\n\nImporting Polygon Features\nThis code chunk will import ESRI shapefile into R.\n\nmpsz <- st_read(dsn = \"data/geospatial\",\n                layer = \"MP14_SUBZONE_WEB_PL\")\n\nReading layer `MP14_SUBZONE_WEB_PL' from data source \n  `C:\\zhuyiting1\\ISSS624\\In-class_Ex\\In-class_Ex1\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 323 features and 15 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33\nProjected CRS: SVY21\n\n\nTo read the syntax of the function, select the function name in the code and press F1. The Help page in the bottom right-hand quadrant of RStudio will open up.\nThe dsn argument is to tell st_read() where is the destination (relative path). As the code document (qmd file) is in the same directory as the data folder, we can start from “data/” to call the data folder within.\nPro tip: Using the bottom right-hand quadrant, go to Files tab, go to the folder/subfolder that we are trying to import the data (in this case data/geospatial) and look at the folder and file names to key in as inputs for st_read().\nFrom the output, we can obtain a couple of information including:\n\nProjected CRS: SVY21 (Singapore-based projected coordinates system). Not in degrees format.\nUnit of measurement: metres.\n\nUnder Environment tab in the top right-hand quadrant of RStudio, mpsz data is loaded in R. Clicking on the blue |> button to the left of mpsz, we can take a quick peek of the dataframe. Up to the first 10 records are displayed (to save space). To look at the dataframe in greater detail, click on the dataframe name mpsz to open the full data table.\n\n\nImporting and Transforming into Projected Coordinate System\nDecimal degree format (between 0o and 360o) good for exact location but not for distance measurement. This is because the Earth is ellipsoid and the distance gets closer further away from the equator in this format.\nOn the other hand, projected coordinate system flattens the Earth. This makes the distance roughly equivalent no matter where we are.\nReading: Geographic vs Projected Coordinate Systems\nTo convert wgs84 (geographic coordinate system) to svy21 (Singapore projected coordinate system), use the function st_transform() and argument crs = 3414.\nThe following code chunk imports the pre-schools location data (kml file) and pipes it into the transformation step in one sitting.\n\npreschool = st_read(\"data/geospatial/pre-schools-location-kml.kml\") %>% \n  st_transform(crs = 3414)\n\nReading layer `PRESCHOOLS_LOCATION' from data source \n  `C:\\zhuyiting1\\ISSS624\\In-class_Ex\\In-class_Ex1\\data\\geospatial\\pre-schools-location-kml.kml' \n  using driver `KML'\nSimple feature collection with 1359 features and 2 fields\nGeometry type: POINT\nDimension:     XYZ\nBounding box:  xmin: 103.6824 ymin: 1.248403 xmax: 103.9897 ymax: 1.462134\nz_range:       zmin: 0 zmax: 0\nGeodetic CRS:  WGS 84\n\n\nWhile the output above still indicates geodetic CRS wgs84, when we click on preschool in the Environment tab to open the data table, we can see that the geometry values are no longer in degree decimal format."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#in-class-exercise-1",
+    "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#in-class-exercise-1",
+    "title": "In-class Exercise 1",
+    "section": "In-class Exercise 1",
+    "text": "In-class Exercise 1"
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#importing-shapefile-data",
+    "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#importing-shapefile-data",
+    "title": "In-class Exercise 1",
+    "section": "Importing Shapefile Data",
+    "text": "Importing Shapefile Data\nNow, let’s add the In-class Ex 1 data in the data folder.\nWe will also need the spdep package for this exercise. We do it by including it in the p_load() function. As it requires the spData package, we will install and load it as well. Finally, we need the tmap package for quick plots.\n\npacman::p_load(spData, tidyverse, sf, spdep, tmap)\n\nWe also want to do some housekeeping to keep our laptop memory freed up from unused datasets. In the Environment tab, click on the broom logo to remove unused datasets.\n\nNow we want to import the Hunan shapefile into R.\n\nhunan <- st_read(dsn = \"data/geospatial\",\n                layer = \"Hunan\")\n\nReading layer `Hunan' from data source \n  `C:\\zhuyiting1\\ISSS624\\In-class_Ex\\In-class_Ex1\\data\\geospatial' \n  using driver `ESRI Shapefile'\nSimple feature collection with 88 features and 7 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: 108.7831 ymin: 24.6342 xmax: 114.2544 ymax: 30.12812\nGeodetic CRS:  WGS 84\n\n\nWe can see that the data is in geodetic CRS wgs84."
   },
   {
     "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#importing-attribute-data-in-csv",
     "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#importing-attribute-data-in-csv",
     "title": "In-class Exercise 1",
     "section": "Importing Attribute Data in CSV",
-    "text": "Importing Attribute Data in CSV\n\nAspatial Hunan data\nThe code chunk below imports the aspatial Hunan 2012 data.\n\nhunan <- read_csv(\"data/aspatial/Hunan_2012.csv\")\n\nRows: 88 Columns: 29\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (2): County, City\ndbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "Importing Attribute Data in CSV\n\nAspatial Hunan Data\nThe code chunk below imports the aspatial Hunan 2012 data.\n\nhunan2012 <- read_csv(\"data/aspatial/Hunan_2012.csv\")\n\nRows: 88 Columns: 29\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr  (2): County, City\ndbl (27): avg_wage, deposite, FAI, Gov_Rev, Gov_Exp, GDP, GDPPC, GIO, Loan, ...\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#joining-hunan-data",
+    "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#joining-hunan-data",
+    "title": "In-class Exercise 1",
+    "section": "Joining Hunan Data",
+    "text": "Joining Hunan Data\nThe code chunk below joins the spatial and aspatial data for Hunan using the left_join() function of the dplyr package.\n\nhunan <- left_join(hunan, hunan2012)\n\nJoining, by = \"County\"\n\n\nR recognises the variable “County” to be the only common variable between the two dataframes and performs the join accordingly. As the two dataframes have the exact same number of observations with matching county, left_join() here works the same as a inner_join(), right_join() and full_join(). It appends the hunan2012 data to the right of the original hunan data. Notably, the geometry column from the original hunan dataframe remains at the rightmost column of the new hunan dataframe."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#visualising-regional-development-indicator",
+    "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#visualising-regional-development-indicator",
+    "title": "In-class Exercise 1",
+    "section": "Visualising Regional Development Indicator",
+    "text": "Visualising Regional Development Indicator\nWith some data about the Hunan province, we want to create a quick thematic map to visualise the distribution of Gross Domestic Product Per Capita (GDPPC) in 2012, using the qtm() function from the tmap package.\n\nequal <- tm_shape(hunan) +\n  tm_fill(\"GDPPC\",\n          n = 5,\n          style = \"equal\") +\n  tm_borders(alpha = 0.5) +\n  tm_layout(main.title = \"Equal interval classification\",\n            main.title.size = 1,\n            main.title.position = \"center\",\n            legend.height = 0.3, \n            legend.width = 0.7)\n  \nquantile <- tmap::tm_shape(hunan) +\n  tm_fill(\"GDPPC\",\n          n = 5,\n          style = \"quantile\") +\n  tm_borders(alpha = 0.5) +\n  tm_layout(main.title = \"Equal quantile classification\",\n            main.title.size = 1,\n            main.title.position = \"center\",\n            legend.height = 0.3, \n            legend.width = 0.7)\n\ntmap_arrange(equal, quantile, asp = 1, ncol = 2)\n\n\n\n\nWe see that the equal interval classification map shows that most regions (~60%) have GDPPC of only 1/5 of the wealthiest region. In addition, we observe that the wealth is mostly concentrated in the Northeast region of the Hunan province."
+  },
+  {
+    "objectID": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#global-spatial-autocorrelation",
+    "href": "In-class_Ex/In-class_Ex1/In-class_Ex1.html#global-spatial-autocorrelation",
+    "title": "In-class Exercise 1",
+    "section": "Global Spatial Autocorrelation",
+    "text": "Global Spatial Autocorrelation\nWe want to know whether such a distribution of GDPPC is by pure chance (randomness), and if not, whether there is a positive/negative correlation between neighbouring regions or outliers. To do this, we will compute the global spatial autocorrelation statistics and perform spatial complete randomness test for global spatial autocorrelation.\n\nContiguity Spatial Weights"
   },
   {
     "objectID": "index.html",
