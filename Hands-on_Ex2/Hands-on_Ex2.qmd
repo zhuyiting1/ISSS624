@@ -687,7 +687,9 @@ Gimap.fixed <- tm_shape(hunan.gi) +
           palette = "RdBu",
           title = "Local Gi") +
   tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Fixed distance weights matrix")
+  tm_layout(main.title = "Fixed distance weights matrix",
+            main.title.size = 0.9,
+            main.title.position = "center")
 
 Gimap.adaptive <- tm_shape(hunan.gi) + 
   tm_fill(col = "gstat_adaptive",
@@ -695,7 +697,9 @@ Gimap.adaptive <- tm_shape(hunan.gi) +
           palette = "RdBu",
           title = "Local Gi") +
   tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Adaptive distance weights matrix")
+  tm_layout(main.title = "Adaptive distance weights matrix",
+            main.title.size = 0.9,
+            main.title.position = "center")
 
 tmap_arrange(gdppc,
            Gimap.fixed,
