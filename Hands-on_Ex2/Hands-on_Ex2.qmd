@@ -1,5 +1,5 @@
 ---
-title: "Hands-on_Ex2"
+title: "Hands-on Exercise 2"
 editor: visual
 ---
 
@@ -257,7 +257,7 @@ Unlike Moran's I, the cutoff/value indicating randomness is 1 instead of 0, as i
 
 ## Spatial Correlogram
 
-Spatial correlograms are used to examine patterns of spatial autocorrelation. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran\'s I or Geary\'s c) against distance. Row standardisation is not needed.
+Spatial correlograms are used to examine patterns of spatial autocorrelation. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran's I or Geary's c) against distance. Row standardisation is not needed.
 
 ### Moran's I Correlogram
 
@@ -527,7 +527,7 @@ tmap_arrange(gdppc, LISAmap, asp=1, ncol=2)
 
 The plot on the right shows that the statistically significant Moran's I values are in blue for high-high autocorrelation and yellow for low-low autocorrelation (clusters). These regions are all found on the East side of the Hunan province, and they generally correspond to the higher GDPPC regions (see plot on the left). It also shows 3 outlier regions in green and cyan.
 
-## Hot Spot and Cold Spot Area Analysis 
+## Hot Spot and Cold Spot Area Analysis
 
 Besides detecting clusters and outliers, localised spatial statistics can also be used to detect hot and/or cold spot areas.
 
@@ -535,7 +535,7 @@ The term 'hot spot' has been used generically across disciplines to describe a r
 
 ### Getis and Ord's G-Statistics
 
-An alternative spatial statistics to detect spatial anomalies is the Getis and Ord\'s G-statistics. It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
+An alternative spatial statistics to detect spatial anomalies is the Getis and Ord's G-statistics. It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.
 
 The analysis consists of three steps:
 
@@ -649,7 +649,7 @@ gi.fixed <- localG(hunan$GDPPC, wm62_lw)
 gi.fixed
 ```
 
-The output of localG() is a vector of G or Gstar values, with attributes \"gstari\" set to TRUE or FALSE, \"call\" set to the function call, and class \"localG\".
+The output of localG() is a vector of G or Gstar values, with attributes "gstari" set to TRUE or FALSE, "call" set to the function call, and class "localG".
 
 The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.
 

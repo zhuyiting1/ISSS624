@@ -91,7 +91,7 @@ We also want to do some housekeeping to keep our laptop memory freed up from unu
 
 ![](images/paste-58FFA92D.png){width="371"}
 
-Now we want to import the Hunan shapefile into R.
+Now we want to import the Hunan ESRI shapefile into R. This is the Hunan county boundary layer.
 
 ```{r}
 hunan <- st_read(dsn = "data/geospatial",
@@ -104,7 +104,7 @@ We can see that the data is in geodetic CRS **wgs84**.
 
 ### Aspatial Hunan Data
 
-The code chunk below imports the aspatial Hunan 2012 data.
+The code chunk below imports the aspatial Hunan 2012 data. This dataset contains selected local development indicators such as Gross Domestic Product per capita (`GDPPC`) for each county in 2012.
 
 ```{r}
 hunan2012 <- read_csv("data/aspatial/Hunan_2012.csv")
@@ -122,38 +122,65 @@ R recognises the variable "County" to be the only common variable between the tw
 
 ## Visualising Regional Development Indicator
 
-With some data about the Hunan province, we want to create a quick thematic map to visualise the distribution of Gross Domestic Product Per Capita (GDPPC) in 2012, using the [*qtm()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/qtm) function from the **tmap** package.
+With some data about the Hunan province, we want to create a quick thematic map to visualise the distribution of GDPPC in 2012, using the [*qtm()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/qtm) function from the **tmap** package.
 
 ```{r}
-equal <- tm_shape(hunan) +
-  tm_fill("GDPPC",
-          n = 5,
-          style = "equal") +
-  tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Equal interval classification",
-            main.title.size = 1,
-            main.title.position = "center",
-            legend.height = 0.3, 
-            legend.width = 0.7)
-  
-quantile <- tmap::tm_shape(hunan) +
-  tm_fill("GDPPC",
-          n = 5,
-          style = "quantile") +
-  tm_borders(alpha = 0.5) +
-  tm_layout(main.title = "Equal quantile classification",
-            main.title.size = 1,
-            main.title.position = "center",
-            legend.height = 0.3, 
-            legend.width = 0.7)
+basemap <- tm_shape(hunan) +
+  tm_polygons() +
+  tm_text("County", size=0.5)
 
-tmap_arrange(equal, quantile, asp = 1, ncol = 2)
+gdppc <- qtm(hunan, fill = "GDPPC")
+
+tmap_arrange(basemap, gdppc, asp = 1, ncol = 2)
 ```
 
-We see that the equal interval classification map shows that most regions (\~60%) have GDPPC of only 1/5 of the wealthiest region. In addition, we observe that the wealth is mostly concentrated in the Northeast region of the Hunan province.
+We see that *qtm()* does a quick plot using equal interval classification. From the map, most regions (\~60%) have GDPPC of only 1/5 of the wealthiest region. In addition, we observe that the wealth is mostly concentrated in the Northeast region of the Hunan province, and the top tier GDPPC in 2012 was held by only 1 county - Changsha.
 
-## Global Spatial Autocorrelation
+## Computing Contiguity Spatial Weights
 
-We want to know whether such a distribution of GDPPC is by pure chance (randomness), and if not, whether there is a positive/negative correlation between neighbouring regions or outliers. To do this, we will compute the global spatial autocorrelation statistics and perform spatial complete randomness test for global spatial autocorrelation.
+In this section, we will use *poly2nb()* of **spdep** to compute contiguity weights matrices for the study area, Hunan. This function builds a neighbours list based on regions with contiguous (shared) boundaries. The default criteria used in this function is Queen's criteria, which considers any boundary that is touching by at least 1 point to be a neighbour.
 
-### Contiguity Spatial Weights
+![](images/paste-DB966401.png){width="603"}
+
+### Computing (Queen's Criteria) Contiguity-based Neighbours
+
+The code chunk below computes Queen's contiguity weights matrix.
+
+```{r}
+wm_q <- poly2nb(hunan, queen = TRUE)
+summary(wm_q)
+```
+
+There are 448 pairs of neighbours found by the Queen\'s case, from the 88 counties in Hunan. From the summary report, the link number distributions shows the frequency of the number of links or neighbours that each county has, the most being 11 neighbours for 1 county (region 85). On the other extreme, the 2 least connected regions (30 and 65) only have 1 neighbour each.
+
+By calling the `County` column of the `hunan` dataframe, we can see that the county with the most neighbours is `Taoyuan` and that with the least neighbours are `Xinhuang` and `Linxiang`. This is consistent with the basemap that we plotted previously, where `Taoyuan` is a large county in the North surrounded by multiple smaller counties, and `Xinhuang` and `Linxiang` being counties along the West and Northeast borders of Hunan respectively.
+
+```{r}
+hunan$County[c(85, 30, 65)]
+```
+
+For each polygon in our polygon object, *wm_q()* lists all neighboring polygons. For example, to see the neighbours for the region with the most number of neighbours (polygon number 85), we can use the following code chunk.
+
+```{r}
+wm_q[[85]]
+```
+
+The 11 neighbours of Polygon 85, which is Taoyuan, are listed above. The numbers represent the polygon IDs as stored in the `hunan` SpatialPolygonsDataFrame class.
+
+To retrieve the GDPPC of Taoyuan and all its 11 neighbours, the following code chunk can be used.
+
+```{r}
+nb85 <- wm_q[[85]]
+nb85 <- hunan$GDPPC[c(85, nb85)]
+nb85
+```
+
+We can see that the GDPPC of Taoyuan and its 11 neighbours (based on Queen's criteria) are 22879, 23667, 20981, 34592, 25554, 27137, 24194, 14567, 21311, 18714, 14624 and 19509 respectively.
+
+The complete weights matrix can be listed using [*str()*](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str) (display internal structure) from R's **utils** package.
+
+```{r}
+str(wm_q)
+```
+
+### Computing (Rook's Criteria) Contiguity-based Neighbours

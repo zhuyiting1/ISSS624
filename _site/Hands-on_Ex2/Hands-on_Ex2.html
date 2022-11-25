@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>ISSS624 - Hands-on_Ex2</title>
+<title>ISSS624 - Hands-on Exercise 2</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -156,8 +156,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     </ul>
   </li>
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercise-1" role="button" data-bs-toggle="dropdown" aria-expanded="false">In-class Exercise 1</a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercise-1">    
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-in-class-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">In-class Exercises</a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-in-class-exercises">    
         <li>
     <a class="dropdown-item" href="../In-class_Ex/In-class_Ex1/In-class_Ex1.html">
  <span class="dropdown-text">In-class Exercise 1</span></a>
@@ -250,7 +250,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Hands-on_Ex2</h1>
+<h1 class="title">Hands-on Exercise 2</h1>
 </div>
 
 
@@ -616,7 +616,7 @@ alternative hypothesis: greater</code></pre>
 </section>
 <section id="spatial-correlogram" class="level2">
 <h2 class="anchored" data-anchor-id="spatial-correlogram">Spatial Correlogram</h2>
-<p>Spatial correlograms are used to examine patterns of spatial autocorrelation. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran's I or Geary's c) against distance. Row standardisation is not needed.</p>
+<p>Spatial correlograms are used to examine patterns of spatial autocorrelation. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran’s I or Geary’s c) against distance. Row standardisation is not needed.</p>
 <section id="morans-i-correlogram" class="level3">
 <h3 class="anchored" data-anchor-id="morans-i-correlogram">Moran’s I Correlogram</h3>
 <p>In the code chunk below, <a href="https://r-spatial.github.io/spdep/reference/sp.correlogram.html"><em>sp.correlogram()</em></a> of <strong>spdep</strong> is used to compute a 1- to 6-lag spatial correlogram of GDPPC. The global spatial autocorrelation used is Moran’s I. The <em>plot()</em> of R’s base Graph is used to plot the output.</p>
@@ -1084,7 +1084,7 @@ First 10 features:
 <p>The term ‘hot spot’ has been used generically across disciplines to describe a region or value that is higher relative to its surroundings.</p>
 <section id="getis-and-ords-g-statistics" class="level3">
 <h3 class="anchored" data-anchor-id="getis-and-ords-g-statistics">Getis and Ord’s G-Statistics</h3>
-<p>An alternative spatial statistics to detect spatial anomalies is the Getis and Ord's G-statistics. It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
+<p>An alternative spatial statistics to detect spatial anomalies is the Getis and Ord’s G-statistics. It looks at neighbours within a defined proximity to identify where either high or low values clutser spatially. Here, statistically significant hot-spots are recognised as areas of high values where other areas within a neighbourhood range also share high values too.</p>
 <p>The analysis consists of three steps:</p>
 <ol type="1">
 <li><p>Deriving spatial weight matrix</p></li>
@@ -1363,7 +1363,7 @@ attr(,"class")
 [1] "localG"</code></pre>
 </div>
 </div>
-<p>The output of localG() is a vector of G or Gstar values, with attributes "gstari" set to TRUE or FALSE, "call" set to the function call, and class "localG".</p>
+<p>The output of localG() is a vector of G or Gstar values, with attributes “gstari” set to TRUE or FALSE, “call” set to the function call, and class “localG”.</p>
 <p>The Gi statistics is represented as a Z-score. Greater values represent a greater intensity of clustering and the direction (positive or negative) indicates high or low clusters.</p>
 <p>Next, we will join the Gi values to their corresponding <code>hunan</code> sf dataframe by using the code chunk below.</p>
 <div class="cell">
