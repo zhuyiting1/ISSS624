@@ -389,7 +389,7 @@ pvalue.map <- tm_shape(hunan.localMI) +
 tmap_arrange(localMI.map, pvalue.map, asp = 1, ncol = 2)
 ```
 
-On the left, we note regions of positive (blue) and negative (orange) Moran's I statistics, indicative of positive and negative clustering relationships. On the right, we see that the p-values are significant at 5% significance level for the regions in darker shades of blue. They generally correspond to regions with high positive local Moran's I statistics.
+On the left, we note regions of positive (blue) and negative (orange) Moran's I statistics, indicative of positive and negative clustering relationships. On the right, we see that the p-values are significant at 5% significance level for the regions in darker shades of blue. They generally correspond to regions with high positive local Moran's I statistics. The negative clustering region (high region surrounded by low neighbours) is not statistically significant as it only has 3 neighbours by contiguity weights matrix.
 
 ## Creating a LISA Cluster Map
 
@@ -456,7 +456,7 @@ Next, we centre the variable of interest around its mean.
 DV <- hunan$GDPPC - mean(hunan$GDPPC)
 ```
 
-This is followed by centering the local Moran's I around its mean.
+This is followed by centering the local Moran's I around its mean. This is for consistency with the `DV` method, and it is sufficient to simply use the local Moran's I value without centering it around the mean (i.e. the code chunk below works the same as `C_mI <- localMI[, 1]`).
 
 ```{r}
 C_mI <- localMI[, 1] - mean(localMI[, 1])
@@ -471,10 +471,10 @@ signif <- 0.05
 The next 4 command lines define the high-high, low-low, low-high and high-low quadrants.
 
 ```{r}
-quadrant[DV < 0 & C_mI < 0] <- 1
-quadrant[DV < 0 & C_mI > 0] <- 2
-quadrant[DV > 0 & C_mI < 0] <- 3
-quadrant[DV > 0 & C_mI > 0] <- 4
+quadrant[DV < 0 & C_mI > 0] <- 1 # C_mi > 0 -> cluster // DV refers to GDPPC wrt mean -> -ve means low-low
+quadrant[DV < 0 & C_mI < 0] <- 2 # C_mi < 0 -> outlier
+quadrant[DV > 0 & C_mI < 0] <- 3 # C_mi < 0 -> outlier
+quadrant[DV > 0 & C_mI > 0] <- 4 # C_mi > 0 -> cluster
 ```
 
 Finally, we place the non-significant Moran's value in category 0.
@@ -491,8 +491,8 @@ quadrant <- vector(mode = "numeric",
 DV <- hunan$GDPPC - mean(hunan$GDPPC)
 C_mI <- localMI[, 1] - mean(localMI[, 1])
 signif <- 0.05
-quadrant[DV < 0 & C_mI < 0] <- 1
-quadrant[DV < 0 & C_mI > 0] <- 2
+quadrant[DV < 0 & C_mI > 0] <- 1
+quadrant[DV < 0 & C_mI < 0] <- 2
 quadrant[DV > 0 & C_mI < 0] <- 3
 quadrant[DV > 0 & C_mI > 0] <- 4
 quadrant[localMI[,5] > signif] <- 0

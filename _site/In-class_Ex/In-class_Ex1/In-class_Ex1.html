@@ -162,6 +162,19 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
     <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex1/In-class_Ex1.html">
  <span class="dropdown-text">In-class Exercise 1</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../../In-class_Ex/In-class_Ex2/In-class_Ex2.html">
+ <span class="dropdown-text">In-class Exercise 2</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-take-home-exercises" role="button" data-bs-toggle="dropdown" aria-expanded="false">Take-home Exercises</a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-take-home-exercises">    
+        <li>
+    <a class="dropdown-item" href="../../Take-home_Ex/Take-home_Ex1/Take-home_Ex1.html">
+ <span class="dropdown-text">Take-home Exercise 1</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -210,6 +223,28 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   <ul class="collapse">
   <li><a href="#computing-queens-criteria-contiguity-based-neighbours" id="toc-computing-queens-criteria-contiguity-based-neighbours" class="nav-link" data-scroll-target="#computing-queens-criteria-contiguity-based-neighbours">Computing (Queen’s Criteria) Contiguity-based Neighbours</a></li>
   <li><a href="#computing-rooks-criteria-contiguity-based-neighbours" id="toc-computing-rooks-criteria-contiguity-based-neighbours" class="nav-link" data-scroll-target="#computing-rooks-criteria-contiguity-based-neighbours">Computing (Rook’s Criteria) Contiguity-based Neighbours</a></li>
+  </ul></li>
+  <li><a href="#visualising-contiguity-weights" id="toc-visualising-contiguity-weights" class="nav-link" data-scroll-target="#visualising-contiguity-weights">Visualising Contiguity Weights</a>
+  <ul class="collapse">
+  <li><a href="#getting-latitude-and-longitude-of-polygon-centroids" id="toc-getting-latitude-and-longitude-of-polygon-centroids" class="nav-link" data-scroll-target="#getting-latitude-and-longitude-of-polygon-centroids">Getting Latitude and Longitude of Polygon Centroids</a></li>
+  <li><a href="#plotting-queens-vs-rooks-contiguity-based-neighbours-map" id="toc-plotting-queens-vs-rooks-contiguity-based-neighbours-map" class="nav-link" data-scroll-target="#plotting-queens-vs-rooks-contiguity-based-neighbours-map">Plotting Queen’s vs Rook’s Contiguity-based Neighbours Map</a></li>
+  </ul></li>
+  <li><a href="#computing-distance-based-neighbours" id="toc-computing-distance-based-neighbours" class="nav-link" data-scroll-target="#computing-distance-based-neighbours">Computing Distance-based Neighbours</a>
+  <ul class="collapse">
+  <li><a href="#determining-the-cut-off-distance" id="toc-determining-the-cut-off-distance" class="nav-link" data-scroll-target="#determining-the-cut-off-distance">Determining the Cut-off Distance</a></li>
+  <li><a href="#computing-fixed-distance-weights-matrix" id="toc-computing-fixed-distance-weights-matrix" class="nav-link" data-scroll-target="#computing-fixed-distance-weights-matrix">Computing Fixed-Distance Weights Matrix</a></li>
+  <li><a href="#plotting-fixed-distance-weights-matrix" id="toc-plotting-fixed-distance-weights-matrix" class="nav-link" data-scroll-target="#plotting-fixed-distance-weights-matrix">Plotting Fixed Distance Weights Matrix</a></li>
+  <li><a href="#computing-adaptive-distance-weights-matrix" id="toc-computing-adaptive-distance-weights-matrix" class="nav-link" data-scroll-target="#computing-adaptive-distance-weights-matrix">Computing Adaptive Distance Weights Matrix</a></li>
+  <li><a href="#plotting-adaptive-distance-based-neighbours" id="toc-plotting-adaptive-distance-based-neighbours" class="nav-link" data-scroll-target="#plotting-adaptive-distance-based-neighbours">Plotting Adaptive Distance-based Neighbours</a></li>
+  <li><a href="#computing-inverse-distance-weights-idw-matrix" id="toc-computing-inverse-distance-weights-idw-matrix" class="nav-link" data-scroll-target="#computing-inverse-distance-weights-idw-matrix">Computing Inverse Distance Weights (IDW) Matrix</a></li>
+  <li><a href="#row-standardised-weights-matrix" id="toc-row-standardised-weights-matrix" class="nav-link" data-scroll-target="#row-standardised-weights-matrix">Row-Standardised Weights Matrix</a></li>
+  </ul></li>
+  <li><a href="#application-of-spatial-weight-matrix" id="toc-application-of-spatial-weight-matrix" class="nav-link" data-scroll-target="#application-of-spatial-weight-matrix">Application of Spatial Weight Matrix</a>
+  <ul class="collapse">
+  <li><a href="#spatial-lag-with-row-standardised-weights" id="toc-spatial-lag-with-row-standardised-weights" class="nav-link" data-scroll-target="#spatial-lag-with-row-standardised-weights">Spatial Lag with Row-standardised Weights</a></li>
+  <li><a href="#spatial-lag-as-a-sum-of-neighbour-values" id="toc-spatial-lag-as-a-sum-of-neighbour-values" class="nav-link" data-scroll-target="#spatial-lag-as-a-sum-of-neighbour-values">Spatial Lag as a Sum of Neighbour Values</a></li>
+  <li><a href="#spatial-window-average" id="toc-spatial-window-average" class="nav-link" data-scroll-target="#spatial-window-average">Spatial Window Average</a></li>
+  <li><a href="#spatial-window-sum" id="toc-spatial-window-sum" class="nav-link" data-scroll-target="#spatial-window-sum">Spatial Window Sum</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -413,7 +448,7 @@ Link number distribution:
 85 with 11 links</code></pre>
 </div>
 </div>
-<p>There are 448 pairs of neighbours found by the Queen's case, from the 88 counties in Hunan. From the summary report, the link number distributions shows the frequency of the number of links or neighbours that each county has, the most being 11 neighbours for 1 county (region 85). On the other extreme, the 2 least connected regions (30 and 65) only have 1 neighbour each.</p>
+<p>There are 448 pairs of neighbours found by the Queen’s case, from the 88 counties in Hunan. From the summary report, the link number distributions shows the frequency of the number of links or neighbours that each county has, the most being 11 neighbours for 1 county (region 85). On the other extreme, the 2 least connected regions (30 and 65) only have 1 neighbour each.</p>
 <p>By calling the <code>County</code> column of the <code>hunan</code> dataframe, we can see that the county with the most neighbours is <code>Taoyuan</code> and that with the least neighbours are <code>Xinhuang</code> and <code>Linxiang</code>. This is consistent with the basemap that we plotted previously, where <code>Taoyuan</code> is a large county in the North surrounded by multiple smaller counties, and <code>Xinhuang</code> and <code>Linxiang</code> being counties along the West and Northeast borders of Hunan respectively.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>hunan<span class="sc">$</span>County[<span class="fu">c</span>(<span class="dv">85</span>, <span class="dv">30</span>, <span class="dv">65</span>)]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -542,6 +577,1315 @@ Link number distribution:
 </section>
 <section id="computing-rooks-criteria-contiguity-based-neighbours" class="level3">
 <h3 class="anchored" data-anchor-id="computing-rooks-criteria-contiguity-based-neighbours">Computing (Rook’s Criteria) Contiguity-based Neighbours</h3>
+<p>The code chunk below computes the Rook’s Case contiguity weights matrix. Rook’s Case considers only regions with shared boundaries with more than 1 shared point to be neighbours.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>wm_r <span class="ot">&lt;-</span> <span class="fu">poly2nb</span>(hunan, <span class="at">queen =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_r)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 440 
+Percentage nonzero weights: 5.681818 
+Average number of links: 5 
+Link number distribution:
+
+ 1  2  3  4  5  6  7  8  9 10 
+ 2  2 12 20 21 14 11  3  2  1 
+2 least connected regions:
+30 65 with 1 link
+1 most connected region:
+85 with 10 links</code></pre>
+</div>
+</div>
+<p>A similar summary report is generated as above. The number of links reduced from 448 for Queen’s Case to 440 for Rook’s Case, indicating that there are 8 pairs of regions that are each linked by 1 point each. Now, the most connected area has 10 neighbours instead of 11.</p>
+</section>
+</section>
+<section id="visualising-contiguity-weights" class="level2">
+<h2 class="anchored" data-anchor-id="visualising-contiguity-weights">Visualising Contiguity Weights</h2>
+<p>A connectivity graph takes a point and displays a line between each pairs of neighbouring points. For this exercise, we need to obtain the points from the polygon geometry data. The most common method used is to obtain the polygon centroids, which we will do using the <strong>sf</strong> package.</p>
+<section id="getting-latitude-and-longitude-of-polygon-centroids" class="level3">
+<h3 class="anchored" data-anchor-id="getting-latitude-and-longitude-of-polygon-centroids">Getting Latitude and Longitude of Polygon Centroids</h3>
+<p>Instead of just running <em>st_centroid()</em>, which <a href="https://r-spatial.github.io/sf/articles/sf6.html">assumes that the coordinates are planar</a>, on the sf object <code>us.bound</code>, we use a mapping function <em>map_dbl()</em> from <strong>purrr</strong> to transform each element of a vector into a vector of the same length.</p>
+<p><img src="images/paste-9B4D5C4A.png" class="img-fluid" width="270"></p>
+<p>To obtain the longitude values, we map the <em>st_centroid()</em> function over the geometry column of <code>us.bound</code> and access the longitude value through double bracket notation [[ ]] and 1. This allows us to get only the longitude, which is the first value in each centroid.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We do the same for latitude using [[2]] for the second value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>latitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">2</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We then use <em>cbind()</em> to append the longitude and latitude values into the same object <code>coords</code>. It is important that the longitude is placed before the latitude as longitude represents the x-coordinates and is hence read as the first variable in plotting functions. This is the opposite of conventional geography where latitude is quoted before longitude.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>coords <span class="ot">&lt;-</span> <span class="fu">cbind</span>(longitude, latitude)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We check the first few observations to see if things are formatted correctly before moving on to the plots.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(coords)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     longitude latitude
+[1,]  112.1531 29.44362
+[2,]  112.0372 28.86489
+[3,]  111.8917 29.47107
+[4,]  111.7031 29.74499
+[5,]  111.6138 29.49258
+[6,]  111.0341 29.79863</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-queens-vs-rooks-contiguity-based-neighbours-map" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-queens-vs-rooks-contiguity-based-neighbours-map">Plotting Queen’s vs Rook’s Contiguity-based Neighbours Map</h3>
+<p>The code chunk below plots the Queen’s and Rook’s contiguity-based neighbours map. <a href="https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/par"><em>par()</em></a> is used to set the parameters for the plots, having the plots in 1 row, 2 columns using the <code>mfrow</code> argument.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hunan<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wm_q, coords, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">main =</span> <span class="st">"Queen Contiguity"</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hunan<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wm_r, coords, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">main =</span> <span class="st">"Rook Contiguity"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that some of the points that are joined in the Queen’s Case are not in the Rook’s Case (e.g.&nbsp;the cross in the bottom-right region).</p>
+</section>
+</section>
+<section id="computing-distance-based-neighbours" class="level2">
+<h2 class="anchored" data-anchor-id="computing-distance-based-neighbours">Computing Distance-based Neighbours</h2>
+<p>Another way to define neighbour relationship is to used distance-based matrix. Using <a href="https://r-spatial.github.io/spdep/reference/dnearneigh.html"><em>dnearneigh()</em></a> of <strong>spdep</strong>, neighbours of a region are determined based on the Euclidean distance with a distance band with lower <code>d1=</code> and upper <code>d2=</code> bounds controlled by the <code>bounds=</code> argument. If projected coordinates are used and either specified in the coordinates object <code>x</code> or with <code>x</code> as a two-column matrix and <code>longlat=TRUE</code>, great cirlce distances in km will be calculated assuming <strong>wgs84</strong> reference ellipsoid.</p>
+<section id="determining-the-cut-off-distance" class="level3">
+<h3 class="anchored" data-anchor-id="determining-the-cut-off-distance">Determining the Cut-off Distance</h3>
+<p>First, we need to determine the upper limit for distance band by using the following steps:</p>
+<ol type="1">
+<li>Return a matrix with the indices of points belonging to the set of the k nearest neighbours of each other using <em>knearneigh()</em> of <strong>spdep</strong>.</li>
+<li>Convert the knn object returned by <em>knearneigh()</em> into a neighbours list of class nb with a list of integer vectors containing neighbour region number IDs by using <a href="https://r-spatial.github.io/spdep/reference/knn2nb.html"><em>knn2nb()</em></a>.</li>
+<li>Return the length of neighbour relationship edges by using <a href="https://r-spatial.github.io/spdep/reference/nbdists.html"><em>nbdists()</em></a> of <strong>spdep</strong>. This function returns in the units of the coordinates if the coordinates are projected, and in km otherwise.</li>
+<li>Remove the list structure of the returned object using <a href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/unlist"><em>unlist()</em></a>.</li>
+</ol>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>k1 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords))</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>k1dists <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">nbdists</span>(k1, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>))</span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(k1dists)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  24.79   32.57   38.01   39.07   44.52   61.79 </code></pre>
+</div>
+</div>
+<p>The summary report shows that the largest first nearest neighbour distance is 61.79 km. We can use 62km as the upper threshold to ensure that all regions will at least have 1 neighbour.</p>
+</section>
+<section id="computing-fixed-distance-weights-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="computing-fixed-distance-weights-matrix">Computing Fixed-Distance Weights Matrix</h3>
+<p>Using 62 km as the upper bound and 0 km as a lower bound (i.e.&nbsp;all regions with centroids within 62 km distance of a particular region will be considered its neighbours), we compute the distance weights matrix using <a href="https://r-spatial.github.io/spdep/reference/dnearneigh.html"><em>dnearneigh()</em></a> of <strong>spdep</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>wm_d62 <span class="ot">&lt;-</span> <span class="fu">dnearneigh</span>(coords, <span class="dv">0</span>, <span class="dv">62</span>, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>wm_d62</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 324 
+Percentage nonzero weights: 4.183884 
+Average number of links: 3.681818 </code></pre>
+</div>
+</div>
+<p>For the 88 regions (counties) in Hunan, there are a total of 324 links (neighbour-neighbour pairs) which are 62 km or less between each other, averaging to 3.7 neighbours per region.</p>
+<p>To look at the number of neighbours for each region and their region IDs, we use the <a href="https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str"><em>str()</em></a> function of R’s <strong>utils</strong> package to see its internal structure.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(wm_d62)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 88
+ $ : int [1:5] 3 4 5 57 64
+ $ : int [1:4] 57 58 78 85
+ $ : int [1:4] 1 4 5 57
+ $ : int [1:3] 1 3 5
+ $ : int [1:4] 1 3 4 85
+ $ : int 69
+ $ : int [1:2] 67 84
+ $ : int [1:4] 9 46 47 78
+ $ : int [1:4] 8 46 68 84
+ $ : int [1:4] 16 22 70 72
+ $ : int [1:3] 14 17 72
+ $ : int [1:5] 13 60 61 63 83
+ $ : int [1:4] 12 15 60 83
+ $ : int [1:2] 11 17
+ $ : int 13
+ $ : int [1:4] 10 17 22 83
+ $ : int [1:3] 11 14 16
+ $ : int [1:3] 20 22 63
+ $ : int [1:5] 20 21 73 74 82
+ $ : int [1:5] 18 19 21 22 82
+ $ : int [1:6] 19 20 35 74 82 86
+ $ : int [1:4] 10 16 18 20
+ $ : int [1:3] 41 77 82
+ $ : int [1:4] 25 28 31 54
+ $ : int [1:4] 24 28 33 81
+ $ : int [1:4] 27 33 42 81
+ $ : int [1:2] 26 29
+ $ : int [1:6] 24 25 33 49 52 54
+ $ : int [1:2] 27 37
+ $ : int 33
+ $ : int [1:2] 24 36
+ $ : int 50
+ $ : int [1:5] 25 26 28 30 81
+ $ : int [1:3] 36 45 80
+ $ : int [1:6] 21 41 46 47 80 82
+ $ : int [1:5] 31 34 45 56 80
+ $ : int [1:2] 29 42
+ $ : int [1:3] 44 77 79
+ $ : int [1:4] 40 42 43 81
+ $ : int [1:3] 39 45 79
+ $ : int [1:5] 23 35 45 79 82
+ $ : int [1:5] 26 37 39 43 81
+ $ : int [1:3] 39 42 44
+ $ : int [1:2] 38 43
+ $ : int [1:6] 34 36 40 41 79 80
+ $ : int [1:5] 8 9 35 47 86
+ $ : int [1:5] 8 35 46 80 86
+ $ : int [1:5] 50 51 52 53 55
+ $ : int [1:4] 28 51 52 54
+ $ : int [1:6] 32 48 51 52 54 55
+ $ : int [1:4] 48 49 50 52
+ $ : int [1:6] 28 48 49 50 51 54
+ $ : int [1:2] 48 55
+ $ : int [1:5] 24 28 49 50 52
+ $ : int [1:4] 48 50 53 75
+ $ : int 36
+ $ : int [1:5] 1 2 3 58 64
+ $ : int [1:5] 2 57 64 66 68
+ $ : int [1:3] 60 87 88
+ $ : int [1:4] 12 13 59 61
+ $ : int [1:5] 12 60 62 63 87
+ $ : int [1:4] 61 63 77 87
+ $ : int [1:5] 12 18 61 62 83
+ $ : int [1:4] 1 57 58 76
+ $ : int 76
+ $ : int [1:5] 58 67 68 76 84
+ $ : int [1:2] 7 66
+ $ : int [1:4] 9 58 66 84
+ $ : int [1:2] 6 75
+ $ : int [1:3] 10 72 73
+ $ : int [1:2] 73 74
+ $ : int [1:3] 10 11 70
+ $ : int [1:4] 19 70 71 74
+ $ : int [1:5] 19 21 71 73 86
+ $ : int [1:2] 55 69
+ $ : int [1:3] 64 65 66
+ $ : int [1:3] 23 38 62
+ $ : int [1:2] 2 8
+ $ : int [1:4] 38 40 41 45
+ $ : int [1:5] 34 35 36 45 47
+ $ : int [1:5] 25 26 33 39 42
+ $ : int [1:6] 19 20 21 23 35 41
+ $ : int [1:4] 12 13 16 63
+ $ : int [1:4] 7 9 66 68
+ $ : int [1:2] 2 5
+ $ : int [1:4] 21 46 47 74
+ $ : int [1:4] 59 61 62 88
+ $ : int [1:2] 59 87
+ - attr(*, "class")= chr "nb"
+ - attr(*, "region.id")= chr [1:88] "1" "2" "3" "4" ...
+ - attr(*, "call")= language dnearneigh(x = coords, d1 = 0, d2 = 62, longlat = TRUE)
+ - attr(*, "dnn")= num [1:2] 0 62
+ - attr(*, "bounds")= chr [1:2] "GE" "LE"
+ - attr(*, "nbtype")= chr "distance"
+ - attr(*, "sym")= logi TRUE</code></pre>
+</div>
+</div>
+<p>We can also do so by displaying the structure of the distance-bsaed weights matrix using <a href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/table"><em>table()</em></a> of <strong>base R</strong> and <a href="https://r-spatial.github.io/spdep/reference/card.html"><em>card()</em></a> of <strong>spdep</strong>. The latter tallies the numbers of neighbours of regions in the neighbours list, and feeds into the former to build a contingency table where each row is a county (alphabetically ordered) and “1” is indicated for the number of neighbours that it has (columns).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(hunan<span class="sc">$</span>County, <span class="fu">card</span>(wm_d62))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>               
+                1 2 3 4 5 6
+  Anhua         1 0 0 0 0 0
+  Anren         0 0 0 1 0 0
+  Anxiang       0 0 0 0 1 0
+  Baojing       0 0 0 0 1 0
+  Chaling       0 0 1 0 0 0
+  Changning     0 0 1 0 0 0
+  Changsha      0 0 0 1 0 0
+  Chengbu       0 1 0 0 0 0
+  Chenxi        0 0 0 1 0 0
+  Cili          0 1 0 0 0 0
+  Dao           0 0 0 1 0 0
+  Dongan        0 0 1 0 0 0
+  Dongkou       0 0 0 1 0 0
+  Fenghuang     0 0 0 1 0 0
+  Guidong       0 0 1 0 0 0
+  Guiyang       0 0 0 1 0 0
+  Guzhang       0 0 0 0 0 1
+  Hanshou       0 0 0 1 0 0
+  Hengdong      0 0 0 0 1 0
+  Hengnan       0 0 0 0 1 0
+  Hengshan      0 0 0 0 0 1
+  Hengyang      0 0 0 0 0 1
+  Hongjiang     0 0 0 0 1 0
+  Huarong       0 0 0 1 0 0
+  Huayuan       0 0 0 1 0 0
+  Huitong       0 0 0 1 0 0
+  Jiahe         0 0 0 0 1 0
+  Jianghua      0 0 1 0 0 0
+  Jiangyong     0 1 0 0 0 0
+  Jingzhou      0 1 0 0 0 0
+  Jinshi        0 0 0 1 0 0
+  Jishou        0 0 0 0 0 1
+  Lanshan       0 0 0 1 0 0
+  Leiyang       0 0 0 1 0 0
+  Lengshuijiang 0 0 1 0 0 0
+  Li            0 0 1 0 0 0
+  Lianyuan      0 0 0 0 1 0
+  Liling        0 1 0 0 0 0
+  Linli         0 0 0 1 0 0
+  Linwu         0 0 0 1 0 0
+  Linxiang      1 0 0 0 0 0
+  Liuyang       0 1 0 0 0 0
+  Longhui       0 0 1 0 0 0
+  Longshan      0 1 0 0 0 0
+  Luxi          0 0 0 0 1 0
+  Mayang        0 0 0 0 0 1
+  Miluo         0 0 0 0 1 0
+  Nan           0 0 0 0 1 0
+  Ningxiang     0 0 0 1 0 0
+  Ningyuan      0 0 0 0 1 0
+  Pingjiang     0 1 0 0 0 0
+  Qidong        0 0 1 0 0 0
+  Qiyang        0 0 1 0 0 0
+  Rucheng       0 1 0 0 0 0
+  Sangzhi       0 1 0 0 0 0
+  Shaodong      0 0 0 0 1 0
+  Shaoshan      0 0 0 0 1 0
+  Shaoyang      0 0 0 1 0 0
+  Shimen        1 0 0 0 0 0
+  Shuangfeng    0 0 0 0 0 1
+  Shuangpai     0 0 0 1 0 0
+  Suining       0 0 0 0 1 0
+  Taojiang      0 1 0 0 0 0
+  Taoyuan       0 1 0 0 0 0
+  Tongdao       0 1 0 0 0 0
+  Wangcheng     0 0 0 1 0 0
+  Wugang        0 0 1 0 0 0
+  Xiangtan      0 0 0 1 0 0
+  Xiangxiang    0 0 0 0 1 0
+  Xiangyin      0 0 0 1 0 0
+  Xinhua        0 0 0 0 1 0
+  Xinhuang      1 0 0 0 0 0
+  Xinning       0 1 0 0 0 0
+  Xinshao       0 0 0 0 0 1
+  Xintian       0 0 0 0 1 0
+  Xupu          0 1 0 0 0 0
+  Yanling       0 0 1 0 0 0
+  Yizhang       1 0 0 0 0 0
+  Yongshun      0 0 0 1 0 0
+  Yongxing      0 0 0 1 0 0
+  You           0 0 0 1 0 0
+  Yuanjiang     0 0 0 0 1 0
+  Yuanling      1 0 0 0 0 0
+  Yueyang       0 0 1 0 0 0
+  Zhijiang      0 0 0 0 1 0
+  Zhongfang     0 0 0 1 0 0
+  Zhuzhou       0 0 0 0 1 0
+  Zixing        0 0 1 0 0 0</code></pre>
+</div>
+</div>
+<p>We can use <a href="https://r-spatial.github.io/spdep/reference/compon.html"><em>n.comp.nb()</em></a> of <strong>spdep</strong> to perform depth first search on neighbours list and confirm that all regions are neighbours to each other (i.e.&nbsp;within a single neighbours list). If any of the regions are disjoint, they will be indicated by a 2nd region etc.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>n_comp <span class="ot">&lt;-</span> <span class="fu">n.comp.nb</span>(wm_d62)</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a><span class="fu">table</span>(n_comp<span class="sc">$</span>comp.id)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+ 1 
+88 </code></pre>
+</div>
+</div>
+<p>We see from the result above that all 88 regions are in the same neighbours list.</p>
+</section>
+<section id="plotting-fixed-distance-weights-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-fixed-distance-weights-matrix">Plotting Fixed Distance Weights Matrix</h3>
+<p>Plotting it using <a href="https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/plot"><em>plot()</em></a> of <strong>R graphics</strong> shows us the neighbour relationship in map form, and <a href="https://www.rdocumentation.org/packages/graphics/versions/3.6.2/topics/points"><em>points()</em></a> of <strong>R graphics</strong> can show us any disjoint neighbours list in different colours.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hunan<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wm_d62, coords, <span class="at">add =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(coords, <span class="at">col =</span> n_comp<span class="sc">$</span>comp.id, <span class="at">pch =</span> <span class="dv">19</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Regions that are larger in area and/or at the edge of Hunan are seen to have a smaller number neighbours (1-2), while those that are smaller and/or inland tend to have more neighbours (5-6). This is because by using fixed distance, larger areas can find fewer neighbours within the same distance compared to smaller areas, and usually on the shorter/narrower sides.</p>
+<p>If we want to visualise the links of 1st nearest neighbours, we can use the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hunan<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(k1, coords, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>, <span class="at">length =</span> <span class="fl">0.08</span>, <span class="at">main =</span> <span class="st">"1st nearest neighbours"</span>)</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hunan<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(wm_d62, coords, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">main =</span> <span class="st">"Distance link"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-26-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>The plot on the left shows the links between all pairs of 1st neighbours in red, and the one on the right is the reference plot for all distance links based on the cut-off distance of 62 km.</p>
+</section>
+<section id="computing-adaptive-distance-weights-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="computing-adaptive-distance-weights-matrix">Computing Adaptive Distance Weights Matrix</h3>
+<p>One of the characteristics of fixed distance weights matrix is that more densely settled areas (usually urban areas) tend to have more neighbours while less densely settled areas (usually rural areas) tend to have less neighbours. Having many neighbours smooths the neighbour relationship across more neighbours.</p>
+<p>We can control the number of neighbours that each region has, by using k-nearest neighbours instead of stipulating a fixed distance threshold for neighbour-neighbour relationship, either accepting asymmetric neighbours or imposing symmetry, using <em>knn2nb()</em> and <em>knearneigh()</em> combination in the code chunk below. This is similar to how we determined the largest distance for 1st neighbour pairs in order to come up with the fixed distance weights matrix,, except without needing to compute the distances between each pair.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>knn6 <span class="ot">&lt;-</span> <span class="fu">knn2nb</span>(<span class="fu">knearneigh</span>(coords, <span class="at">k =</span> <span class="dv">6</span>))</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>knn6</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 528 
+Percentage nonzero weights: 6.818182 
+Average number of links: 6 
+Non-symmetric neighbours list</code></pre>
+</div>
+</div>
+<p>We see that by setting <code>k = 6</code> so that each region has exactly 6 neighbours, we get a total of 88 * 6 = 528 links.</p>
+<p>We similarly display the content of the matrix using <em>str()</em> of R’s <strong>utils</strong> to see the region IDs of all 6 neighbours for each region.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(knn6)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 88
+ $ : int [1:6] 2 3 4 5 57 64
+ $ : int [1:6] 1 3 57 58 78 85
+ $ : int [1:6] 1 2 4 5 57 85
+ $ : int [1:6] 1 3 5 6 69 85
+ $ : int [1:6] 1 3 4 6 69 85
+ $ : int [1:6] 3 4 5 69 75 85
+ $ : int [1:6] 9 66 67 71 74 84
+ $ : int [1:6] 9 46 47 78 80 86
+ $ : int [1:6] 8 46 66 68 84 86
+ $ : int [1:6] 16 19 22 70 72 73
+ $ : int [1:6] 10 14 16 17 70 72
+ $ : int [1:6] 13 15 60 61 63 83
+ $ : int [1:6] 12 15 60 61 63 83
+ $ : int [1:6] 11 15 16 17 72 83
+ $ : int [1:6] 12 13 14 17 60 83
+ $ : int [1:6] 10 11 17 22 72 83
+ $ : int [1:6] 10 11 14 16 72 83
+ $ : int [1:6] 20 22 23 63 77 83
+ $ : int [1:6] 10 20 21 73 74 82
+ $ : int [1:6] 18 19 21 22 23 82
+ $ : int [1:6] 19 20 35 74 82 86
+ $ : int [1:6] 10 16 18 19 20 83
+ $ : int [1:6] 18 20 41 77 79 82
+ $ : int [1:6] 25 28 31 52 54 81
+ $ : int [1:6] 24 28 31 33 54 81
+ $ : int [1:6] 25 27 29 33 42 81
+ $ : int [1:6] 26 29 30 37 42 81
+ $ : int [1:6] 24 25 33 49 52 54
+ $ : int [1:6] 26 27 37 42 43 81
+ $ : int [1:6] 26 27 28 33 49 81
+ $ : int [1:6] 24 25 36 39 40 54
+ $ : int [1:6] 24 31 50 54 55 56
+ $ : int [1:6] 25 26 28 30 49 81
+ $ : int [1:6] 36 40 41 45 56 80
+ $ : int [1:6] 21 41 46 47 80 82
+ $ : int [1:6] 31 34 40 45 56 80
+ $ : int [1:6] 26 27 29 42 43 44
+ $ : int [1:6] 23 43 44 62 77 79
+ $ : int [1:6] 25 40 42 43 44 81
+ $ : int [1:6] 31 36 39 43 45 79
+ $ : int [1:6] 23 35 45 79 80 82
+ $ : int [1:6] 26 27 37 39 43 81
+ $ : int [1:6] 37 39 40 42 44 79
+ $ : int [1:6] 37 38 39 42 43 79
+ $ : int [1:6] 34 36 40 41 79 80
+ $ : int [1:6] 8 9 35 47 78 86
+ $ : int [1:6] 8 21 35 46 80 86
+ $ : int [1:6] 49 50 51 52 53 55
+ $ : int [1:6] 28 33 48 51 52 54
+ $ : int [1:6] 32 48 51 52 54 55
+ $ : int [1:6] 28 48 49 50 52 54
+ $ : int [1:6] 28 48 49 50 51 54
+ $ : int [1:6] 48 50 51 52 55 75
+ $ : int [1:6] 24 28 49 50 51 52
+ $ : int [1:6] 32 48 50 52 53 75
+ $ : int [1:6] 32 34 36 78 80 85
+ $ : int [1:6] 1 2 3 58 64 68
+ $ : int [1:6] 2 57 64 66 68 78
+ $ : int [1:6] 12 13 60 61 87 88
+ $ : int [1:6] 12 13 59 61 63 87
+ $ : int [1:6] 12 13 60 62 63 87
+ $ : int [1:6] 12 38 61 63 77 87
+ $ : int [1:6] 12 18 60 61 62 83
+ $ : int [1:6] 1 3 57 58 68 76
+ $ : int [1:6] 58 64 66 67 68 76
+ $ : int [1:6] 9 58 67 68 76 84
+ $ : int [1:6] 7 65 66 68 76 84
+ $ : int [1:6] 9 57 58 66 78 84
+ $ : int [1:6] 4 5 6 32 75 85
+ $ : int [1:6] 10 16 19 22 72 73
+ $ : int [1:6] 7 19 73 74 84 86
+ $ : int [1:6] 10 11 14 16 17 70
+ $ : int [1:6] 10 19 21 70 71 74
+ $ : int [1:6] 19 21 71 73 84 86
+ $ : int [1:6] 6 32 50 53 55 69
+ $ : int [1:6] 58 64 65 66 67 68
+ $ : int [1:6] 18 23 38 61 62 63
+ $ : int [1:6] 2 8 9 46 58 68
+ $ : int [1:6] 38 40 41 43 44 45
+ $ : int [1:6] 34 35 36 41 45 47
+ $ : int [1:6] 25 26 28 33 39 42
+ $ : int [1:6] 19 20 21 23 35 41
+ $ : int [1:6] 12 13 15 16 22 63
+ $ : int [1:6] 7 9 66 68 71 74
+ $ : int [1:6] 2 3 4 5 56 69
+ $ : int [1:6] 8 9 21 46 47 74
+ $ : int [1:6] 59 60 61 62 63 88
+ $ : int [1:6] 59 60 61 62 63 87
+ - attr(*, "region.id")= chr [1:88] "1" "2" "3" "4" ...
+ - attr(*, "call")= language knearneigh(x = coords, k = 6)
+ - attr(*, "sym")= logi FALSE
+ - attr(*, "type")= chr "knn"
+ - attr(*, "knn-k")= num 6
+ - attr(*, "class")= chr "nb"</code></pre>
+</div>
+</div>
+</section>
+<section id="plotting-adaptive-distance-based-neighbours" class="level3">
+<h3 class="anchored" data-anchor-id="plotting-adaptive-distance-based-neighbours">Plotting Adaptive Distance-based Neighbours</h3>
+<p>We plot the adaptive distance weights matrix using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hunan<span class="sc">$</span>geometry, <span class="at">border =</span> <span class="st">"lightgrey"</span>)</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(knn6, coords, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">0.6</span>, <span class="at">add =</span> <span class="cn">TRUE</span>, <span class="at">col =</span> <span class="st">"red"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-29-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Unlike the plot for fixed distance weights matrix, the adaptive distance weights matrix plot looks more evenly connected by forcing each region to have 6 neighbours exactly.</p>
+</section>
+<section id="computing-inverse-distance-weights-idw-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="computing-inverse-distance-weights-idw-matrix">Computing Inverse Distance Weights (IDW) Matrix</h3>
+<p>We can also derive spatial weights matrix based on the Inverse Distance Method.</p>
+<p>The code chunk below computes the distance between areas by using <em>nbdists()</em> of <strong>spdep</strong>, similar to how we computed the distances between 1st neighbour pairs in the fixed distance weights matrix approach. We then use <a href="https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/lapply"><em>lapply()</em></a> of <strong>base R</strong> to apply the function to inverse the distance computed (1/dist).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>dist <span class="ot">&lt;-</span> <span class="fu">nbdists</span>(wm_q, coords, <span class="at">longlat =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a>ids <span class="ot">&lt;-</span> <span class="fu">lapply</span>(dist, <span class="cf">function</span>(x) <span class="dv">1</span><span class="sc">/</span>(x))</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a>ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] 0.01535405 0.03916350 0.01820896 0.02807922 0.01145113
+
+[[2]]
+[1] 0.01535405 0.01764308 0.01925924 0.02323898 0.01719350
+
+[[3]]
+[1] 0.03916350 0.02822040 0.03695795 0.01395765
+
+[[4]]
+[1] 0.01820896 0.02822040 0.03414741 0.01539065
+
+[[5]]
+[1] 0.03695795 0.03414741 0.01524598 0.01618354
+
+[[6]]
+[1] 0.015390649 0.015245977 0.021748129 0.011883901 0.009810297
+
+[[7]]
+[1] 0.01708612 0.01473997 0.01150924 0.01872915
+
+[[8]]
+[1] 0.02022144 0.03453056 0.02529256 0.01036340 0.02284457 0.01500600 0.01515314
+
+[[9]]
+[1] 0.02022144 0.01574888 0.02109502 0.01508028 0.02902705 0.01502980
+
+[[10]]
+[1] 0.02281552 0.01387777 0.01538326 0.01346650 0.02100510 0.02631658 0.01874863
+[8] 0.01500046
+
+[[11]]
+[1] 0.01882869 0.02243492 0.02247473
+
+[[12]]
+[1] 0.02779227 0.02419652 0.02333385 0.02986130 0.02335429
+
+[[13]]
+[1] 0.02779227 0.02650020 0.02670323 0.01714243
+
+[[14]]
+[1] 0.01882869 0.01233868 0.02098555
+
+[[15]]
+[1] 0.02650020 0.01233868 0.01096284 0.01562226
+
+[[16]]
+[1] 0.02281552 0.02466962 0.02765018 0.01476814 0.01671430
+
+[[17]]
+[1] 0.01387777 0.02243492 0.02098555 0.01096284 0.02466962 0.01593341 0.01437996
+
+[[18]]
+[1] 0.02039779 0.02032767 0.01481665 0.01473691 0.01459380
+
+[[19]]
+[1] 0.01538326 0.01926323 0.02668415 0.02140253 0.01613589 0.01412874
+
+[[20]]
+[1] 0.01346650 0.02039779 0.01926323 0.01723025 0.02153130 0.01469240 0.02327034
+
+[[21]]
+[1] 0.02668415 0.01723025 0.01766299 0.02644986 0.02163800
+
+[[22]]
+[1] 0.02100510 0.02765018 0.02032767 0.02153130 0.01489296
+
+[[23]]
+[1] 0.01481665 0.01469240 0.01401432 0.02246233 0.01880425 0.01530458 0.01849605
+
+[[24]]
+[1] 0.02354598 0.01837201 0.02607264 0.01220154 0.02514180
+
+[[25]]
+[1] 0.02354598 0.02188032 0.01577283 0.01949232 0.02947957
+
+[[26]]
+[1] 0.02155798 0.01745522 0.02212108 0.02220532
+
+[[27]]
+[1] 0.02155798 0.02490625 0.01562326
+
+[[28]]
+[1] 0.01837201 0.02188032 0.02229549 0.03076171 0.02039506
+
+[[29]]
+[1] 0.02490625 0.01686587 0.01395022
+
+[[30]]
+[1] 0.02090587
+
+[[31]]
+[1] 0.02607264 0.01577283 0.01219005 0.01724850 0.01229012 0.01609781 0.01139438
+[8] 0.01150130
+
+[[32]]
+[1] 0.01220154 0.01219005 0.01712515 0.01340413 0.01280928 0.01198216 0.01053374
+[8] 0.01065655
+
+[[33]]
+[1] 0.01949232 0.01745522 0.02229549 0.02090587 0.01979045
+
+[[34]]
+[1] 0.03113041 0.03589551 0.02882915
+
+[[35]]
+[1] 0.01766299 0.02185795 0.02616766 0.02111721 0.02108253 0.01509020
+
+[[36]]
+[1] 0.01724850 0.03113041 0.01571707 0.01860991 0.02073549 0.01680129
+
+[[37]]
+[1] 0.01686587 0.02234793 0.01510990 0.01550676
+
+[[38]]
+[1] 0.01401432 0.02407426 0.02276151 0.01719415
+
+[[39]]
+[1] 0.01229012 0.02172543 0.01711924 0.02629732 0.01896385
+
+[[40]]
+[1] 0.01609781 0.01571707 0.02172543 0.01506473 0.01987922 0.01894207
+
+[[41]]
+[1] 0.02246233 0.02185795 0.02205991 0.01912542 0.01601083 0.01742892
+
+[[42]]
+[1] 0.02212108 0.01562326 0.01395022 0.02234793 0.01711924 0.01836831 0.01683518
+
+[[43]]
+[1] 0.01510990 0.02629732 0.01506473 0.01836831 0.03112027 0.01530782
+
+[[44]]
+[1] 0.01550676 0.02407426 0.03112027 0.01486508
+
+[[45]]
+[1] 0.03589551 0.01860991 0.01987922 0.02205991 0.02107101 0.01982700
+
+[[46]]
+[1] 0.03453056 0.04033752 0.02689769
+
+[[47]]
+[1] 0.02529256 0.02616766 0.04033752 0.01949145 0.02181458
+
+[[48]]
+[1] 0.02313819 0.03370576 0.02289485 0.01630057 0.01818085
+
+[[49]]
+[1] 0.03076171 0.02138091 0.02394529 0.01990000
+
+[[50]]
+[1] 0.01712515 0.02313819 0.02551427 0.02051530 0.02187179
+
+[[51]]
+[1] 0.03370576 0.02138091 0.02873854
+
+[[52]]
+[1] 0.02289485 0.02394529 0.02551427 0.02873854 0.03516672
+
+[[53]]
+[1] 0.01630057 0.01979945 0.01253977
+
+[[54]]
+[1] 0.02514180 0.02039506 0.01340413 0.01990000 0.02051530 0.03516672
+
+[[55]]
+[1] 0.01280928 0.01818085 0.02187179 0.01979945 0.01882298
+
+[[56]]
+[1] 0.01036340 0.01139438 0.01198216 0.02073549 0.01214479 0.01362855 0.01341697
+
+[[57]]
+[1] 0.028079221 0.017643082 0.031423501 0.029114131 0.013520292 0.009903702
+
+[[58]]
+[1] 0.01925924 0.03142350 0.02722997 0.01434859 0.01567192
+
+[[59]]
+[1] 0.01696711 0.01265572 0.01667105 0.01785036
+
+[[60]]
+[1] 0.02419652 0.02670323 0.01696711 0.02343040
+
+[[61]]
+[1] 0.02333385 0.01265572 0.02343040 0.02514093 0.02790764 0.01219751 0.02362452
+
+[[62]]
+[1] 0.02514093 0.02002219 0.02110260
+
+[[63]]
+[1] 0.02986130 0.02790764 0.01407043 0.01805987
+
+[[64]]
+[1] 0.02911413 0.01689892
+
+[[65]]
+[1] 0.02471705
+
+[[66]]
+[1] 0.01574888 0.01726461 0.03068853 0.01954805 0.01810569
+
+[[67]]
+[1] 0.01708612 0.01726461 0.01349843 0.01361172
+
+[[68]]
+[1] 0.02109502 0.02722997 0.03068853 0.01406357 0.01546511
+
+[[69]]
+[1] 0.02174813 0.01645838 0.01419926
+
+[[70]]
+[1] 0.02631658 0.01963168 0.02278487
+
+[[71]]
+[1] 0.01473997 0.01838483 0.03197403
+
+[[72]]
+[1] 0.01874863 0.02247473 0.01476814 0.01593341 0.01963168
+
+[[73]]
+[1] 0.01500046 0.02140253 0.02278487 0.01838483 0.01652709
+
+[[74]]
+[1] 0.01150924 0.01613589 0.03197403 0.01652709 0.01342099 0.02864567
+
+[[75]]
+[1] 0.011883901 0.010533736 0.012539774 0.018822977 0.016458383 0.008217581
+
+[[76]]
+[1] 0.01352029 0.01434859 0.01689892 0.02471705 0.01954805 0.01349843 0.01406357
+
+[[77]]
+[1] 0.014736909 0.018804247 0.022761507 0.012197506 0.020022195 0.014070428
+[7] 0.008440896
+
+[[78]]
+[1] 0.02323898 0.02284457 0.01508028 0.01214479 0.01567192 0.01546511 0.01140779
+
+[[79]]
+[1] 0.01530458 0.01719415 0.01894207 0.01912542 0.01530782 0.01486508 0.02107101
+
+[[80]]
+[1] 0.01500600 0.02882915 0.02111721 0.01680129 0.01601083 0.01982700 0.01949145
+[8] 0.01362855
+
+[[81]]
+[1] 0.02947957 0.02220532 0.01150130 0.01979045 0.01896385 0.01683518
+
+[[82]]
+[1] 0.02327034 0.02644986 0.01849605 0.02108253 0.01742892
+
+[[83]]
+[1] 0.023354289 0.017142433 0.015622258 0.016714303 0.014379961 0.014593799
+[7] 0.014892965 0.018059871 0.008440896
+
+[[84]]
+[1] 0.01872915 0.02902705 0.01810569 0.01361172 0.01342099 0.01297994
+
+[[85]]
+ [1] 0.011451133 0.017193502 0.013957649 0.016183544 0.009810297 0.010656545
+ [7] 0.013416965 0.009903702 0.014199260 0.008217581 0.011407794
+
+[[86]]
+[1] 0.01515314 0.01502980 0.01412874 0.02163800 0.01509020 0.02689769 0.02181458
+[8] 0.02864567 0.01297994
+
+[[87]]
+[1] 0.01667105 0.02362452 0.02110260 0.02058034
+
+[[88]]
+[1] 0.01785036 0.02058034</code></pre>
+</div>
+</div>
+</section>
+<section id="row-standardised-weights-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="row-standardised-weights-matrix">Row-Standardised Weights Matrix</h3>
+<p>Next, we need to assign weights to each neighbouring polygon. In our case, each neighbouring polygon will be assigned equal weight (<code>style = "W"</code>). This is accomplished by assigning the fraction of 1/(number of neighbours) to each neighbouring county, then summing the weighted income values.</p>
+<p>While this is the most intuitive way to summarise the values of all the neighbours of a particular region, it has the drawback of over- or under-estimating the true nature of the spatial autocorrelation in the data as the polygons along the edges of the study area will base their lagged values on fewer polygons.</p>
+<p>In this exercise, we use <code>style = "W"</code>&nbsp;option for simplicity, but should note that more robust options such as <code>style = "B"</code>&nbsp;is available for binary. We do so on the Queen’s contiguity weights matrix.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a>rswm_q <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q, <span class="at">style =</span> <span class="st">"W"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>rswm_q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 448 
+Percentage nonzero weights: 5.785124 
+Average number of links: 5.090909 
+
+Weights style: W 
+Weights constants summary:
+   n   nn S0       S1       S2
+W 88 7744 88 37.86334 365.9147</code></pre>
+</div>
+</div>
+<p>The argument <code>zero.policy = TRUE</code> allows for lists of non-neighbours. This should be used with caution as we may not be aware of missing neighbours in the dataset, which R would warn us about if <code>zero.policy = FALSE</code> is used by returning an error.</p>
+<p>To see the weights assigned to the neighbours of the first polygon, we can call the values of weights column for polygon ID 1 using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>rswm_q<span class="sc">$</span>weight[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] 0.2 0.2 0.2 0.2 0.2</code></pre>
+</div>
+</div>
+<p>As we saw earlier, polygon ID 1 has 5 neighbours (screenshot below). Hence, row-standardisation assigned a weight of 0.2 to each of its 5 neighbours, as seen from the output above. The application of this is that when R computes the average values among polygon ID 1’s neighbours, each neighbour’s value will be multiplied by 0.2 before being tallied (weighting).</p>
+<p><img src="images/paste-8ABAD5B2.png" class="img-fluid"></p>
+<p>Using the same method, we can also derive a distance weight matrix by using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>rswm_ids <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q, <span class="at">glist =</span> ids, <span class="at">style =</span> <span class="st">"B"</span>, <span class="at">zero.policy =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>rswm_ids</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 448 
+Percentage nonzero weights: 5.785124 
+Average number of links: 5.090909 
+
+Weights style: B 
+Weights constants summary:
+   n   nn       S0        S1     S2
+B 88 7744 8.786867 0.3776535 3.8137</code></pre>
+</div>
+</div>
+<p>We can similarly check the weights assigned to the neighbours of polygon ID 1 by Queen’s contiguity and inverse distance weights matrix, using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>rswm_ids<span class="sc">$</span>weights[<span class="dv">1</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+[1] 0.01535405 0.03916350 0.01820896 0.02807922 0.01145113</code></pre>
+</div>
+</div>
+<p>The weights assigned to each neighbour is no longer uniform across neighbours for the same region, but are standardised based on the inverse of the distance between the centroids of the region and each neighbour. Here, a higher weight is assigned to the neighbour that is closest (smallest distance), in this case the 2nd neighbour or polygon ID 3.</p>
+<p>We can also use <em>summary()</em> and <em>unlist()</em> for the summary statistics of the weights by IDW method using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(<span class="fu">unlist</span>(rswm_ids<span class="sc">$</span>weights))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>    Min.  1st Qu.   Median     Mean  3rd Qu.     Max. 
+0.008218 0.015088 0.018739 0.019614 0.022823 0.040338 </code></pre>
+</div>
+</div>
+<p>The minimum, maximum, mean, median and interquartile range of the IDW weights are listed above. We can potentially use some of these as thresholds in determining other suitable cut-offs inverse distance thresholds for neighbour definition.</p>
+</section>
+</section>
+<section id="application-of-spatial-weight-matrix" class="level2">
+<h2 class="anchored" data-anchor-id="application-of-spatial-weight-matrix">Application of Spatial Weight Matrix</h2>
+<p>In this section, we will create 4 different spatial lagged variables:</p>
+<ol type="1">
+<li>spatial lag with row-standardised weights;</li>
+<li>spatial lag as a sum of neighbouring values;</li>
+<li>spatial window average; and</li>
+<li>spatial window sum.</li>
+</ol>
+<section id="spatial-lag-with-row-standardised-weights" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-lag-with-row-standardised-weights">Spatial Lag with Row-standardised Weights</h3>
+<p>We will not compute the Gross Domestic Product per capita (GDPPC) value for each region, using the average among its neighbours. These values are often referred to as spatially lagged values. We will use the GDPPC data from the Hunan_2012.csv file and joined to the geospatial hunan shapefile data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>GDPPC.lag <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(rswm_q, hunan<span class="sc">$</span>GDPPC)</span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>GDPPC.lag</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 24847.20 22724.80 24143.25 27737.50 27270.25 21248.80 43747.00 33582.71
+ [9] 45651.17 32027.62 32671.00 20810.00 25711.50 30672.33 33457.75 31689.20
+[17] 20269.00 23901.60 25126.17 21903.43 22718.60 25918.80 20307.00 20023.80
+[25] 16576.80 18667.00 14394.67 19848.80 15516.33 20518.00 17572.00 15200.12
+[33] 18413.80 14419.33 24094.50 22019.83 12923.50 14756.00 13869.80 12296.67
+[41] 15775.17 14382.86 11566.33 13199.50 23412.00 39541.00 36186.60 16559.60
+[49] 20772.50 19471.20 19827.33 15466.80 12925.67 18577.17 14943.00 24913.00
+[57] 25093.00 24428.80 17003.00 21143.75 20435.00 17131.33 24569.75 23835.50
+[65] 26360.00 47383.40 55157.75 37058.00 21546.67 23348.67 42323.67 28938.60
+[73] 25880.80 47345.67 18711.33 29087.29 20748.29 35933.71 15439.71 29787.50
+[81] 18145.00 21617.00 29203.89 41363.67 22259.09 44939.56 16902.00 16930.00</code></pre>
+</div>
+</div>
+<p>Recall in the previous section, we retrieved the GDPPC of polygon ID 85 (Taoyuan) and its 11 neighbours to based on Queen contiguity, stored in <code>nb85</code>.</p>
+<p><img src="images/paste-5698B2B2.png" class="img-fluid"></p>
+<p>Rerunning the code without including the region itself, and computing the mean GDPPC of all 11 neighbours using the code chunk below, we get 22259.09, which is the same as the <code>GDPPC.lag</code> for polygon ID 85.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>nb85 <span class="ot">&lt;-</span> wm_q[[<span class="dv">85</span>]]</span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>nb85 <span class="ot">&lt;-</span> hunan<span class="sc">$</span>GDPPC[nb85]</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(nb85)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22259.09</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>GDPPC.lag[<span class="dv">85</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 22259.09</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>rswm_q<span class="sc">$</span>weight[<span class="dv">85</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] 0.09090909 0.09090909 0.09090909 0.09090909 0.09090909 0.09090909
+ [7] 0.09090909 0.09090909 0.09090909 0.09090909 0.09090909</code></pre>
+</div>
+</div>
+<p>We can append the spatially lag GDPPC values onto <code>hunan</code> sf dataframe using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>lag.list <span class="ot">&lt;-</span> <span class="fu">list</span>(hunan<span class="sc">$</span>County, GDPPC.lag)</span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>lag.res <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(lag.list)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lag.res) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"County"</span>, <span class="st">"lag GDPPC"</span>)</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, lag.res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining, by = "County"</code></pre>
+</div>
+</div>
+<p>The following table shows the average neighbour income values (stored in the <code>lag GDPPC</code> field) for each county.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(hunan)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Simple feature collection with 6 features and 36 fields
+Geometry type: POLYGON
+Dimension:     XY
+Bounding box:  xmin: 110.4922 ymin: 28.61762 xmax: 112.3013 ymax: 30.12812
+Geodetic CRS:  WGS 84
+   NAME_2  ID_3  NAME_3   ENGTYPE_3 Shape_Leng Shape_Area  County    City
+1 Changde 21098 Anxiang      County   1.869074 0.10056190 Anxiang Changde
+2 Changde 21100 Hanshou      County   2.360691 0.19978745 Hanshou Changde
+3 Changde 21101  Jinshi County City   1.425620 0.05302413  Jinshi Changde
+4 Changde 21102      Li      County   3.474325 0.18908121      Li Changde
+5 Changde 21103   Linli      County   2.289506 0.11450357   Linli Changde
+6 Changde 21104  Shimen      County   4.171918 0.37194707  Shimen Changde
+  avg_wage deposite     FAI Gov_Rev Gov_Exp     GDP GDPPC     GIO   Loan  NIPCR
+1    31935   5517.2  3541.0  243.64  1779.5 12482.0 23667  5108.9 2806.9 7693.7
+2    32265   7979.0  8665.0  386.13  2062.4 15788.0 20981 13491.0 4550.0 8269.9
+3    28692   4581.7  4777.0  373.31  1148.4  8706.9 34592 10935.0 2242.0 8169.9
+4    32541  13487.0 16066.0  709.61  2459.5 20322.0 24473 18402.0 6748.0 8377.0
+5    32667    564.1  7781.2  336.86  1538.7 10355.0 25554  8214.0  358.0 8143.1
+6    33261   8334.4 10531.0  548.33  2178.8 16293.0 27137 17795.0 6026.5 6156.0
+   Bed    Emp  EmpR EmpRT Pri_Stu Sec_Stu Household Household_R NOIP Pop_R
+1 1931 336.39 270.5 205.9  19.584  17.819     148.1       135.4   53 346.0
+2 2560 456.78 388.8 246.7  42.097  33.029     240.2       208.7   95 553.2
+3  848 122.78  82.1  61.7   8.723   7.592      81.9        43.7   77  92.4
+4 2038 513.44 426.8 227.1  38.975  33.938     268.5       256.0   96 539.7
+5 1440 307.36 272.2 100.8  23.286  18.943     129.1       157.2   99 246.6
+6 2502 392.05 329.6 193.8  29.245  26.104     190.6       184.7  122 399.2
+    RSCG Pop_T    Agri Service Disp_Inc      RORP    ROREmp lag GDPPC
+1 3957.9 528.3 4524.41   14100    16610 0.6549309 0.8041262  24847.20
+2 4460.5 804.6 6545.35   17727    18925 0.6875466 0.8511756  22724.80
+3 3683.0 251.8 2562.46    7525    19498 0.3669579 0.6686757  24143.25
+4 7110.2 832.5 7562.34   53160    18985 0.6482883 0.8312558  27737.50
+5 3604.9 409.3 3583.91    7031    18604 0.6024921 0.8856065  27270.25
+6 6490.7 600.5 5266.51    6981    19275 0.6647794 0.8407091  21248.80
+                        geometry
+1 POLYGON ((112.0625 29.75523...
+2 POLYGON ((112.2288 29.11684...
+3 POLYGON ((111.8927 29.6013,...
+4 POLYGON ((111.3731 29.94649...
+5 POLYGON ((111.6324 29.76288...
+6 POLYGON ((110.8825 30.11675...</code></pre>
+</div>
+</div>
+<p>We can visualise the GDPPC of each county vsthe spatial lag GDPPC, using the code chunk below for quick plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb73"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a>lag_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"lag GDPPC"</span>)</span>
+<span id="cb73-3"><a href="#cb73-3" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, lag_gdppc, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that the maximum GDPPC reduced from the 80,000 to 100,000 band to 50,000 to 60,000 when we plotted spatial lag GDPPC. This is because there was only 1 county with 2012 GDPPC in the highest band, and this only contributed to the spatial lag GDPCC of its neighbours by a weighted proportion. In fact, we see that the neighbours of the high GDPPC regions show high spatial lag GDPPC.</p>
+</section>
+<section id="spatial-lag-as-a-sum-of-neighbour-values" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-lag-as-a-sum-of-neighbour-values">Spatial Lag as a Sum of Neighbour Values</h3>
+<p>We can calculate spatial lag as a sum of neighbour values by assigning binary weights (<code>style = "B"</code>). This requires us to go back to our neighbours list, and apply a function that assigns binary weights instead of row standardisation. We will also use <code>glist=</code>&nbsp;argument in the <em>nb2listw()</em> function to explicitly assign these weights.</p>
+<p>We start by applying a function that assigns a value of 1 for each neighbour using <em>lapply()</em>, similar to when we applied the function for IDW.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>b_weights <span class="ot">&lt;-</span> <span class="fu">lapply</span>(wm_q, <span class="cf">function</span>(x) <span class="dv">0</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>b_weights2 <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q, <span class="at">glist =</span> b_weights, <span class="at">style =</span> <span class="st">"B"</span>)</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>b_weights2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 448 
+Percentage nonzero weights: 5.785124 
+Average number of links: 5.090909 
+
+Weights style: B 
+Weights constants summary:
+   n   nn  S0  S1    S2
+B 88 7744 448 896 10224</code></pre>
+</div>
+</div>
+<p>Checking using polygon ID 85 (Taoyuan which has 11 neighbours by Queen contiguity), we see that the weights for all 11 neighbours are 1 instead of 1/11 under row-standardisation.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>b_weights2<span class="sc">$</span>weight[<span class="dv">85</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] 1 1 1 1 1 1 1 1 1 1 1</code></pre>
+</div>
+</div>
+<p>With the proper weights assigned, we can use <em>lag.listw()</em> to compute a lag variable from our weights and GDPPC.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>lag_sum <span class="ot">&lt;-</span> <span class="fu">list</span>(hunan<span class="sc">$</span>County, <span class="fu">lag.listw</span>(b_weights2, hunan<span class="sc">$</span>GDPPC))</span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>lag.res <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(lag_sum)</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lag.res) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"County"</span>, <span class="st">"lag_sum GDPPC"</span>)</span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>lag_sum</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] "Anxiang"       "Hanshou"       "Jinshi"        "Li"           
+ [5] "Linli"         "Shimen"        "Liuyang"       "Ningxiang"    
+ [9] "Wangcheng"     "Anren"         "Guidong"       "Jiahe"        
+[13] "Linwu"         "Rucheng"       "Yizhang"       "Yongxing"     
+[17] "Zixing"        "Changning"     "Hengdong"      "Hengnan"      
+[21] "Hengshan"      "Leiyang"       "Qidong"        "Chenxi"       
+[25] "Zhongfang"     "Huitong"       "Jingzhou"      "Mayang"       
+[29] "Tongdao"       "Xinhuang"      "Xupu"          "Yuanling"     
+[33] "Zhijiang"      "Lengshuijiang" "Shuangfeng"    "Xinhua"       
+[37] "Chengbu"       "Dongan"        "Dongkou"       "Longhui"      
+[41] "Shaodong"      "Suining"       "Wugang"        "Xinning"      
+[45] "Xinshao"       "Shaoshan"      "Xiangxiang"    "Baojing"      
+[49] "Fenghuang"     "Guzhang"       "Huayuan"       "Jishou"       
+[53] "Longshan"      "Luxi"          "Yongshun"      "Anhua"        
+[57] "Nan"           "Yuanjiang"     "Jianghua"      "Lanshan"      
+[61] "Ningyuan"      "Shuangpai"     "Xintian"       "Huarong"      
+[65] "Linxiang"      "Miluo"         "Pingjiang"     "Xiangyin"     
+[69] "Cili"          "Chaling"       "Liling"        "Yanling"      
+[73] "You"           "Zhuzhou"       "Sangzhi"       "Yueyang"      
+[77] "Qiyang"        "Taojiang"      "Shaoyang"      "Lianyuan"     
+[81] "Hongjiang"     "Hengyang"      "Guiyang"       "Changsha"     
+[85] "Taoyuan"       "Xiangtan"      "Dao"           "Jiangyong"    
+
+[[2]]
+ [1] 124236 113624  96573 110950 109081 106244 174988 235079 273907 256221
+[11]  98013 104050 102846  92017 133831 158446 141883 119508 150757 153324
+[21] 113593 129594 142149 100119  82884  74668  43184  99244  46549  20518
+[31] 140576 121601  92069  43258 144567 132119  51694  59024  69349  73780
+[41]  94651 100680  69398  52798 140472 118623 180933  82798  83090  97356
+[51]  59482  77334  38777 111463  74715 174391 150558 122144  68012  84575
+[61] 143045  51394  98279  47671  26360 236917 220631 185290  64640  70046
+[71] 126971 144693 129404 284074 112268 203611 145238 251536 108078 238300
+[81] 108870 108085 262835 248182 244850 404456  67608  33860</code></pre>
+</div>
+</div>
+<p>We see that now, the lag sum GDPPC for Taoyuan (polygon ID 85) is the simple sum of the GDPPC of all its neighbours, vis-à-vis the weighted average with row-standardised weights in the earlier sub-section.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>lag_sum[[<span class="dv">2</span>]][<span class="dv">85</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 244850</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(nb85)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 244850</code></pre>
+</div>
+</div>
+<p>Like what we did for spatial lag with row-standardised weights, we append the <code>lag_sum GDPPC</code> field to <code>hunan</code> sf dataframe using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, lag.res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining, by = "County"</code></pre>
+</div>
+</div>
+<p>Now, we can plot GDPPC, Spatial Lag GDPPC and Spatial Lag Sum GDPPC for comparison using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>lag_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"lag GDPPC"</span>)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>lag_sum_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"lag_sum GDPPC"</span>)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, lag_gdppc, lag_sum_gdppc, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some legend labels were too wide. These labels have been resized to 0.47, 0.47, 0.47, 0.43. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.47, 0.47, 0.47, 0.47, 0.47. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.62, 0.41, 0.41, 0.41, 0.41. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-49-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that in the <code>lag_sum GDPPC</code> plot, the highest bracket increased from 50,000 to 100,000 to 400,000 to 500,000. The spatial lag sum of GDPPC tends to be higher regions with greater number of neighbours, all else equal.</p>
+</section>
+<section id="spatial-window-average" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-window-average">Spatial Window Average</h3>
+<p>Spatial window average uses row-standardised weights and include the diagonal element. To do this in R, we need to go back to the neighbors structure and add the diagonal element before assigning weights. To begin, we assign <code>wm_q</code> to a new variable <code>wm_q1</code>, because we will directly alter its structure to add the diagonal elements.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>wm_q1 <span class="ot">&lt;-</span> wm_q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>To add the diagonal element to the neighbour list, we use <em>include.self()</em> from <strong>spdep</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a>wm_q1 <span class="ot">&lt;-</span> <span class="fu">include.self</span>(wm_q1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We see that the number of links increased by 88 from 448 to 536.</p>
+<p>Now, we obtain weights with <em>nb2listw()</em></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a>wm_q1 <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q1)</span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(wm_q1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 536 
+Percentage nonzero weights: 6.921488 
+Average number of links: 6.090909 
+Link number distribution:
+
+ 2  3  4  5  6  7  8  9 10 12 
+ 2  2 12 16 24 14 11  4  2  1 
+2 least connected regions:
+30 65 with 2 links
+1 most connected region:
+85 with 12 links
+
+Weights style: W 
+Weights constants summary:
+   n   nn S0       S1       S2
+W 88 7744 88 30.90265 357.5308</code></pre>
+</div>
+</div>
+<p>We create the lag variable from our weight structure and <code>GDPPC</code> variable.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>lag_w_avg_gdppc <span class="ot">&lt;-</span> <span class="fu">lag.listw</span>(wm_q1, hunan<span class="sc">$</span>GDPPC)</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>lag_w_avg_gdppc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> [1] 24650.50 22434.17 26233.00 27084.60 26927.00 22230.17 47621.20 37160.12
+ [9] 49224.71 29886.89 26627.50 22690.17 25366.40 25825.75 30329.00 32682.83
+[17] 25948.62 23987.67 25463.14 21904.38 23127.50 25949.83 20018.75 19524.17
+[25] 18955.00 17800.40 15883.00 18831.33 14832.50 17965.00 17159.89 16199.44
+[33] 18764.50 26878.75 23188.86 20788.14 12365.20 15985.00 13764.83 11907.43
+[41] 17128.14 14593.62 11644.29 12706.00 21712.29 43548.25 35049.00 16226.83
+[49] 19294.40 18156.00 19954.75 18145.17 12132.75 18419.29 14050.83 23619.75
+[57] 24552.71 24733.67 16762.60 20932.60 19467.75 18334.00 22541.00 26028.00
+[65] 29128.50 46569.00 47576.60 36545.50 20838.50 22531.00 42115.50 27619.00
+[73] 27611.33 44523.29 18127.43 28746.38 20734.50 33880.62 14716.38 28516.22
+[81] 18086.14 21244.50 29568.80 48119.71 22310.75 43151.60 17133.40 17009.33</code></pre>
+</div>
+</div>
+<p>Next, we convert the lag variable listw object into a dataframe using <em>as.data.frame()</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>lag.list.wm_q1 <span class="ot">&lt;-</span> <span class="fu">list</span>(hunan<span class="sc">$</span>County, lag_w_avg_gdppc)</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>lag_wm_q1.res <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(lag.list.wm_q1)</span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(lag_wm_q1.res) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"County"</span>, <span class="st">"lag_window_avg GDPPC"</span>)</span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a>lag.list.wm_q1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] "Anxiang"       "Hanshou"       "Jinshi"        "Li"           
+ [5] "Linli"         "Shimen"        "Liuyang"       "Ningxiang"    
+ [9] "Wangcheng"     "Anren"         "Guidong"       "Jiahe"        
+[13] "Linwu"         "Rucheng"       "Yizhang"       "Yongxing"     
+[17] "Zixing"        "Changning"     "Hengdong"      "Hengnan"      
+[21] "Hengshan"      "Leiyang"       "Qidong"        "Chenxi"       
+[25] "Zhongfang"     "Huitong"       "Jingzhou"      "Mayang"       
+[29] "Tongdao"       "Xinhuang"      "Xupu"          "Yuanling"     
+[33] "Zhijiang"      "Lengshuijiang" "Shuangfeng"    "Xinhua"       
+[37] "Chengbu"       "Dongan"        "Dongkou"       "Longhui"      
+[41] "Shaodong"      "Suining"       "Wugang"        "Xinning"      
+[45] "Xinshao"       "Shaoshan"      "Xiangxiang"    "Baojing"      
+[49] "Fenghuang"     "Guzhang"       "Huayuan"       "Jishou"       
+[53] "Longshan"      "Luxi"          "Yongshun"      "Anhua"        
+[57] "Nan"           "Yuanjiang"     "Jianghua"      "Lanshan"      
+[61] "Ningyuan"      "Shuangpai"     "Xintian"       "Huarong"      
+[65] "Linxiang"      "Miluo"         "Pingjiang"     "Xiangyin"     
+[69] "Cili"          "Chaling"       "Liling"        "Yanling"      
+[73] "You"           "Zhuzhou"       "Sangzhi"       "Yueyang"      
+[77] "Qiyang"        "Taojiang"      "Shaoyang"      "Lianyuan"     
+[81] "Hongjiang"     "Hengyang"      "Guiyang"       "Changsha"     
+[85] "Taoyuan"       "Xiangtan"      "Dao"           "Jiangyong"    
+
+[[2]]
+ [1] 24650.50 22434.17 26233.00 27084.60 26927.00 22230.17 47621.20 37160.12
+ [9] 49224.71 29886.89 26627.50 22690.17 25366.40 25825.75 30329.00 32682.83
+[17] 25948.62 23987.67 25463.14 21904.38 23127.50 25949.83 20018.75 19524.17
+[25] 18955.00 17800.40 15883.00 18831.33 14832.50 17965.00 17159.89 16199.44
+[33] 18764.50 26878.75 23188.86 20788.14 12365.20 15985.00 13764.83 11907.43
+[41] 17128.14 14593.62 11644.29 12706.00 21712.29 43548.25 35049.00 16226.83
+[49] 19294.40 18156.00 19954.75 18145.17 12132.75 18419.29 14050.83 23619.75
+[57] 24552.71 24733.67 16762.60 20932.60 19467.75 18334.00 22541.00 26028.00
+[65] 29128.50 46569.00 47576.60 36545.50 20838.50 22531.00 42115.50 27619.00
+[73] 27611.33 44523.29 18127.43 28746.38 20734.50 33880.62 14716.38 28516.22
+[81] 18086.14 21244.50 29568.80 48119.71 22310.75 43151.60 17133.40 17009.33</code></pre>
+</div>
+</div>
+<p>We now append <code>lag_window_avg GDPPC</code>&nbsp;to <code>hunan</code> sf dataframe using <em>left_join()</em> of <strong>dplyr</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, lag_wm_q1.res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining, by = "County"</code></pre>
+</div>
+</div>
+<p>Finally, we do a quick plot of <code>GDPPC</code>, <code>lag GDPPC</code> and <code>lag_window_avg GDPPC</code> maps next to each other using <em>qtm()</em> of <strong>tmap</strong>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>lag_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"lag GDPPC"</span>)</span>
+<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>w_avg_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"lag_window_avg GDPPC"</span>)</span>
+<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, lag_gdppc, w_avg_gdppc, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some legend labels were too wide. These labels have been resized to 0.47, 0.47, 0.47, 0.43. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.47, 0.47, 0.47, 0.47, 0.47. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.47, 0.47, 0.47, 0.47. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-56-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that the Northeast counties that are dark orange in the <code>lag GDPPC</code> plot are now dark red in the <code>lag_window_avg GDPPC</code> plot. We also see that the highest bracket is lowered from 50,000 to 60,000 to 40,000 to 50,000, as the highest GDPPC from Changsha is now split over a larger number of counties.</p>
+</section>
+<section id="spatial-window-sum" class="level3">
+<h3 class="anchored" data-anchor-id="spatial-window-sum">Spatial Window Sum</h3>
+<p>The final visualisation that we will do is spatial window sum. It is the counterpart of the window average, except without row-standardised weights. To do this, we again assign binary weights to the neighbour structure that includes the diagonal element, and similarly start by assigning <code>wm_q</code> to a new variable, this time <code>wm_q2</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a>wm_q2 <span class="ot">&lt;-</span> wm_q</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We use <em>include.self()</em> from <strong>spdep</strong> to add the diagonal element to the neighbour list.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb105"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb105-1"><a href="#cb105-1" aria-hidden="true" tabindex="-1"></a>wm_q2 <span class="ot">&lt;-</span> <span class="fu">include.self</span>(wm_q2)</span>
+<span id="cb105-2"><a href="#cb105-2" aria-hidden="true" tabindex="-1"></a>wm_q2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 536 
+Percentage nonzero weights: 6.921488 
+Average number of links: 6.090909 </code></pre>
+</div>
+</div>
+<p>Next, we assign binary weights to the neighbour structure just like we did in the Spatial Lag Sum sub-section.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a>b_weights3 <span class="ot">&lt;-</span> <span class="fu">lapply</span>(wm_q2, <span class="cf">function</span>(x) <span class="dv">0</span><span class="sc">*</span>x <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb107-2"><a href="#cb107-2" aria-hidden="true" tabindex="-1"></a>b_weights3[<span class="dv">85</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] 1 1 1 1 1 1 1 1 1 1 1 1</code></pre>
+</div>
+</div>
+<p>Again, we use <em>nb2listw()</em> and <em>glist()</em> to explicitly assign weight values of 1.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb109"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb109-1"><a href="#cb109-1" aria-hidden="true" tabindex="-1"></a>b_weights4 <span class="ot">&lt;-</span> <span class="fu">nb2listw</span>(wm_q2, <span class="at">glist =</span> b_weights3, <span class="at">style =</span> <span class="st">"B"</span>)</span>
+<span id="cb109-2"><a href="#cb109-2" aria-hidden="true" tabindex="-1"></a>b_weights4</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Characteristics of weights list object:
+Neighbour list object:
+Number of regions: 88 
+Number of nonzero links: 536 
+Percentage nonzero weights: 6.921488 
+Average number of links: 6.090909 
+
+Weights style: B 
+Weights constants summary:
+   n   nn  S0   S1    S2
+B 88 7744 536 1072 14160</code></pre>
+</div>
+</div>
+<p>With our new weight structure, we can compute the lag variable <code>w_sum_gdppc</code> with <em>lag.listw()</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>w_sum_gdppc <span class="ot">&lt;-</span> <span class="fu">list</span>(hunan<span class="sc">$</span>County, <span class="fu">lag.listw</span>(b_weights4, hunan<span class="sc">$</span>GDPPC))</span>
+<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>w_sum_gdppc</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[[1]]
+ [1] "Anxiang"       "Hanshou"       "Jinshi"        "Li"           
+ [5] "Linli"         "Shimen"        "Liuyang"       "Ningxiang"    
+ [9] "Wangcheng"     "Anren"         "Guidong"       "Jiahe"        
+[13] "Linwu"         "Rucheng"       "Yizhang"       "Yongxing"     
+[17] "Zixing"        "Changning"     "Hengdong"      "Hengnan"      
+[21] "Hengshan"      "Leiyang"       "Qidong"        "Chenxi"       
+[25] "Zhongfang"     "Huitong"       "Jingzhou"      "Mayang"       
+[29] "Tongdao"       "Xinhuang"      "Xupu"          "Yuanling"     
+[33] "Zhijiang"      "Lengshuijiang" "Shuangfeng"    "Xinhua"       
+[37] "Chengbu"       "Dongan"        "Dongkou"       "Longhui"      
+[41] "Shaodong"      "Suining"       "Wugang"        "Xinning"      
+[45] "Xinshao"       "Shaoshan"      "Xiangxiang"    "Baojing"      
+[49] "Fenghuang"     "Guzhang"       "Huayuan"       "Jishou"       
+[53] "Longshan"      "Luxi"          "Yongshun"      "Anhua"        
+[57] "Nan"           "Yuanjiang"     "Jianghua"      "Lanshan"      
+[61] "Ningyuan"      "Shuangpai"     "Xintian"       "Huarong"      
+[65] "Linxiang"      "Miluo"         "Pingjiang"     "Xiangyin"     
+[69] "Cili"          "Chaling"       "Liling"        "Yanling"      
+[73] "You"           "Zhuzhou"       "Sangzhi"       "Yueyang"      
+[77] "Qiyang"        "Taojiang"      "Shaoyang"      "Lianyuan"     
+[81] "Hongjiang"     "Hengyang"      "Guiyang"       "Changsha"     
+[85] "Taoyuan"       "Xiangtan"      "Dao"           "Jiangyong"    
+
+[[2]]
+ [1] 147903 134605 131165 135423 134635 133381 238106 297281 344573 268982
+[11] 106510 136141 126832 103303 151645 196097 207589 143926 178242 175235
+[21] 138765 155699 160150 117145 113730  89002  63532 112988  59330  35930
+[31] 154439 145795 112587 107515 162322 145517  61826  79925  82589  83352
+[41] 119897 116749  81510  63530 151986 174193 210294  97361  96472 108936
+[51]  79819 108871  48531 128935  84305 188958 171869 148402  83813 104663
+[61] 155742  73336 112705  78084  58257 279414 237883 219273  83354  90124
+[71] 168462 165714 165668 311663 126892 229971 165876 271045 117731 256646
+[81] 126603 127467 295688 336838 267729 431516  85667  51028</code></pre>
+</div>
+</div>
+<p>We conver the lag list variable listw object into a dataframe using <em>as.data.frame()</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb113"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb113-1"><a href="#cb113-1" aria-hidden="true" tabindex="-1"></a>w_sum_gdppc.res <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(w_sum_gdppc)</span>
+<span id="cb113-2"><a href="#cb113-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(w_sum_gdppc.res) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"County"</span>, <span class="st">"w_sum GDPPC"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>The code chunk below uses <em>left_join()</em> of <strong>dplyr</strong> to append <code>w_sum GDPPC</code> values to <code>hunan</code> sf dataframe.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>hunan <span class="ot">&lt;-</span> <span class="fu">left_join</span>(hunan, w_sum_gdppc.res)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Joining, by = "County"</code></pre>
+</div>
+</div>
+<p>Lastly, <em>qtm()</em> of <strong>tmap</strong> is used to plot the <code>GDPPC</code>, <code>lag_sum GDPPC</code> and <code>w_sum GDPPC</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"GDPPC"</span>)</span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>lag_sum_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"lag_sum GDPPC"</span>)</span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>w_sum_gdppc <span class="ot">&lt;-</span> <span class="fu">qtm</span>(hunan, <span class="st">"w_sum GDPPC"</span>)</span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(gdppc, lag_sum_gdppc, w_sum_gdppc, <span class="at">asp =</span> <span class="dv">1</span>, <span class="at">ncol =</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Some legend labels were too wide. These labels have been resized to 0.47, 0.47, 0.47, 0.43. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Legend labels were too wide. The labels have been resized to 0.62, 0.41, 0.41, 0.41, 0.41. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.
+Legend labels were too wide. The labels have been resized to 0.62, 0.41, 0.41, 0.41, 0.41. Increase legend.width (argument of tm_layout) to make the legend wider and therefore the labels larger.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex1_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We note that the only change before <code>lag_sum GDPPC</code> and <code>w_sum GDPPC</code> plots is the 3 regions to the top and right of the region with highest spatial lag sum GDPPC jumping to the next window sum GDPPC tier, as these are generally regions with high GDPPC themselves and adding the absolute GDPPC boosts their total GDPPC from themselves and their neighbours, sufficient to move to the next GDPPC bracket.</p>
 
 
 </section>
