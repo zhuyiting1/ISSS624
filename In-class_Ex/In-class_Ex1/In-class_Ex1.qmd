@@ -200,11 +200,11 @@ A connectivity graph takes a point and displays a line between each pairs of nei
 
 ### Getting Latitude and Longitude of Polygon Centroids
 
-Instead of just running *st_centroid()*, which [assumes that the coordinates are planar](https://r-spatial.github.io/sf/articles/sf6.html), on the sf object `us.bound`, we use a mapping function *map_dbl()* from **purrr** to transform each element of a vector into a vector of the same length.
+Instead of just running *st_centroid()*, which [assumes that the coordinates are planar](https://r-spatial.github.io/sf/articles/sf6.html), on the sf object `hunan`, we use a mapping function *map_dbl()* from **purrr** to transform each element of a vector into a vector of the same length.
 
 ![](images/paste-9B4D5C4A.png){width="270"}
 
-To obtain the longitude values, we map the *st_centroid()* function over the geometry column of `us.bound` and access the longitude value through double bracket notation \[\[ \]\] and 1. This allows us to get only the longitude, which is the first value in each centroid.
+To obtain the longitude values, we map the *st_centroid()* function over the geometry column of `hunan` and access the longitude value through double bracket notation \[\[ \]\] and 1. This allows us to get only the longitude, which is the first value in each centroid.
 
 ```{r}
 longitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])
@@ -244,7 +244,7 @@ We see that some of the points that are joined in the Queen's Case are not in th
 
 ## Computing Distance-based Neighbours
 
-Another way to define neighbour relationship is to used distance-based matrix. Using [*dnearneigh()*](https://r-spatial.github.io/spdep/reference/dnearneigh.html) of **spdep**, neighbours of a region are determined based on the Euclidean distance with a distance band with lower `d1=` and upper `d2=` bounds controlled by the `bounds=` argument. If projected coordinates are used and either specified in the coordinates object `x` or with `x` as a two-column matrix and `longlat=TRUE`, great cirlce distances in km will be calculated assuming **wgs84** reference ellipsoid.
+Another way to define neighbour relationship is to used distance-based matrix. Using [*dnearneigh()*](https://r-spatial.github.io/spdep/reference/dnearneigh.html) of **spdep**, neighbours of a region are determined based on the Euclidean distance with a distance band with lower `d1=` and upper `d2=` bounds controlled by the `bounds=` argument. If projected coordinates are used and either specified in the coordinates object `x` or with `x` as a two-column matrix and `longlat=TRUE`, great circle distances in km will be calculated assuming **wgs84** reference ellipsoid.
 
 ### Determining the Cut-off Distance
 
@@ -323,7 +323,7 @@ The plot on the left shows the links between all pairs of 1st neighbours in red,
 
 One of the characteristics of fixed distance weights matrix is that more densely settled areas (usually urban areas) tend to have more neighbours while less densely settled areas (usually rural areas) tend to have less neighbours. Having many neighbours smooths the neighbour relationship across more neighbours.
 
-We can control the number of neighbours that each region has, by using k-nearest neighbours instead of stipulating a fixed distance threshold for neighbour-neighbour relationship, either accepting asymmetric neighbours or imposing symmetry, using *knn2nb()* and *knearneigh()* combination in the code chunk below. This is similar to how we determined the largest distance for 1st neighbour pairs in order to come up with the fixed distance weights matrix,, except without needing to compute the distances between each pair.
+We can control the number of neighbours that each region has, by using k-nearest neighbours instead of stipulating a fixed distance threshold for neighbour-neighbour relationship, either accepting asymmetric neighbours or imposing symmetry, using *knn2nb()* and *knearneigh()* combination in the code chunk below. This is similar to how we determined the largest distance for 1st neighbour pairs in order to come up with the fixed distance weights matrix, except without needing to compute the distances between each pair.
 
 ```{r}
 knn6 <- knn2nb(knearneigh(coords, k = 6))

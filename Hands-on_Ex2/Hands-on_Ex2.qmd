@@ -393,11 +393,11 @@ On the left, we note regions of positive (blue) and negative (orange) Moran's I 
 
 ## Creating a LISA Cluster Map
 
-The LISA Cluster Map shows the significant locations colour coded by type of spatial autocorrelation. The first step is to plot the Moran scatterplot.
+The LISA Cluster Map shows the significant locations colour-coded by type of spatial autocorrelation. The first step is to plot the Moran scatterplot.
 
 ### Plotting Moran Scatterplot
 
-The Moran scatterplot is an illustration of the relationship ebtween the values of the chosen attributes at each location and the average value of the same attribute at neighbouring locations.
+The Moran scatterplot is an illustration of the relationship between the values of the chosen attributes at each location and the average value of the same attribute at neighbouring locations.
 
 The code chunk below plots the Moran scatterplot of GDPPC 2012 by using [*moran.plot()*](https://r-spatial.github.io/spdep/reference/moran.plot.html) of **spdep**.
 
@@ -559,9 +559,9 @@ There are two types of distance-based proximit matrix, namely:
 
 Distance-based weights matrix requires the centroids of the polygons to be determined.
 
-To do this, we need the coordinates in a separate dataframe using a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of the sf object `us.bound`. The function used is *st_centroid()* from **sf** package. We will use [*map_dbl()* variation of *map()*](https://purrr.tidyverse.org/reference/map.html) from the **purrr** package.
+To do this, we need the coordinates in a separate dataframe using a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of the sf object `hunan`. The function used is *st_centroid()* from **sf** package. We will use [*map_dbl()* variation of *map()*](https://purrr.tidyverse.org/reference/map.html) from the **purrr** package.
 
-To get our longitude values we map the *st_centroid()* function over the geometry column of `us.bound` and access the longitude value through double bracket notation \[\[ \]\] and value 1. This allows us to get only the longitude, which is the first value in each centroid.
+To get our longitude values we map the *st_centroid()* function over the geometry column of `hunan` and access the longitude value through double bracket notation \[\[ \]\] and value 1. This allows us to get only the longitude, which is the first value in each centroid.
 
 ```{r}
 longitude <- map_dbl(hunan$geometry, ~st_centroid(.x)[[1]])

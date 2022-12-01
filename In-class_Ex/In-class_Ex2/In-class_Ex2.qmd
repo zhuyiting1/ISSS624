@@ -14,34 +14,37 @@ Water is a scarce resource. Goal 6 of the United Nations' (UN's) Sustainable Dev
 
 ## Getting Started
 
-### Data
+### Water Point Data
 
-[Water Point Data Exchange - Plus (WPdx+)](https://data.waterpointdata.org/dataset/Water-Point-Data-Exchange-Plus-WPdx-/eqje-vguj/data)
+We obtained the global water point and small water scheme level data from Water Point Data Exchange (WPdx) Global Data Repositories (WPdx, 2020). We accessed the [WPdx-Plus (WPdx+)](https://data.waterpointdata.org/dataset/Water-Point-Data-Exchange-Plus-WPdx-/eqje-vguj/data) option and downloaded the full Shapefile under the Export option. As the data consists of water points around the world, we will later filter for water points within Nigeria in R in a subsequent step.
 
-[geoBoundaries](https://www.geoboundaries.org/)
+After downloading the Shapefile which can take a few minutes due to the large file size, unzip the folder and copy the Shapefiles (`.dbf`, `.prj`, `.shp` and `.shx`) into a data subfolder that shares the same directory as this Quarto file for ease of calling the files. We also want to rename all four files to `geo_export` so that we can reference these filenames more easily when we import the data.
 
-\<Download and rename files\>
+### 3.2. Geographical Boundaries of Nigeria
 
-### Installing and Loading Packages
+We also need the geographical boundaries of Nigeria to make meaningful sense of its water point locations and to aid spatial visualisation. Here, we downloaded the Level-2 Administrative Boundaries (also known as Local Government Area (LGA)) data (ADM2) for Nigeria in year 2020 from [geoBoundaries](https://www.geoboundaries.org/), the largest open and free database of political administrative boundaries globally (geoBoundaries, 2022). One can filter for Nigeria's data by typing it in under the `Name` filter, followed by clicking on the download button under the column `geoBoundaries`, sub-column `Full Release` and for the row `Nigeria`, `NGA`, `ADM2`, `2020`.
+
+Similar to the water point data, we unzip the folder and copy the Shapefiles (`.dbf`, `.prj`, `.shp` and `.shx`) into the same folder as the water points Shapefiles. Here, we rename the files to `geoBoundaries-NGA-ADM2` to indicate the data source (geoBoundaries), country (NGA) and administrative boundary level (ADM2).
+
+## 4. Installing and Loading Packages in R
 
 The code chunk below uses [*p_load()*](https://www.rdocumentation.org/packages/pacman/versions/0.5.1/topics/p_load) from **pacman** package to brings in the R packages for:
 
-1.  Spatial vector data encoding (**sf**);
-2.  Data-wrangling (**tidyverse**);
-3.  Map plotting (**tmap**);
-4.  Geospatial analysis (**spdep**); and
-5.  Rapid Exploratory Data Analysis (**funModeling**).
+1.  Spatial vector data encoding ([**sf**](https://r-spatial.github.io/sf/));
+2.  Data-wrangling ([**tidyverse**](https://www.tidyverse.org/));
+3.  Map plotting ([**tmap**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html));
+4.  Geospatial analysis ([**spdep**](https://cran.r-project.org/web/packages/spdep/index.html)); and
+5.  Rapid Exploratory Data Analysis (EDA) ([**funModeling**](https://cran.r-project.org/web/packages/funModeling/vignettes/funModeling_quickstart.html)).
 
 ```{r}
 pacman::p_load(sf, tidyverse, tmap, spdep, funModeling)
 ```
 
-### Importing Geospatial Data
+## 5. Importing Geospatial Data in R
 
-In this exercise, 2 geospatial datasets will be used. They are:
+### 5.1. Water Point Geospatial Data
 
-1.  geo_export for water point data
-2.  geoBoundaries-NGA-ADM2 for the geographical boundaries of Nigeria
+We are now ready to import the geospatial data into the Quarto document. The code chunk below does so for the water point data by using [*st_read()*](https://www.rdocumentation.org/packages/sf/versions/0.2-2/topics/st_read) function of the **sf** package. We specified the data source name (`dsn`) or directory of the file (`"data/geospatial"`), `layer` for the name of the Shapefiles (`"geo_export"`), and `crs = 4326` to import the data in **wgs84** geographic coordinate reference system (CRS), since the Shapefile is in **wgs84**. We also pipe a filter to obtain data that are in Nigeria only, by using the [*filter()*](https://dplyr.tidyverse.org/reference/filter.html) function of **dplyr** package from **tidyverse**. The clean_country_name column is used for the filter, and note that the column name is truncated in the Shapefile due to character limit and should be keyed in correctly to perform the filter successfully.
 
 ```{r}
 #| eval: false
@@ -51,16 +54,26 @@ wp <- st_read(dsn = "data/geospatial",
   filter(clean_coun == "Nigeria")
 ```
 
-In the code chunk above, we used `crs = 4326` to import the data in **wgs84**. This is because the shapefile data is in **wgs84**. Here, we do [**not**]{.underline} want to use *st_transform()* to change the data to projected CRS directly, as it will result in missing points when we use *st_intersects()*.
+One point to note is that while we can theoretically transform the data to projected CRS directly by using the [*st_transform()*](https://r-spatial.github.io/sf/reference/st_transform.html) function of **sf** to facilitate the accurate computation of distances in a planar configuration, we want to keep it on hold for now as it will result in missing data points when we use [*st_intersects()*](https://cran.r-project.org/web/packages/sf/vignettes/sf3.html) subsequently to identify water points within each administrative boundary. This is because *st_intersects()* only works correctly if the geospatial data are in geographic CRS.
 
-To avoid taking up too much memory space in GitHub, we can delete the geo_export files in the data/geospatial folder before committing and pushing the changes to GitHub. We will also set `#| eval: false` such that the code will not run when knitted, and set it to `true` otherwise or run it manually in the RStudio environment.
+The simple feature data frame comprises 95,008 observations of 73 variables. In particular, we are interested in the variable status_clean (truncated to `status_cle` in the Shapefile), which tells us which water points are functional versus not. In addition, we will use the last variable, `geometry`, to perform data join for the recoded variables to the LGA boundaries data.
 
-In the code chunk below, *write_rds()* of the **readr** package is used to save the extracted sf data table into an output file in rds data format. We then do not need to go back to the original shapefile to reload the data each time we use it, as the data size is very large and the time to load is long.
+On a practical note, to avoid taking up too much memory space in GitHub, which has a memory limit of 100MB, we will extract the necessary data and save them in an rds file, and delete the `geo_export` Shapefiles from the `data/geospatial` folder, [before]{.underline} committing and pushing the changes to GitHub. This is to prevent error in the process of pushing the commit to GitHub. We do so by running the relevant code chunks below and saving the rds file in the `data/spatial` folder, and then setting `#| eval: false` so that the codes that use the original Shapefiles and intermediate large files will not run when knitted. This way, those codes will be suppressed when rendering the Quarto file and analysis can be done using the eventual rds file.
+
+> Should we wish to run certain lines of codes that are suppressed, we can set to `#| eval: true` to allow normal evaluation during rendering, or run it manually in the RStudio environment.
+
+In the code chunk below, [*write_rds()*](https://readr.tidyverse.org/reference/read_rds.html) of the **readr** package is used to save the extracted sf data table into an output file in rds data format. We then do not need to go back to the original Shapefile to reload the full set of global water points data each time we use it, as the data size is very large, the time to load is long and it cannot be pushed to GitHub.
 
 ```{r}
 #| eval: false
 wp_nga <- write_rds(wp, "data/geospatial/wp_nga.rds")
 ```
+
+However, do note that after running the above code chunk, the wp_nga.rds file is still too large (140.2MB) to push to GitHub (100MB limit). Hence, we will further extract only the data that we wish to use for our analysis and save it as another .rds file, and remove this one, indicate `#| eval: false` and delete the wp_nga.rds file from our directory, before we commit and push the changes to GitHub.
+
+### 5.2. Nigeria Level-2 Administrative Boundary Geospatial Data
+
+We also import the Nigeria Level-2 Administrative Boundary (LGA) data into our Quarto file, similarly using *st_read()* of **sf** in the code chunk below. The data are saved in the form of a simple feature data table `nga`.
 
 ```{r}
 nga <- st_read(dsn = "data/geospatial",
@@ -68,13 +81,31 @@ nga <- st_read(dsn = "data/geospatial",
               crs = 4326)
 ```
 
-There are 774 observations of 6 variables in the `nga` file.
+```{r}
+glimpse(nga)
+```
 
-## Data Wrangling
+There are 774 observations of 6 variables in the `nga` file, including `shapeName` for the LGA that each region belongs to and `geometry` for the polygons, as seen using the [*glimpse()*](https://dplyr.tidyverse.org/reference/glimpse.html) function of **dplyr** above. The geometry type is **multipolygon**. It is also in the **wgs84** geographic CRS, just like the water point data. Hence for now, there is no need to perform *st_transform()* to align their CRS.
 
-### Extracting the Necessary Data
+We also run a check for invalid geometries in the LGA data, using [*st_is_valid()*](https://r-spatial.github.io/sf/reference/valid.html) of **sf**.
 
-In the code chunk below, we replace the "NA" data in the `status_cle` variable with "Unknown", as this is the variable that will be used subsequently. This is so that the observations with "NA" will not be excluded in subsequent analyses.
+```{r}
+length(which(st_is_valid(nga) == FALSE))
+```
+
+The output is 0 - there is no invalid geometry for the LGA polygons.
+
+We also check for missing values in the LGA data, using [*is.na()*](https://www.rdocumentation.org/packages/ursa/versions/3.9.4/topics/is.na) of **ursa** to return `TRUE`/`FALSE` values and [*rowSums()*](https://www.rdocumentation.org/packages/raster/versions/2.9-5/topics/rowSums) of **raster** to tally the number of `TRUE`.
+
+```{r}
+nga[rowSums(is.na(nga))!=0,]
+```
+
+## 6. Data Wrangling: Cleaning and Extracting the Necessary Data
+
+### 6.1. Recoding of Missing Water Point Status Data
+
+In the code chunk below, we use [*replace_na()*](https://tidyr.tidyverse.org/reference/replace_na.html) of **tidyr** to replace the "NA" data in the `status_cle` variable with "Unknown", as this is the variable that will be used subsequently. This is so that the observations with "NA" will not be excluded in subsequent analyses.
 
 ```{r}
 #| eval: false
@@ -82,9 +113,9 @@ wp_nga <- read_rds("data/geospatial/wp_nga.rds") %>%
   mutate(status_cle = replace_na(status_cle, "Unknown"))
 ```
 
-In the code chunk below,
+### 6.2. Exploratory Data Analysis (EDA)
 
-quick view of classes and distribution.
+In the code chunk below, we use [*freq()*](https://www.rdocumentation.org/packages/funModeling/versions/1.9.4/topics/freq) of **funModeling** to display the distribution of `status_cle` field in `wp_nga` for a quick view of the available classes and their distributions. We need to suppress this code chunk due to file size limit when we commit the changes and push to GitHub, by setting `#|eval: false`.
 
 ```{r}
 #| eval: false
@@ -92,7 +123,33 @@ freq(data = wp_nga,
      input = "status_cle")
 ```
 
-In the code chunk below,
+We see that there are 3 `status_cle` values that describe functional water points, namely
+
+1.  `Functional` (45,883, 48%),
+
+2.  `Functional but needs repair` (4,579, 5%), and
+
+3.  `Functional but not in use` (1,686, 2%).
+
+On the other hand, there are 5 values which indicate that the water points are not functional, including 7 mis-coded values due to a missing hyphen and lower "f", and they are
+
+1.  `Non-Functional` (29,385, 31%)
+2.  `Non-Functional due to dry season` (2,403, 3%)
+3.  `Abandoned/Decommissioned` (234, \<1%)
+4.  `Abandoned` (175, \<1%)
+5.  `Non functional due to dry season` (7, \<1%)
+
+We see that over 1/3 of the water points are non-functional.
+
+There are also 10,656 or 11% missing values which we recoded to `Unknown` using *replace_na()*.
+
+### 6.3. Extracting Water Point Data
+
+In this section, we will extract the water point records by using the classes that we saw above in `status_cle` field. This will help us obtain the absolute numbers as well as allow us to calculate the % total later.
+
+### 6.4. Extracting Functional Water Points
+
+In the code chunk below, we extract the data for the functional water points into `wpt_functional` using *filter()* of **dplyr** for the 3 classes that we identified using *freq()* of **funModeling**.
 
 ```{r}
 #| eval: false
@@ -103,38 +160,17 @@ wpt_functional <- wp_nga %>%
              "Functional but needs repair"))
 ```
 
+Running *freq()* on `wpt_functional` to check, we can see that the same number of records for the 3 functional classes are captured as per in `wp_nga`. We similarly suppress the evaluation of the code chunk below due to file size constraint.
+
 ```{r}
 #| eval: false
 freq(data = wpt_functional,
      input = "status_cle")
 ```
 
-## Extracting Water Point Data
+### 6.5. Extracting Non-Functional Water Points
 
-In this section, we will extract the water point records by using classes in *status_cle* field.
-
-### Extracting funtional water point
-
-In the code chunk below, `filter()` of dplyr is used to select functional water points.
-
-```{r}
-#| eval: false
-wpt_functional <- wp_nga %>%
-  filter(status_cle %in%
-           c("Functional", 
-             "Functional but not in use",
-             "Functional but needs repair"))
-```
-
-```{r}
-#| eval: false
-freq(data=wpt_functional, 
-     input = 'status_cle')
-```
-
-### Extracting non-funtional water point
-
-In the code chunk below, `filter()` of dplyr is used to select non-functional water points.
+We repeat the above process for non-functional water points, using the code chunks below.
 
 ```{r}
 #| eval: false
@@ -153,17 +189,20 @@ freq(data=wpt_nonfunctional,
      input = 'status_cle')
 ```
 
-### Extracting water point with Unknown class
+### 6.6. Extracting Water Point with Unknown Class
 
-In the code chunk below, `filter()` of dplyr is used to select water points with unknown status.
+Finally, for completeness, we also need to extract the water points with unknown status (missing `status_cle` field), using the code chunk below. Using *[str()](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str)* of R's **utils**, we confirm that the number of observations (10,656) tallies with that in the earlier frequency bar chart plotted using *freq()* of **funModeling**.
 
 ```{r}
 #| eval: false
 wpt_unknown <- wp_nga %>%
   filter(status_cle == "Unknown")
+str(wpt_unknown)
 ```
 
-## Performing Point-in-Polygon Count
+### 6.7. Performing Point-in-Polygon Count
+
+We want to find the number and proportion of functional, non-functional and unknown water points within each LGA. To do this, we use *st_intersects()* of **sf** to determine the cross-over between the LGA polygons in `nga` and water points in `wp_nga`. Thereafter, [*lengths()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/lengths) of **Base R** is used to return the number of water points in each class by LGA. Finally, we use [*mutate()*](https://dplyr.tidyverse.org/reference/mutate.html) of **dplyr** to add the new variables for `total wpt`, `wpt functional`, `wpt non-functional` and `wpt unknown` to `nga` sf data table, and assign it to a new variable `nga_wp`.
 
 ```{r}
 #| eval: false
@@ -178,7 +217,9 @@ nga_wp <- nga %>%
     st_intersects(nga, wpt_unknown)))
 ```
 
-## Saving the Analytical Data Table
+Note that the symbol used is \" \` \" (backtick) and not \" \' \" (apostrophe). This is used when there is space and hyphen (-) in the variable name (e.g. `total wpt`).
+
+Thereafter, we compute the percentage functional and percentage non-functional water points as `pct_functional` and `pct_non-functional`, using *mutate()* of **dplyr** in the code chunk below.
 
 ```{r}
 #| eval: false
@@ -187,29 +228,85 @@ nga_wp <- nga_wp %>%
   mutate(`pct_non-functional` = `wpt non-functional`/`total wpt`)
 ```
 
-Things to learn from the code chunk above:
+### 6.8 Saving the Analytical Data Table
 
--   `mutate()` of **dplyr** package is used to derive two fields namely *pct_functional* and *pct_non-functional*.
-
--   to keep the file size small, `select()` of **dplyr** is used to retain only field 3,4,9,10, 18,19,20,21,22,and 23.
-
-Now, you have the tidy sf data table subsequent analysis. We will save the sf data table into rds format.
+With the tidy sf data table, we save it in rds file format as `nga_wp.rds` for subsequent analysis, using *write_rds()* of **readr**.
 
 ```{r}
 #| eval: false
 write_rds(nga_wp, "data/geospatial/nga_wp.rds")
 ```
 
-Before you end this section, please remember to delete away all the raw data. Notice that the only data file left is *nga_wp.rds* and it's file size is aroung 2.1MB.
+Before we move on to the next section on spatial analysis, we will set `#| eval: false` for all code chunks that rely on either the `geo_export` Shapefiles or `wp_nga` as the files are too large and need to be deleted before committing and pushing the changes to GitHub. We will work with the `geoBoundaries-NGA-ADM2` Shapefiles and `nga_wp.rds` file, which is only around 2.1MB in size respectively.
 
-## Visualising the spatial dsitribution of water points
+## 7. Visualising the Spatial Distribution of Water Points - Thematic Mapping
+
+To avoid error with the removal of the large data files and suppression of the relevant code chunks above, we use *read_rds()* to load the `nga_wp.rds` file at the start of the next section of our analysis.
 
 ```{r}
 nga_wp <- read_rds("data/geospatial/nga_wp.rds")
-total <- qtm(nga_wp, "total wpt")
-wp_functional <- qtm(nga_wp, "wpt functional")
-wp_nonfunctional <- qtm(nga_wp, "wpt non-functional")
-unknown <- qtm(nga_wp, "wpt unknown")
+```
+
+As we have performed *st_intersects()*, we can use *st_transform()* of **sf** to convert the data from an ellipsoid **wgs84** CRS to a planar projected CRS via mathematical reprojection of the coordinates, prior to distance calculations. This is done using EPSG: 26392 for Minna / Nigeria Mid Belt (Spatial Reference, 2022), in the code chunk below. We also check that the transformation has been done correctly using *st_geometry()* of **sf**, where the projected CRS field indicates `Minna / Nigeria Mid Belt`.
+
+```{r}
+nga_wp26392 <- st_transform(nga_wp, 
+                            crs = 26392)
+st_geometry(nga_wp26392)
+```
+
+We see that the bounding box values have changed from the decimal degree format where the minimum and maximum values of x and y were between 2.7^o^ and 14.7^o^, to between 26,663m and 1,344,157m (MapTools, 2022; epsg.io, 2022).
+
+We set [*tmap_mode()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tmap_mode) of **tmap** to "view" to activate interactive viewing mode instead of static maps, to better zoom into any of the 774 LGAs for further analysis if needed.
+
+```{r}
+tmap_mode("view")
+```
+
+In the code chunk below, we plot the **wgs84** and `crs = 26392` versions of the Nigerian LGA using [*tm_shape()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tm_shape) of **tmap**, and note that the latter appears to flatten the mapping area out a little more than the former. We can also see that the plots are now in interactive mode.
+
+```{r}
+nga_wp_wgs <- tm_shape(nga_wp) +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Geographic CRS",
+            main.title.position = "center")
+
+nga_wp_proj <- tm_shape(nga_wp26392) +
+  tm_borders(alpha = 0.5) +
+  tm_layout(main.title = "Projected CRS",
+            main.title.position = "center")
+
+tmap_arrange(nga_wp_wgs, nga_wp_proj, asp = 1, ncol = 2)
+```
+
+### 7.1. Quick Plots by Equal Classification
+
+The code chunk below uses [*qtm()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/qtm) of **tmap** to do a quick thematic map plot of the Nigeria LGA, coloured by the number of water points in equal classification method. The four quadrants represent (from top left in a "Z" shape) total water points, functional water points, non-functional water points and water points with unknown functionality status.
+
+```{r}
+total <- qtm(nga_wp26392, "total wpt")
+wp_functional <- qtm(nga_wp26392, "wpt functional")
+wp_nonfunctional <- qtm(nga_wp26392, "wpt non-functional")
+unknown <- qtm(nga_wp26392, "wpt unknown")
 
 tmap_arrange(total, wp_functional, wp_nonfunctional, unknown, asp=1, ncol=2)
 ```
+
+By zooming into the choropleth maps and clicking on the areas of interest, we see that Babura has the most number of total water points at 894. There are 11 LGAs in the Northeast region that are without any water points at all, namely Geidam, Mobbar, Abadam, Kukawa, Guzamala, Nganzai, Gubio, Marte, Kala/Balge, Kaga and Gujba.
+
+The general patterns of the functional water points appear similar. We see that in Chikun, there are 4 water points in total but 0 functional ones.
+
+For non-functional water points, they are mainly found in Ifelodun (278) and Igabi (216), forming 46% and 74% of all water points found in those regions, suggesting that heavy replacement or maintenance work may be needed there.
+
+The water points with unknown status information are mainly found in the Central (e.g. Pankshin, Shendam) and South regions (e.g. Izzi, Ikwo).
+
+We also visualise the functional and non-functional water points by their proportions of the total number of water points in each LGA, using the code chunk below.
+
+```{r}
+pct_wp_functional <- qtm(nga_wp26392, "pct_functional")
+pct_wp_nonfunctional <- qtm(nga_wp26392, "pct_non-functional")
+
+tmap_arrange(pct_wp_functional, pct_wp_nonfunctional, asp=1, ncol=2)
+```
+
+On the left plot, we see that the the highest proportion of functional water points are mostly found in the North half of Nigeria. On the right plot, the proportion of non-functional water points tend to be more dispersed in the remaining LGAs. In general, there are less LGAs with high proportion of non-functional water points compared to that of functional ones.

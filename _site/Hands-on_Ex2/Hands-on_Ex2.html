@@ -973,10 +973,10 @@ First 10 features:
 </section>
 <section id="creating-a-lisa-cluster-map" class="level2">
 <h2 class="anchored" data-anchor-id="creating-a-lisa-cluster-map">Creating a LISA Cluster Map</h2>
-<p>The LISA Cluster Map shows the significant locations colour coded by type of spatial autocorrelation. The first step is to plot the Moran scatterplot.</p>
+<p>The LISA Cluster Map shows the significant locations colour-coded by type of spatial autocorrelation. The first step is to plot the Moran scatterplot.</p>
 <section id="plotting-moran-scatterplot" class="level3">
 <h3 class="anchored" data-anchor-id="plotting-moran-scatterplot">Plotting Moran Scatterplot</h3>
-<p>The Moran scatterplot is an illustration of the relationship ebtween the values of the chosen attributes at each location and the average value of the same attribute at neighbouring locations.</p>
+<p>The Moran scatterplot is an illustration of the relationship between the values of the chosen attributes at each location and the average value of the same attribute at neighbouring locations.</p>
 <p>The code chunk below plots the Moran scatterplot of GDPPC 2012 by using <a href="https://r-spatial.github.io/spdep/reference/moran.plot.html"><em>moran.plot()</em></a> of <strong>spdep</strong>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb56"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>nci <span class="ot">&lt;-</span> <span class="fu">moran.plot</span>(hunan<span class="sc">$</span>GDPPC,</span>
@@ -1117,8 +1117,8 @@ First 10 features:
 <section id="deriving-the-centroid" class="level3">
 <h3 class="anchored" data-anchor-id="deriving-the-centroid">Deriving the Centroid</h3>
 <p>Distance-based weights matrix requires the centroids of the polygons to be determined.</p>
-<p>To do this, we need the coordinates in a separate dataframe using a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of the sf object <code>us.bound</code>. The function used is <em>st_centroid()</em> from <strong>sf</strong> package. We will use <a href="https://purrr.tidyverse.org/reference/map.html"><em>map_dbl()</em> variation of <em>map()</em></a> from the <strong>purrr</strong> package.</p>
-<p>To get our longitude values we map the <em>st_centroid()</em> function over the geometry column of <code>us.bound</code> and access the longitude value through double bracket notation [[ ]] and value 1. This allows us to get only the longitude, which is the first value in each centroid.</p>
+<p>To do this, we need the coordinates in a separate dataframe using a mapping function. The mapping function applies a given function to each element of a vector and returns a vector of the same length. Our input vector will be the geometry column of the sf object <code>hunan</code>. The function used is <em>st_centroid()</em> from <strong>sf</strong> package. We will use <a href="https://purrr.tidyverse.org/reference/map.html"><em>map_dbl()</em> variation of <em>map()</em></a> from the <strong>purrr</strong> package.</p>
+<p>To get our longitude values we map the <em>st_centroid()</em> function over the geometry column of <code>hunan</code> and access the longitude value through double bracket notation [[ ]] and value 1. This allows us to get only the longitude, which is the first value in each centroid.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>longitude <span class="ot">&lt;-</span> <span class="fu">map_dbl</span>(hunan<span class="sc">$</span>geometry, <span class="sc">~</span><span class="fu">st_centroid</span>(.x)[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
