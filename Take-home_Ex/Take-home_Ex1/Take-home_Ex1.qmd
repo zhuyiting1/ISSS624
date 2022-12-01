@@ -521,9 +521,10 @@ summary(wm_q)
 
 There are a total of 4,440 pairs of neighbours between the Nigeria LGAs based on Queen's definition of neighbours where there must at least 1 shared boundary point between neighbours. Most LGAs have between 3 and 9 neighbours. There is 1 LGA that has 0 neighbour which we should look into. There are also up to 14 neighbours for another LGA (polygon ID 508), possibly a large area surrounded by multiple smaller regions.
 
-We first look at the complete contiguity weight matrix using *str()* of **utils** in the code chunk below.
+We can look at the complete contiguity weight matrix using *str()* of **utils** in the code chunk below.
 
 ```{r}
+#| eval: false
 str(wm_q)
 ```
 
@@ -553,10 +554,10 @@ nb508 <- nga_wp26392$shapeName[nb508]
 nb508
 ```
 
-We can also display the structure of the distance-bsaed weights matrix by using [*table()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/table) of **Base R** and [*card()*](https://r-spatial.github.io/spdep/reference/card.html) of **spdep**. The latter tallies the numbers of neighbours of regions in the neighbours list, and feeds into the former to build a contingency table where each row is an LGA (alphabetically ordered) and \"1\" is indicated for the number of neighbours that it has (columns).
+We can also display the structure of the distance-bsaed weights matrix by using [*table()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/table) of **Base R** and [*card()*](https://r-spatial.github.io/spdep/reference/card.html) of **spdep**. The latter tallies the numbers of neighbours of regions in the neighbours list, and feeds into the former to build a contingency table where each row is an LGA (alphabetically ordered) and \"1\" is indicated for the number of neighbours that it has (columns). We use *head()* of **utils** to limit the output to the first 6 rows.
 
 ```{r}
-table(nga_wp26392$shapeName, card(wm_q))
+head(table(nga_wp26392$shapeName, card(wm_q)))
 ```
 
 We use [*n.comp.nb()*](https://r-spatial.github.io/spdep/reference/compon.html) of **spdep** to perform depth first search on neighbours list and confirm that all regions are neighbours to each other (i.e. within a single neighbours list). If any of the regions are disjoint, they will be indicated by a 2nd region etc.
@@ -579,9 +580,10 @@ summary(wm_r)
 
 There are a total of 4,420 pairs of neighbours between the Nigeria LGAs based on Rook's definition of neighbours where there must more than 1 shared boundary point between neighbours. The minimum and maximum numbers of neighbours remain unchanged compared to Queen's criteria.
 
-We similarly look at the complete contiguity weight matrix using *str()* of **utils** in the code chunk below.
+We can similarly look at the complete contiguity weight matrix using *str()* of **utils** in the code chunk below.
 
 ```{r}
+#| eval: false
 str(wm_r)
 ```
 
@@ -677,9 +679,10 @@ Based on the summary report, there are 5 LGAs with only 1 neighbour each. The mo
 nga_wp26392$shapeName[[585]]
 ```
 
-To look at the number of neighbours for each LGA and their polygon IDs, we use the [*str()*](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str) function of R\'s **utils** package to see its internal structure.
+To look at the number of neighbours for each LGA and their polygon IDs, we can use the *str()* function of R\'s **utils** package to see its internal structure.
 
 ```{r}
+#| eval: false
 str(wm_d71)
 ```
 
@@ -743,6 +746,7 @@ We see that by setting `k = 8` so that each region has exactly 8 neighbours, we 
 We can similarly display the content of the matrix using *str()* of R\'s **utils** to see the region IDs of all 8 neighbours for each region.
 
 ```{r}
+#| eval: false
 str(knn8)
 ```
 
@@ -1105,11 +1109,14 @@ We obtain the following statistics for the first 6 output:
 
 -   `Pr()`: p-value of local Moran statistic
 
-The code chunk below lists the content of the local Moran matrix derived using [*printCoefmat()*](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/printCoefmat) function from R's **Stats** package.
+The code chunk below can help to list the content of the local Moran matrix derived using [*printCoefmat()*](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/printCoefmat) function from R's **Stats** package. For the purpose of this report, we will set `#| eval: false` to avoid displaying the full list of statistics for all 774 LGAs, but to show a screenshot of the first 6 observations below.
 
 ```{r}
+#| eval: false
 printCoefmat(data.frame(localMI[fips,]))
 ```
+
+![](images/paste-0EB1BE87.png)
 
 We will map the Local Moran's I in the next sub-section to visualise the LGAs by their p-values.
 
