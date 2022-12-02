@@ -1,0 +1,324 @@
+---
+title: "Hands-on Exercise 3"
+author: Zhu Yiting
+execute: 
+  warning: false
+  message: false
+format: html
+editor: visual
+---
+
+# Geographical Segmentation with Spatially Constrained Clustering Techniques
+
+## 1. Overview
+
+This exercise aims to delineate homogeneous regions by using geographically referenced multivariate data. There are two main analyses, namely:
+
+1.  hierarchical cluster analysis; and
+2.  spatially constrained cluster analysis.
+
+### 1.1. Learning Objectives
+
+1.  Convert GIS polygon data into R's simple feature data.frame by using appropriate functions of **sf** package.
+2.  Convert simple feature data.frame into R's SpatialPolygonDataFrame object by using appropriate functions of **sf** package.
+3.  Perform cluster analysis using *hclust()* of Base R.
+4.  Perform spatially constrained cluster analysis using *skater()* of Base R.
+5.  Visualise analysis output using **ggplot2** and **tmap** packages.
+
+## 2. Getting Started
+
+### 2.1. The Analytical Question
+
+In geobusiness and spatial policy, it is common practice to delineate the market or planning areas into homogeneous regions by using multivariate data. In this hands-on exercise, we are interested to delineate [Shan State](https://en.wikipedia.org/wiki/Shan_State), [Myanmar](https://en.wikipedia.org/wiki/Myanmar), into homogeneous regions by using multiple Information and Community Technology (ICT) measures, namely: Radio, Telephone, Land line phone, Mobile phone, Computer and Internet at home.
+
+### 2.2. The Data
+
+Two data sets will be used in this study:
+
+1.  Myanmar Township Boundary Data (i.e. `myanmar_township_boundaries`). This is a GIS data in ESRI shapefile format. It consists of township boundary information of Myanmar. The spatial data are captured in polygon features.
+2.  `Shan-ICT.csv`. This is an extract of the [2014 Myanmar Population and Housing Census Myanmar](https://myanmar.unfpa.org/en/publications/2014-population-and-housing-census-myanmar-data-sheet), at the township level.
+
+Both data sets were downloaded from [Myanmar Information Management Unit (MIMU)](http://themimu.info/).
+
+## 3. Installing and Loading R Packages
+
+We will prepare our R environment by installing and loading the necessary R packages, using [*p_load()*](https://www.rdocumentation.org/packages/pacman/versions/0.5.1/topics/p_load) function of [**pacman**](https://www.rdocumentation.org/packages/pacman/versions/0.5.1) package.
+
+The R packages needed for this exercise are as follows:
+
+1.  Spatial data handling - [**sf**](https://r-spatial.github.io/sf/), [**rgdal**](http://cran.nexr.com/web/packages/rgdal/index.html) and [**spdep**](https://www.rdocumentation.org/packages/spdep/versions/1.2-7)
+2.  Attribute data handling - [**tidyverse**](https://www.tidyverse.org/), specifically [**readr**](https://readr.tidyverse.org/), [**ggplot2**](https://ggplot2.tidyverse.org/) and [**dplyr**](https://dplyr.tidyverse.org/)
+3.  Choropleth mapping - [**tmap**](https://cran.r-project.org/web/packages/tmap/vignettes/tmap-getstarted.html)
+4.  Multivariate data visualisation and analysis - [**coorplot**](https://www.rdocumentation.org/packages/corrplot/versions/0.92), [**ggpubr**](https://www.rdocumentation.org/packages/ggpubr/versions/0.5.0), [**factoextra**](https://www.rdocumentation.org/packages/factoextra/versions/1.0.7) and [**heatmaply**](https://www.rdocumentation.org/packages/heatmaply/versions/1.4.0)
+5.  Cluster analysis - [**cluster**](https://cran.r-project.org/web/packages/cluster/index.html), [**NbClust**](https://www.rdocumentation.org/packages/NbClust/versions/3.0.1/topics/NbClust), [**ClustGeo**](https://hal.archives-ouvertes.fr/hal-01664018/file/pub00056373.pdf)and [**psych**](https://www.rdocumentation.org/packages/psych/versions/2.2.9)
+
+The code chunk below installs and loads the required R packages into the R environment.
+
+```{r}
+pacman::p_load(rgdal, spdep, tmap, sf, 
+               ggpubr, cluster, factoextra, NbClust, 
+               heatmaply, corrplot, psych, tidyverse)
+```
+
+## 4. Data Import and Preperation
+
+### 4.1. Importing Geospatial Data into R Environment
+
+In this section, we import Myanmar Township Boundary GIS data and its associated attribute table into the R environment.
+
+The Myanmar Township Boundary GIS data is in ESRI shapefile format. We can import it into the R environment using [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) of **sf**. We also use the piping function *%\>%* from **dplyr** and perform *filter()* to extract only the data for the Shan state. This is done in the code chunk below.
+
+```{r}
+shan_sf <- st_read(dsn = "data/geospatial",
+                   layer = "myanmar_township_boundaries") %>% 
+  filter(ST %in% c("Shan (East)", "Shan (North)", "Shan (South)"))
+```
+
+The imported Myanmar township boundary object is assigned to `shan_sf`. It is saved in **simple feature data.frame** format. We see that the full shapefile before filtering for Shan state has 330 features and 14 fields, which should include **multipolygon** geometry as its last field based on the geometry type displayed. Looking at the Environment pane, we see that `shan_sf` is filtered down to 55 observations. The bounding box shows the range of x and y, which are between 9 and 102 and suggests that the data is in [decimal degrees format](https://www.maptools.com/tutorials/lat_lon/formats). The coordinate reference system (CRS) used is geographic, in [**wgs84**](https://gisgeography.com/wgs84-world-geodetic-system/).
+
+We can view the content of `shan_sf` simple features data.frame by calling it directly, using the code chunk below.
+
+```{r}
+shan_sf
+```
+
+As the sf.data.frame conforms to Hardy Wickham's [tidy framework](https://edzer.github.io/rstudio_conf/#18), we can use [*glimpse()*](https://dplyr.tidyverse.org/reference/glimpse.html) of **dplyr** to check the data types of its fields.
+
+```{r}
+glimpse(shan_sf)
+```
+
+### 4.2. Importing Aspatial Data into R Environment
+
+The csv file is imported using [*read_csv()*](https://readr.tidyverse.org/reference/read_delim.html) of **readr** using the code chunk below.
+
+```{r}
+ict <- read_csv("data/aspatial/Shan-ICT.csv")
+```
+
+The imported attribute data set is saved in R's tibble data.frame format and named `ict`. We see that it also has 55 observations, and 11 columns which include the number of households for each ICT variable from the 2014 Myanmar Population and Housing Census Myanmar.
+
+The code chunk below uses *summary()* of **Base R** to show the summary statistics for each of the 11 variables in the `ict` data.frame.
+
+```{r}
+summary(ict)
+```
+
+The highest number among the maximum values is 62,388 households for television, which is consistent with our knowledge of it being a common source of entertainment and communication method in this era.
+
+### 4.3. Deriving New Variables Using dplyr **Package**
+
+The unit of measurement of the values are the number of households. Using these values directly will be biased by the underlying total number of households. In general, the townships with relative higher total number of households will also have higher absolute number of households owning radio, television, etc.
+
+In order to overcome this problem, we will derive the penetration rate of each ICT variable, using the [*mutate()*](https://dplyr.tidyverse.org/reference/mutate.html) function of **dplyr** to create new columns as shown in the code chunk below. We also use [*rename()*](https://dplyr.tidyverse.org/reference/rename.html) of **dplyr** to make the variable names more easily understood and when using them in the *mutate()* functions.
+
+```{r}
+ict_derived <- ict %>%
+  mutate(`RADIO_PR` = `Radio`/`Total households`*1000) %>%
+  mutate(`TV_PR` = `Television`/`Total households`*1000) %>%
+  mutate(`LLPHONE_PR` = `Land line phone`/`Total households`*1000) %>%
+  mutate(`MPHONE_PR` = `Mobile phone`/`Total households`*1000) %>%
+  mutate(`COMPUTER_PR` = `Computer`/`Total households`*1000) %>%
+  mutate(`INTERNET_PR` = `Internet at home`/`Total households`*1000) %>%
+  rename(`DT_PCODE`=`District Pcode`,`DT`=`District Name`,
+         `TS_PCODE`=`Township Pcode`, `TS`=`Township Name`,
+         `TT_HOUSEHOLDS`=`Total households`,
+         `RADIO`=`Radio`, `TV`=`Television`, 
+         `LLPHONE`=`Land line phone`, `MPHONE`=`Mobile phone`,
+         `COMPUTER`=`Computer`, `INTERNET`=`Internet at home`) 
+```
+
+We can see that the new variables are appended to the`ict` data.frame in `ict_derived`, using the *summary()* function of **Base R**.
+
+```{r}
+summary(ict_derived)
+```
+
+The derived proportions range between 1.041 for the Internet and 842.4 for television.
+
+### 4.4. Joining Geospatial and Aspatial Data
+
+We combine both sets of data into a single data.frame using [*left_join()*](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr**, which appends the second data.frame to the first based on the observations in the first. The `shan_sf` simple feature data.frame will be used as the base data object, and the `ict_derived` data.frame will be used as the join table.
+
+As there are 4 variables which are common across both data sets, namely `DT`, `DT_PCODE`, `TS`, and `TS_PCODE`, we will specify the criteria for joining, in this case by `TS_PCODE`. We do so using the code chunk below.
+
+```{r}
+shan_sf <- left_join(shan_sf, 
+                     ict_derived, 
+                     by=c("TS_PCODE"="TS_PCODE"))
+```
+
+## 5. Exploratory Data Analysis (EDA)
+
+### 5.1. EDA Using Statistical Graphics
+
+We plot the distribution of variables (i.e. number of households with radio) using appropriate Exploratory Data Analysis (EDA) using the combination [*ggplot()*](https://ggplot2.tidyverse.org/reference/ggplot.html) (to initialise a ggplot object) with [*geom_histogram()*](https://ggplot2.tidyverse.org/reference/geom_histogram.html) (to plot a histogram) of **ggplot2** as shown in the code chunk below.
+
+```{r}
+ggplot(data = shan_sf, 
+       aes(x = `RADIO`)) +
+  geom_histogram(bins = 20, 
+                 color = "black", 
+                 fill = "light blue")
+```
+
+Seeing the distribution being right-skewed and having counts that are far out to the right and disjoint from the rest of the frequency bars, we also use [*geom_boxplot()*](https://ggplot2.tidyverse.org/reference/geom_boxplot.html) of **ggplot2** to plot a boxplot, which is useful for detecting outliers which are displayed as individual points outside of the box-and-whiskers.
+
+```{r}
+ggplot(data = shan_sf,
+       aes(x = `RADIO`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+```
+
+We see 3 individual dots displayed outside of the box-and-whiskers, signifying 3 outliers beyond 12,500 households.
+
+Next, we also plot the distribution of the newly derived variable (i.e. Radio penetration rate (PR)) by using the code chunk below.
+
+```{r}
+ggplot(data = shan_sf, 
+       aes(x = `RADIO_PR`)) +
+  geom_histogram(bins = 20, 
+                 color = "black", 
+                 fill = "light blue")
+```
+
+We see that the Radio PR appears more normal with less outliers, but still slightly right-skewed.
+
+We similarly plot the boxplot for Radio PR using the code chunk below.
+
+```{r}
+ggplot(data = shan_sf, 
+       aes(x = `RADIO_PR`)) +
+  geom_boxplot(color = "black", 
+               fill = "light blue")
+```
+
+We can repeat the process for all 6 modes of ICT in the data, and combine them into a single figure using [*ggarrange()*](https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html) of **ggpubr** to group and arrange the plots (in a similar way to [*tmap_arrange()*](https://r-tmap.github.io/tmap/reference/tmap_arrange.html) of **tmap**, except for ggplots instead of tmaps).
+
+```{r}
+radio <- ggplot(data=shan_sf, 
+             aes(x=`RADIO_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue")
+
+tv <- ggplot(data=shan_sf, 
+             aes(x=`TV_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue")
+
+llphone <- ggplot(data=shan_sf, 
+             aes(x=`LLPHONE_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue")
+
+mphone <- ggplot(data=shan_sf, 
+             aes(x=`MPHONE_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue")
+
+computer <- ggplot(data=shan_sf, 
+             aes(x=`COMPUTER_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue")
+
+internet <- ggplot(data=shan_sf, 
+             aes(x=`INTERNET_PR`)) +
+  geom_histogram(bins=20, 
+                 color="black", 
+                 fill="light blue")
+
+ggarrange(radio, tv, llphone, mphone, computer, internet, 
+          ncol = 3, 
+          nrow = 2)
+```
+
+From the histograms, we see that all ICT PRs are right-skewed with potential outliers, except TV PR which is left-skewed. We confirm this using boxplots.
+
+```{r}
+radio <- ggplot(data=shan_sf, 
+             aes(x=`RADIO_PR`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+
+tv <- ggplot(data=shan_sf, 
+             aes(x=`TV_PR`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+
+llphone <- ggplot(data=shan_sf, 
+             aes(x=`LLPHONE_PR`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+
+mphone <- ggplot(data=shan_sf, 
+             aes(x=`MPHONE_PR`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+
+computer <- ggplot(data=shan_sf, 
+             aes(x=`COMPUTER_PR`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+
+internet <- ggplot(data=shan_sf, 
+             aes(x=`INTERNET_PR`)) +
+  geom_boxplot(color="black", 
+               fill="light blue")
+
+ggarrange(radio, tv, llphone, mphone, computer, internet, 
+          ncol = 3, 
+          nrow = 2)
+```
+
+It turns out that TV PR has outliers on both the left and right of the box-and-whiskers. In addition, for mobile phone PR, there is no outlier.
+
+### 5.2. EDA Using Choropleth Map
+
+#### 5.2.1. Plotting a Quick Choropleth Map
+
+To have a quick look at the distribution of Radio PR of Shan State at township level, we will use a choropleth map.
+
+The code chunk below plots a choropleth map using [*qtm()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/qtm) of **tmap**. This is a quick and easy way to get a quick view of the spatial distribution, coloured by 5 equal intervals, by simply specifying (i) the simple feature data.frame and (ii) the variable by which to colour the map.
+
+```{r}
+qtm(shan_sf, "RADIO_PR")
+```
+
+We see darker regions of Radio PR in the extreme Northwest, along the West side and in the Southeast side of Shan State.
+
+In order to reveal that the distribution shown in the choropleth map above is biased to the underlying total number of households at the townships, we will create two choropleth maps, one for the total number of households (i.e. TT_HOUSEHOLD.map) and the other for the total number of households with Radio (RADIO.map), using
+
+-   *tm_shape()* - to plot the geometries of the sf data.frame,
+
+-   *tm_fill()* - to specify the variable by which the polygons are coloured, number of intervals, types of intervals (e.g. equal, quantile), displayed title of the colour scale,
+
+-   *tm_borders()* - to customise the border properties such as transparency, and
+
+-   *tm_arrange()* - to plot multiple tmaps
+
+of **tmap** in the code chunk below.
+
+```{r}
+TT_HOUSEHOLDS.map <- tm_shape(shan_sf) + 
+  tm_fill(col = "TT_HOUSEHOLDS",
+          n = 5,
+          style = "jenks", 
+          title = "Total households") + 
+  tm_borders(alpha = 0.5) 
+
+RADIO.map <- tm_shape(shan_sf) + 
+  tm_fill(col = "RADIO",
+          n = 5,
+          style = "jenks",
+          title = "Number Radio ") + 
+  tm_borders(alpha = 0.5) 
+
+tmap_arrange(TT_HOUSEHOLDS.map, RADIO.map,
+             asp=NA, ncol=2)
+```

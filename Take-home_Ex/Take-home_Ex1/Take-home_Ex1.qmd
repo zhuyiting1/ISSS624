@@ -214,7 +214,7 @@ freq(data=wpt_nonfunctional,
 
 ### 6.6. Extracting Water Point with Unknown Class
 
-Finally, for completeness, we also need to extract the water points with unknown status (missing `status_cle` field), using the code chunk below. Using *[str()](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str)* of R's **utils**, we confirm that the number of observations (10,656) tallies with that in the earlier frequency bar chart plotted using *freq()* of **funModeling**. A screenshot of the top part of the internal structure of `wpt_unknown` is shown below.
+Finally, for completeness, we also need to extract the water points with unknown status (missing `status_cle` field), using the code chunk below. Using [*str()*](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str) of R's **utils**, we confirm that the number of observations (10,656) tallies with that in the earlier frequency bar chart plotted using *freq()* of **funModeling**. A screenshot of the top part of the internal structure of `wpt_unknown` is shown below.
 
 ```{r}
 #| eval: false
@@ -242,7 +242,7 @@ nga_wp <- nga %>%
     st_intersects(nga, wpt_unknown)))
 ```
 
-Note that the symbol used is \" \` \" (backtick) and not \" \' \" (apostrophe). This is used when there is space and hyphen (-) in the variable name (e.g. `total wpt`).
+Note that the symbol used is " \` " (backtick) and not " ' " (apostrophe). This is used when there is space and hyphen (-) in the variable name (e.g. `total wpt`).
 
 Thereafter, we compute the percentage functional and percentage non-functional water points as `pct_functional` and `pct_non-functional`, using *mutate()* of **dplyr** in the code chunk below.
 
@@ -510,7 +510,7 @@ We will explore these methods and determine an appropriate one for further analy
 
 ### 9.1. Computing Queen's Contiguity-based Neighbours
 
-In the code chunk below, [*poly2nb()*](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** is used to compute the contiguity weight matrix for the study area. This function builds a neighbours list based on regions with contiguous boundaries. The default option uses the Queen\'s criteria to define each LGA's neighbours (`queen = TRUE`), which is what we will use here. We will explore Rook's criteria in the subsequent sub-section. A visual representation of the contiguity criteria is shown in the figure below.
+In the code chunk below, [*poly2nb()*](https://r-spatial.github.io/spdep/reference/poly2nb.html) of **spdep** is used to compute the contiguity weight matrix for the study area. This function builds a neighbours list based on regions with contiguous boundaries. The default option uses the Queen's criteria to define each LGA's neighbours (`queen = TRUE`), which is what we will use here. We will explore Rook's criteria in the subsequent sub-section. A visual representation of the contiguity criteria is shown in the figure below.
 
 ![](images/paste-BC6BD08B.png)
 
@@ -554,7 +554,7 @@ nb508 <- nga_wp26392$shapeName[nb508]
 nb508
 ```
 
-We can also display the structure of the distance-bsaed weights matrix by using [*table()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/table) of **Base R** and [*card()*](https://r-spatial.github.io/spdep/reference/card.html) of **spdep**. The latter tallies the numbers of neighbours of regions in the neighbours list, and feeds into the former to build a contingency table where each row is an LGA (alphabetically ordered) and \"1\" is indicated for the number of neighbours that it has (columns). We use *head()* of **utils** to limit the output to the first 6 rows.
+We can also display the structure of the distance-bsaed weights matrix by using [*table()*](https://www.rdocumentation.org/packages/base/versions/3.6.2/topics/table) of **Base R** and [*card()*](https://r-spatial.github.io/spdep/reference/card.html) of **spdep**. The latter tallies the numbers of neighbours of regions in the neighbours list, and feeds into the former to build a contingency table where each row is an LGA (alphabetically ordered) and "1" is indicated for the number of neighbours that it has (columns). We use *head()* of **utils** to limit the output to the first 6 rows.
 
 ```{r}
 head(table(nga_wp26392$shapeName, card(wm_q)))
@@ -625,9 +625,9 @@ As the neighbours lists from Queen's and Rook's contiguity methods are similar, 
 
 In the contiguity weight matrix, we assign a spatial weight to each pairs of LGAs in. Each row and each column represent 1 of the 774 LGAs, forming a 774 x 774 matrix. The numbers 1 and 0 are used to indicate between each row and column pair (e.g. neighbour pair 1-2 represented by the value in the first row and second column), whether they are neighbours (1) or not (0). The values along the diagonal (from top left to bottom right) is always 0 as they represent the same region (e.g. 1-1, 2-2, etc.) Such a matrix is symmetrical along the same diagonal.
 
-As each region has different number of neighbours, in practice, row-standardised weights are used instead of spatial weights. Row-standardisation is done by dividing the values in each row by the sum of that row, so that the weight is a relative fraction based on the total number of neighbours that the region has (proportion by row sum). Row-standardisation weights matrix ensures that the spatial parameter in many spatial stochastic processes are comparable between models. It is applicable where polygon features are defined by administrative boundaries (ArcGIS Desktop, 2021). While this is the most intuitive way of summarising the neighbours\' values, this approach has a limitation in that polygons along the edges of the study area will base their lagged values on fewer polygons, thus potentially over- or under-estimating the true nature of the spatial correlation in the data. More robust options such as the binary coding could be explored, such as in inverse distance weight (IDW) method.
+As each region has different number of neighbours, in practice, row-standardised weights are used instead of spatial weights. Row-standardisation is done by dividing the values in each row by the sum of that row, so that the weight is a relative fraction based on the total number of neighbours that the region has (proportion by row sum). Row-standardisation weights matrix ensures that the spatial parameter in many spatial stochastic processes are comparable between models. It is applicable where polygon features are defined by administrative boundaries (ArcGIS Desktop, 2021). While this is the most intuitive way of summarising the neighbours' values, this approach has a limitation in that polygons along the edges of the study area will base their lagged values on fewer polygons, thus potentially over- or under-estimating the true nature of the spatial correlation in the data. More robust options such as the binary coding could be explored, such as in inverse distance weight (IDW) method.
 
-The code chunk below performs row standardisation for spatial weights using the [*nb2listw()*](https://www.rdocumentation.org/packages/spdep/versions/1.2-7/topics/nb2listw) of **spdep**, with input being `wm_q` which is an object of class **nb**. The default style is \"W\" which is row standardisation. Other styles include \"B\" for basic binary coding, \"C\" for globally standaridsation, \"U\" for C divided by the number of neighbours, and \"S\" for variance-stablising coding scheme. Here, we use the default `style = "W"` to derive the weight matrix with row standardisation, to align the basis for analysis whether the LGA has many or few neighbours. For the zero.policy, we will set it to TRUE to permit the weights list to be formed with zero-length weights vector, which means that weights vector of zero length are inserted for LGAs without neighbour in the neighbours list, which we saw for Bakassi in the previous sub-section.
+The code chunk below performs row standardisation for spatial weights using the [*nb2listw()*](https://www.rdocumentation.org/packages/spdep/versions/1.2-7/topics/nb2listw) of **spdep**, with input being `wm_q` which is an object of class **nb**. The default style is "W" which is row standardisation. Other styles include "B" for basic binary coding, "C" for globally standaridsation, "U" for C divided by the number of neighbours, and "S" for variance-stablising coding scheme. Here, we use the default `style = "W"` to derive the weight matrix with row standardisation, to align the basis for analysis whether the LGA has many or few neighbours. For the zero.policy, we will set it to TRUE to permit the weights list to be formed with zero-length weights vector, which means that weights vector of zero length are inserted for LGAs without neighbour in the neighbours list, which we saw for Bakassi in the previous sub-section.
 
 ```{r}
 set.ZeroPolicyOption(TRUE)
@@ -679,7 +679,7 @@ Based on the summary report, there are 5 LGAs with only 1 neighbour each. The mo
 nga_wp26392$shapeName[[585]]
 ```
 
-To look at the number of neighbours for each LGA and their polygon IDs, we can use the *str()* function of R\'s **utils** package to see its internal structure.
+To look at the number of neighbours for each LGA and their polygon IDs, we can use the *str()* function of R's **utils** package to see its internal structure.
 
 ```{r}
 #| eval: false
@@ -743,7 +743,7 @@ knn8
 
 We see that by setting `k = 8` so that each region has exactly 8 neighbours, we get a total of 774 \* 8 = 6,192 links.
 
-We can similarly display the content of the matrix using *str()* of R\'s **utils** to see the region IDs of all 8 neighbours for each region.
+We can similarly display the content of the matrix using *str()* of R's **utils** to see the region IDs of all 8 neighbours for each region.
 
 ```{r}
 #| eval: false
@@ -852,7 +852,7 @@ On balance, [adaptive distance method]{.underline} is selected for the subsequen
 
 ### 10.1. Global Spatial Autocorrelation: Moran's I
 
-Next, we will perform Moran\'s I statistical testing using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**. (Statistics How To, 2022). Moran's I describes how features differ from the values in the study area as a whole. The formula to compute Global Moran's I is given as follows:
+Next, we will perform Moran's I statistical testing using [*moran.test()*](https://r-spatial.github.io/spdep/reference/moran.test.html) of **spdep**. (Statistics How To, 2022). Moran's I describes how features differ from the values in the study area as a whole. The formula to compute Global Moran's I is given as follows:
 
 ![](images/paste-DCC788E7.png)
 
@@ -876,9 +876,9 @@ The interpretation of Moran's I (Z-value), which is between 1 and -1, is as foll
 
 -   Approximately 0: Observations are arranged randomly over space (no spatial autocorrelation).
 
-#### Moran\'s I Statistical Testing
+#### Moran's I Statistical Testing
 
-The code chunk below performs Moran\'s I statistical testing. Using an upper-tailed test, the null and alternative hypotheses are as follows:
+The code chunk below performs Moran's I statistical testing. Using an upper-tailed test, the null and alternative hypotheses are as follows:
 
 > H~0~: The observed spatial patterns of proportion of non-functional water points in Nigeria are not clustered (i.e. either random or dispersed).
 >
@@ -892,13 +892,13 @@ moran.test(nga_wp26392$`pct_non-functional`,
            na.action = na.omit)
 ```
 
-At 5% significance level, we note that p-value is 2.2 x 10^-16^ \< 0.05, and we reject H~0~. Hence, there is sufficient evidence to support that the observed spatial patterns of the proportion of non-functional water points in Nigeria are clustered. This is supported by a positive Moran\'s I statistic of 0.449 which indicates positive clustering (i.e. LGAs with higher % non-functional water points tend to be geographically clustered/neighbours).
+At 5% significance level, we note that p-value is 2.2 x 10^-16^ \< 0.05, and we reject H~0~. Hence, there is sufficient evidence to support that the observed spatial patterns of the proportion of non-functional water points in Nigeria are clustered. This is supported by a positive Moran's I statistic of 0.449 which indicates positive clustering (i.e. LGAs with higher % non-functional water points tend to be geographically clustered/neighbours).
 
 #### Monte Carlo Moran's I
 
-When we doubt that the assumptions of Moran\'s I (i.e. normality and randomisation) are true, we can use a Monte Carlo simulation under the assumption of no spatial pattern and assigning all regions the mean value. We then compare the actual Moran\'s I to that of the randomly simulated distribution to obtain the p-value (pseudo significance).
+When we doubt that the assumptions of Moran's I (i.e. normality and randomisation) are true, we can use a Monte Carlo simulation under the assumption of no spatial pattern and assigning all regions the mean value. We then compare the actual Moran's I to that of the randomly simulated distribution to obtain the p-value (pseudo significance).
 
-The code chunk below performs permutation test for Moran\'s I statistics by using [*moran.mc()*](https://r-spatial.github.io/spdep/reference/moran.mc.html) of **spdep**. A total of 1000 simulations will be performed with the seed number `1234`.
+The code chunk below performs permutation test for Moran's I statistics by using [*moran.mc()*](https://r-spatial.github.io/spdep/reference/moran.mc.html) of **spdep**. A total of 1000 simulations will be performed with the seed number `1234`.
 
 ```{r}
 set.seed(1234)
@@ -963,7 +963,7 @@ We see that the maximum value of 0.449 from the summary statistics, which is the
 
 ### 10.2. Global Spatial Autocorrelation: Geary's C
 
-In this section, we will perform Geary\'s C statistical testing by using the [*geary.test()*](https://r-spatial.github.io/spdep/reference/geary.test.html) function of **spdep**. Geary's C describes how features differ from their immediate neighbours. The formula for calculating Global Geary's C is given below.
+In this section, we will perform Geary's C statistical testing by using the [*geary.test()*](https://r-spatial.github.io/spdep/reference/geary.test.html) function of **spdep**. Geary's C describes how features differ from their immediate neighbours. The formula for calculating Global Geary's C is given below.
 
 ![](images/paste-A424FDED.png)
 
@@ -992,11 +992,11 @@ geary.test(nga_wp26392$`wpt non-functional`,
            alternative = "greater")
 ```
 
-With a p-value = 2.2 x 10^-16^ \< 0.05, at 5% significant level and 95% confidence level, we reject H~0~. Hence, there is sufficient evidence to support that the observed spatial patterns of the number of non-functional water points in Nigeria are clustered. This is supported by a small Geary\'s C statistic of 0.691 \< 1. This implies that LGAs with higher number of non-functional water points tend to be geographically clustered/neighbours.
+With a p-value = 2.2 x 10^-16^ \< 0.05, at 5% significant level and 95% confidence level, we reject H~0~. Hence, there is sufficient evidence to support that the observed spatial patterns of the number of non-functional water points in Nigeria are clustered. This is supported by a small Geary's C statistic of 0.691 \< 1. This implies that LGAs with higher number of non-functional water points tend to be geographically clustered/neighbours.
 
 #### Monte Carlo Geary's C
 
-The code chunk below performs permutation test for Geary\'s C statistic using [*geary.mc()*](https://r-spatial.github.io/spdep/reference/geary.mc.html) of **spdep**. We similarly set seed number of 1234 for the simulation for reproducible results.
+The code chunk below performs permutation test for Geary's C statistic using [*geary.mc()*](https://r-spatial.github.io/spdep/reference/geary.mc.html) of **spdep**. We similarly set seed number of 1234 for the simulation for reproducible results.
 
 ```{r}
 set.seed(1234)
@@ -1010,9 +1010,9 @@ bperm
 
 The Monte Carlo simulation returned similar result of a significant p-value (0.001) at 5% significance level. Hence, we reject H~0~ and conclude that there is sufficient evidence to support that the spatial distribution of the number of non-functional water points is positively clustered in Nigeria.
 
-#### Visualising Monte Carlo Geary\'s C
+#### Visualising Monte Carlo Geary's C
 
-Like we did for Moran\'s I, we will plot a histogram to reveal the distribution of the simulated values of Geary\'s C by using the following code chunks.
+Like we did for Moran's I, we will plot a histogram to reveal the distribution of the simulated values of Geary's C by using the following code chunks.
 
 ```{r}
 summary(bperm$res[1:1000])
@@ -1033,11 +1033,11 @@ abline(v = 1,
 
 ## 11. Spatial Correlogram
 
-Spatial correlograms are used to examine patterns of spatial autocorrelation. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran\'s I or Geary\'s c) against distance. Row-standardisation is not needed.
+Spatial correlograms are used to examine patterns of spatial autocorrelation. They show how correlated are pairs of spatial observations when you increase the distance (lag) between them - they are plots of some index of autocorrelation (Moran's I or Geary's c) against distance. Row-standardisation is not needed.
 
 ### 11.1. Moran's I Correlogram
 
-In the code chunk below, [*sp.correlogram()*](https://r-spatial.github.io/spdep/reference/sp.correlogram.html) of **spdep** is used to compute a 1- to 10-lag spatial correlogram of the number of non-functional water points. The global spatial autocorrelation used is Moran\'s I. The *plot()* of R\'s base **Graph** is used to plot the output.
+In the code chunk below, [*sp.correlogram()*](https://r-spatial.github.io/spdep/reference/sp.correlogram.html) of **spdep** is used to compute a 1- to 10-lag spatial correlogram of the number of non-functional water points. The global spatial autocorrelation used is Moran's I. The *plot()* of R's base **Graph** is used to plot the output.
 
 ```{r}
 MI_corr <- sp.correlogram(knn8,
@@ -1048,7 +1048,7 @@ MI_corr <- sp.correlogram(knn8,
 plot(MI_corr)
 ```
 
-From the plot, Moran\'s I is positive for up to 7 lags, beyond which Moran\'s I drops below 0. It is also noted that the rate of decrease of Moran's I slows between 2 and 7 lags. This means that the number of non-functional water points has a wider spread across order 2-7 LGAs.
+From the plot, Moran's I is positive for up to 7 lags, beyond which Moran's I drops below 0. It is also noted that the rate of decrease of Moran's I slows between 2 and 7 lags. This means that the number of non-functional water points has a wider spread across order 2-7 LGAs.
 
 In addition to this, it is necessary to examine the full statistical report as not all autocorrelation values are statistically significant. This is done using the *print()* function of **Base R** in the code chunk below.
 
@@ -1060,7 +1060,7 @@ At 5% significance level, the autocorrelation values are statistically significa
 
 ### 11.2. Geary's C Correlogram
 
-In the code chunk below, we perform a similar analysis using the *sp.correlogram()* function from the **spdep** package, except using Geary\'s C global spatial autocorrelation. We also plot the output using *plot()* from R\'s base **Graph**, and *print()* of **Base R** the full report for the p-values.
+In the code chunk below, we perform a similar analysis using the *sp.correlogram()* function from the **spdep** package, except using Geary's C global spatial autocorrelation. We also plot the output using *plot()* from R's base **Graph**, and *print()* of **Base R** the full report for the p-values.
 
 ```{r}
 GC_corr <- sp.correlogram(knn8,
@@ -1083,7 +1083,7 @@ However, unlike Moran's I correlogram, Geary's C correlogram has p-values which 
 
 Local Indicator of Spatial Association (LISA) is a subset of localised geospatial statistics methods for analysing the location-related tendency (clusters or outliers) in the attributes of geographically referenced data (points or area). The LISA for each observation gives an indication of the extent of significant spatial clustering of similar values around that observation. The sum of LISAs for all observations is proportional to a global indicator of spatial association.
 
-We will apply local Moran\'s I to detect clusters and/or outliers from the water point data in Nigeria.
+We will apply local Moran's I to detect clusters and/or outliers from the water point data in Nigeria.
 
 ### 12.1. Local Moran's I
 
