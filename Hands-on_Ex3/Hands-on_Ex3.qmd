@@ -138,7 +138,7 @@ The derived proportions range between 1.041 for the Internet and 842.4 for telev
 
 ### 4.4. Joining Geospatial and Aspatial Data
 
-We combine both sets of data into a single data.frame using [*left_join()*](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr**, which appends the second data.frame to the first based on the observations in the first. The `shan_sf` simple feature data.frame will be used as the base data object, and the `ict_derived` data.frame will be used as the join table.
+## We combine both sets of data into a single data.frame using [*left_join()*](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr**, which appends the second data.frame to the first based on the observations in the first. The `shan_sf` simple feature data.frame will be used as the base data object, and the `ict_derived` data.frame will be used as the join table.
 
 As there are 4 variables which are common across both data sets, namely `DT`, `DT_PCODE`, `TS`, and `TS_PCODE`, we will specify the criteria for joining, in this case by `TS_PCODE`. We do so using the code chunk below.
 
@@ -352,7 +352,7 @@ Here, we see that the Radio PR is no longer directly correlated with the total n
 
 ## 6. Correlation Analysis
 
-Before we perform cluster analysis, it is important for us to ensure that the cluster variables are not highly correlated. This is because if highly correlated variables are used for cluster analysis, specific aspects covered by these variables will be over-represented in the clustering solution. In this regard, absolute correlation (R^2^) above 0.85 are problematic and should be avoided by removing either one of the pair of highly correlated variables.
+Before we perform cluster analysis, it is important for us to ensure that the cluster variables are not highly correlated. This is because if highly correlated variables are used for cluster analysis, specific aspects covered by these variables will be over-represented in the clustering solution. In this regard, absolute correlation (r) above 0.85 are problematic and should be avoided by removing either one of the pair of highly correlated variables.
 
 We use [*corrplot.mixed()*](https://www.rdocumentation.org/packages/corrplot/versions/0.92/topics/corrplot.mixed) of [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) to visualise and analyse the correlation of the input variables, using the code chunk below.
 
@@ -366,7 +366,7 @@ corrplot.mixed(cluster_vars.cor,
                tl.col = "black")
 ```
 
-The correlation plot above shows that `COMPUTER_PR` and `INTERNET_PR` are highly correlated (R^2^ = 0.87 \> 0.85). This suggest that only one of them should be used in the cluster analysis instead of both. In this exercise, we will use `COMPUTER_PR` instead of `INTERNET_PR` as the former provides direct output and interaction with users, similar to other ICT variables in this data set.
+The correlation plot above shows that `COMPUTER_PR` and `INTERNET_PR` are highly correlated (r = 0.87 \> 0.85). This suggest that only one of them should be used in the cluster analysis instead of both. In this exercise, we will use `COMPUTER_PR` instead of `INTERNET_PR` as the former provides direct output and interaction with users, similar to other ICT variables in this data set.
 
 ## 7. Hierarchical Cluster Analysis
 
@@ -528,7 +528,7 @@ ac <- function(x) {
 map_dbl(m, ac)
 ```
 
-With reference to the output above, we can see that Ward\'s method provides the strongest clustering structure among the four methods assessed. Hence, in the subsequent analysis, only Ward\'s method will be used.
+With reference to the output above, we can see that Ward's method provides the strongest clustering structure among the four methods assessed. Hence, in the subsequent analysis, only Ward's method will be used.
 
 ### 7.9. Determining Optimal Clusters
 
@@ -577,7 +577,7 @@ In the dendrogram displayed above, each leaf corresponds to one observation. As 
 
 The height of the fusion, provided on the vertical axis, indicates the (dis)similarity between two observations. The higher the height of the fusion, the less similar the observations are. Note that, conclusions about the proximity of two observations can be drawn only based on the height where branches containing those two observations first are fused. We cannot use the proximity of two observations along the horizontal axis as a criteria of their similarity.
 
-It\'s also possible to draw the dendrogram with a border around the selected clusters by using [*rect.hclust()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/rect.hclust.html) of **R stats**. The argument `border` is used to specify the border colors for the rectangles.
+It's also possible to draw the dendrogram with a border around the selected clusters by using [*rect.hclust()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/rect.hclust.html) of **R stats**. The argument `border` is used to specify the border colors for the rectangles.
 
 ```{r}
 plot(hclust_ward, cex = 0.6)

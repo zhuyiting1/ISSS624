@@ -1,0 +1,393 @@
+---
+title: "In-class Exercise 3"
+author: Zhu Yiting
+date: "r Sys.Date()"
+execute: 
+  warning: false
+  message: false
+format: html
+editor: visual
+---
+
+## Quarto 101
+
+> execute:
+>
+> echo: false
+
+Above is to by default [not display]{.underline} any code chunks in the global environment, when keyed into the top part of the Quarto document.
+
+## Run-through of Hands-on Exercise 3
+
+### [R packages]{.underline}
+
+> **sf**: do data import and export
+>
+> **rgdal**: do transformation, change from 1 data type to another
+>
+> **spdep**: used to create spanning trees (including SKATER)
+>
+> -   last week also used for computation of spatial autocorrelation, very rich package)
+>
+> **readr**: reading of csv, read text data in and out of R
+>
+> -   if we want to read excel file (.xlsx), especially excel workbook with multiple worksheets -\> should use **readexcel**
+>
+> statistical packages -\> use package called **heaven** (?) to bring into R
+>
+> **ggplot2**: create plots for statistical methods
+>
+> **tmap**: mapping device
+>
+> **coorplot**: build correlation plot
+>
+> **ggpubr**: glue up multiple
+>
+> **heatmaply**: plotlib (?) version to do interactive heatmap in multidimension
+>
+> **clusterGeo**: soft spatially constrained clustering algorithm package
+>
+> **factoextra**: mainly for factor analysis, but also have a very nice visual for us to understand how the cluster change using the different clustering methods
+>
+> *PCA vs factor analysis: PCA rotation is 90 degrees so that newly transformed variables are as far as possible, factor analysis have other rotation methods such as value max (?)*
+
+**NbClust**: access hierarchical clustering results
+
+```{r}
+pacman::p_load(rgdal, spdep, tmap, sf, 
+               ggpubr, cluster, factoextra, NbClust, 
+               heatmaply, corrplot, psych, tidyverse)
+```
+
+### [Loading shapefile data]{.underline}
+
+The Myanmar Township Boundary GIS data is in ESRI shapefile format. We can import it into the R environment using [*st_read()*](https://r-spatial.github.io/sf/reference/st_read.html) of **sf**. We also use the piping function *%\>%* from **dplyr** and perform *filter()* to extract only the data for the Shan state. This is done in the code chunk below.
+
+```{r}
+shan_sf <- st_read(dsn = "data/geospatial",
+                   layer = "myanmar_township_boundaries") %>% 
+  filter(ST %in% c("Shan (East)", "Shan (North)", "Shan (South)"))
+```
+
+> Have a habit of examining the data:
+>
+> -   Polygon
+>
+> -   Decimal degree format
+>
+> -   WGS84
+>
+> Click on file \|\>arrow in the Environment pane to check the variables (field name). Alternatively, use *str()* to show the field names.
+>
+> To check the full data table, click on the object in the Environment pane. It includes all attribute values in the dbf file + geometry from shp file.
+>
+> *Setting CRS: important to change to projected CRS when doing distance-based weight matrix. Not required for contiguity-based weight matrix as the CRS does not affect the boundaries touching.*
+>
+> Code explained:
+>
+> *%\>%*: piping - glue different functions together
+>
+> -   As good practice, push the code after *%\>%* to the next line for neatness.
+
+### [Loading csv data]{.underline}
+
+The csv file is imported using [*read_csv()*](https://readr.tidyverse.org/reference/read_delim.html) of **readr** using the code chunk below.
+
+```{r}
+ict <- read_csv("data/aspatial/Shan-ICT.csv")
+```
+
+> *read_csv()* of **readr** used instead of *read.csv()* of **Base R**
+>
+> -   Former is a readr function -\> retains the original field names.
+>
+>     -   Use \` \` to encapsulate complete variable names with space
+>
+> -   Latter changes the variable names by replacing and space with period.
+
+### [Calculation of derived ICT penetration rates]{.underline}
+
+```{r}
+ict_derived <- ict %>%
+  mutate(`RADIO_PR` = `Radio`/`Total households`*1000) %>%
+  mutate(`TV_PR` = `Television`/`Total households`*1000) %>%
+  mutate(`LLPHONE_PR` = `Land line phone`/`Total households`*1000) %>%
+  mutate(`MPHONE_PR` = `Mobile phone`/`Total households`*1000) %>%
+  mutate(`COMPUTER_PR` = `Computer`/`Total households`*1000) %>%
+  mutate(`INTERNET_PR` = `Internet at home`/`Total households`*1000) %>%
+  rename(`DT_PCODE`=`District Pcode`,`DT`=`District Name`,
+         `TS_PCODE`=`Township Pcode`, `TS`=`Township Name`,
+         `TT_HOUSEHOLDS`=`Total households`,
+         `RADIO`=`Radio`, `TV`=`Television`, 
+         `LLPHONE`=`Land line phone`, `MPHONE`=`Mobile phone`,
+         `COMPUTER`=`Computer`, `INTERNET`=`Internet at home`) 
+```
+
+> 6 new variables added to `ict_derived` using *mutate()*.
+>
+> x1000 -\> in social science, usually the units are no. of handphones by per 1'000 households
+>
+> Can x100 if computing % households with handphones.
+>
+> *rename()* changes the variable names to match that of the shapefile to do join later (e.g. change from `Distinct Pcode` to `DT_PCODE`.
+
+### [Joining of data]{.underline}
+
+We combine both sets of data into a single data.frame using [*left_join()*](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr**, which appends the second data.frame to the first based on the observations in the first. The `shan_sf` simple feature data.frame will be used as the base data object, so that the geometry is retained, and the `ict_derived` data.frame will be used as the join table.
+
+```{r}
+shan_sf <- left_join(shan_sf, 
+                     ict_derived, 
+                     by=c("TS_PCODE"="TS_PCODE"))
+```
+
+> We need to define the variable names to join (`by=`) , if we did not rename the variables to align them previously.
+
+### [Visualisation methods]{.underline}
+
+```{r, fig.width = 4, fig.height = 3}
+ggplot(data = shan_sf, 
+       aes(x = `RADIO`)) +
+  geom_histogram(bins = 20, 
+                 color = "black", 
+                 fill = "light blue")
+```
+
+> By using ggplot() directly without assigning it to an ouput object (e.g. plot1 \<-), it is not saved and only shown when rendered (good for quick view). Assign to object if want to call it later.
+>
+> If don't want to run the code to plot the graph when rendering (set `#| eval: false`), can find the html image file which is produced the first time the code chunk was rendered, and paste the code in the report :)
+
+### [Correlation analysis]{.underline}
+
+We use [*corrplot.mixed()*](https://www.rdocumentation.org/packages/corrplot/versions/0.92/topics/corrplot.mixed) of [**corrplot**](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html) to visualise and analyse the correlation of the input variables, using the code chunk below.
+
+```{r}
+cluster_vars.cor = cor(ict_derived[,12:17])
+corrplot.mixed(cluster_vars.cor,
+         lower = "ellipse", 
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+
+> If ellipse is thin and colour is dark -\> high correlation.
+>
+> `cor(ict_derived[,12:17])` -\> to pick out columns 12 to 17 only for data.frame and then plotting of correlation plot.
+
+### [Cluster analysis]{.underline}
+
+The code chunk below will be used to extract the clustering variables from the *shan_sf* simple feature object into data.frame.
+
+```{r}
+cluster_vars <- shan_sf %>%
+  st_set_geometry(NULL) %>%
+  select("TS.x", "RADIO_PR", "TV_PR", "LLPHONE_PR", "MPHONE_PR", "COMPUTER_PR")
+head(cluster_vars,10)
+```
+
+> Use the *select()* function to extract the variables out (because we don't need the rest).
+>
+> `st_set_geometry(Null)` drops the geometric column so that it does not go into the data frame which does not work in the hierarchical clustering.
+
+Next, we need to change the rows by township name instead of row number by using the code chunk below.
+
+```{r}
+row.names(cluster_vars) <- cluster_vars$"TS.x"
+head(cluster_vars,10)
+```
+
+Now, we will delete the TS.x field (representing township) which is a duplicate of the row names now, by using the code chunk below.
+
+```{r}
+shan_ict <- select(cluster_vars, c(2:6))
+head(shan_ict, 10)
+```
+
+> Do this to make a tidy data frame so that all the columns are just the variables for clustering analysis.
+>
+> `TS.x` kept and shifted to row name instead of simply deleting because we need it later (displayed in the dendogram instead of just numbers).
+
+### [Proximity matrix]{.underline}
+
+The code chunk below is used to compute the proximity matrix using `euclidean` method.
+
+```{r}
+proxmat <- dist(shan_ict, method = 'euclidean')
+```
+
+```{r}
+#| eval: false
+proxmat
+```
+
+> Values represent the proximity matrix between towns in the top row and left-most column. The matrix is symmetrical along the diagonal. The value for the diagonal is 0.
+
+### [Hierarchical clustering]{.underline}
+
+The code chunk below performs hierarchical cluster analysis using `ward.D` method. The hierarchical clustering output is stored in an object of class **hclust** which describes the tree produced by the clustering process.
+
+```{r}
+hclust_ward <- hclust(proxmat, method = 'ward.D')
+```
+
+> The code is simple as it only requires 2 arguments: the proximity matrix and the clustering method.
+
+We can then plot the tree by using *plot()* of **R Graphics** as shown in the code chunk below.
+
+```{r}
+plot(hclust_ward, cex = 0.6)
+```
+
+> Both *hclust()* and *plot()* are of **Base R** (*plot()* from Base R **Graphics**), don't need to tell *plot()* how to plot, it knows! :D
+>
+> `cex = 0.6` scales the resolution to 60% of the full resolution. Useful when the dendogram looks too cluttered and the clusters cannot be read.
+
+### [Finding Optimal Clustering Algorithm]{.underline}
+
+The code chunk below will be used to compute the agglomerative coefficients of all hierarchical clustering algorithms.
+
+```{r}
+m <- c( "average", "single", "complete", "ward")
+names(m) <- c( "average", "single", "complete", "ward")
+
+ac <- function(x) {
+  agnes(shan_ict, method = x)$ac
+}
+
+map_dbl(m, ac)
+```
+
+With reference to the output above, we can see that Ward's method provides the strongest clustering structure among the four methods assessed. Hence, in the subsequent analysis, only Ward's method will be used.
+
+> Highest value = most optimal model
+>
+> *Functional programming:*
+>
+> Want to run all four hierarchical clustering algorithms in 1 go -\> create an object `m` and `names(m)`
+>
+> Then we define a function with the syntax `function(x){ }`
+>
+> The function is to substitute each element (hierarchical clustering method) in the list `m` as `method = x` in the function for *agnes()* to compute agglomerative hierarchical clustering of the data set.
+>
+> Similar to looping in conventional programming.
+
+### [Determining Optimal Cluster]{.underline}
+
+To compute the gap statistic, [*clusGap()*](https://www.rdocumentation.org/packages/cluster/versions/2.1.0/topics/clusGap) of [**cluster**](https://cran.r-project.org/web/packages/cluster/) package will be used.
+
+```{r}
+set.seed(1234)
+gap_stat <- clusGap(shan_ict, 
+                    FUN = hcut, 
+                    nstart = 25, 
+                    K.max = 10, 
+                    B = 50)
+# Print the result
+print(gap_stat, method = "firstmax")
+```
+
+Also note that the [*hcut*](https://rpkgs.datanovia.com/factoextra/reference/hcut.html) function used is from [**factoextra**](https://rpkgs.datanovia.com/factoextra/) package.
+
+Next, we can visualise the plot by using [*fviz_gap_stat()*](https://rpkgs.datanovia.com/factoextra/reference/fviz_nbclust.html) of [**factoextra**](https://rpkgs.datanovia.com/factoextra/) package.
+
+```{r}
+fviz_gap_stat(gap_stat)
+```
+
+> If we follow the statistics strictly, 2 clusters would be the best. However, we know that we should not have less than 3 clusters as it is a multivariate analysis. Hence, by visual assessment, cluster numbers 5 and 6 may work better.
+
+### [Mapping of Hierarchical Clusters]{.underline}
+
+With closed examination of the dendragram above, we have decided to retain six clusters.
+
+[*cutree()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/cutree.html) of **Base R** will be used in the code chunk below to derive a 6-cluster model.
+
+```{r}
+groups <- as.factor(cutree(hclust_ward, k=6))
+```
+
+In order to visualise the clusters, the *groups* object need to be appended onto `shan_sf` simple feature object.
+
+The code chunk below form the join in three steps:
+
+-   the `groups` list object will be converted into a matrix;
+
+-   *cbind()* is used to append `groups` matrix onto `shan_sf` to produce an output simple feature object called `shan_sf_cluster`; and
+
+-   *rename()* of **dplyr** package is used to rename `as.matrix.groups` field as `CLUSTER`.
+
+```{r}
+shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
+  rename(`CLUSTER`=`as.matrix.groups.`)
+```
+
+Next, *qtm()* of **tmap** package is used to plot the choropleth map showing the cluster formed.
+
+```{r}
+qtm(shan_sf_cluster, "CLUSTER")
+```
+
+> 6 clusters plot -\> good for visual
+>
+> To convert it into map view, label it in `k = 6` and make it into factors
+>
+> Use *rename()* for tidying of field names when the matrix is combined with the geospatial data as the naming done by the *cbind()* function is not intuitive.
+
+### [Converting to sp]{.underline}
+
+First, we need to convert `shan_sf` into SpatialPolygonsDataFrame. This is because SKATER function only support **sp** objects such as SpatialPolygonDataFrame.
+
+The code chunk below uses [*as_Spatial()*](https://r-spatial.github.io/sf/reference/coerce-methods.html) of **sf** package to convert *shan_sf* into a SpatialPolygonDataFrame called *shan_sp*.
+
+```{r}
+shan_sp <- as_Spatial(shan_sf)
+```
+
+> **sf** was developed after SKATER -\> need to convert to **sp** object (spatial polygon) first. For doing calculation.
+>
+> sp object has multiple tables -\> separate the geometry from the rest (like shapefile, split into multiple files).
+>
+> Use **sf** format when plotting with **tmap** functions.
+
+> `ncuts = 5` starts from 0 -\> so there are 6 clusters.
+
+## New Chapter in Hand-on Exercise 3
+
+### Spatially Constrained Clustering ClustGeo Method
+
+> `choicealpha()` is for us to balance 2 matrice.
+>
+> Balance out the homogeneity in attributes space (D0) and geographical space (spatial, e.g Queen's contiguity weight matrix) (D1).
+>
+> Ranges from 0 to 1
+>
+> 0-stage = only considering attribute space without consideration of attribute homogeneity
+>
+> 1: spatial homogeneity
+>
+> st_distance() takes the centroid of polygons
+>
+> *ClustGeo is more rigid in terms of algorithm - only accepts Ward*
+>
+> *But more flexible in terms of being able to use either contiguity-based or distance-based weight matrix*
+>
+> `seq(0, 1, 0.1)`: 0.1 = interval (increment) between 0 and 1 in the plotting
+>
+> `K = 6`: Note that "K" in this argument is in upper case!! Different from *hclust()*.
+>
+> 2 graphs plotted
+>
+> 1.  1st graph based on raw
+>
+> 2.  2nd graph based on normalisation values -\> if we find that our data is highly skewed
+>
+> Helps us determine the optimal alpha value -\> aim is to have as high Qnorm as possible
+>
+> Based on 2nd graph: can either choose either alpha 0.2 or 0.3.
+>
+> Sharp increase in spatial homogeneity with \<20% drop in attribute homogeneity from 0.1 to 0.2 alpha value.
+>
+> Compare a few alpha values to see how the map changes
+
+> Interpretation -\> see heatmaply OR boxplot (summary stats)
