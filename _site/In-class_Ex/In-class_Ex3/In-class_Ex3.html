@@ -229,7 +229,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
   </ul></li>
   <li><a href="#new-chapter-in-hand-on-exercise-3" id="toc-new-chapter-in-hand-on-exercise-3" class="nav-link" data-scroll-target="#new-chapter-in-hand-on-exercise-3">New Chapter in Hand-on Exercise 3</a>
   <ul class="collapse">
-  <li><a href="#spatially-constrained-clustering-clustgeo-method" id="toc-spatially-constrained-clustering-clustgeo-method" class="nav-link" data-scroll-target="#spatially-constrained-clustering-clustgeo-method">Spatially Constrained Clustering ClustGeo Method</a></li>
+  <li><a href="#spatially-constrained-clustering-clustgeo-method" id="toc-spatially-constrained-clustering-clustgeo-method" class="nav-link" data-scroll-target="#spatially-constrained-clustering-clustgeo-method">9. Spatially Constrained Clustering ClustGeo Method</a></li>
+  <li><a href="#ward-like-hierarchical-clustering-clustgeo" id="toc-ward-like-hierarchical-clustering-clustgeo" class="nav-link" data-scroll-target="#ward-like-hierarchical-clustering-clustgeo">9.1. Ward-like Hierarchical Clustering: ClustGeo</a></li>
+  <li><a href="#mapping-the-clusters-formed" id="toc-mapping-the-clusters-formed" class="nav-link" data-scroll-target="#mapping-the-clusters-formed">9.2. Mapping the Clusters Formed</a></li>
+  <li><a href="#spatially-constrained-hierarchical-clustering" id="toc-spatially-constrained-hierarchical-clustering" class="nav-link" data-scroll-target="#spatially-constrained-hierarchical-clustering">9.3. Spatially Constrained Hierarchical Clustering</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -302,7 +305,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(rgdal, spdep, tmap, sf, </span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>               ggpubr, cluster, factoextra, NbClust, </span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               heatmaply, corrplot, psych, tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>               heatmaply, corrplot, psych, tidyverse, ClustGeo)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="loading-shapefile-data" class="level3">
@@ -620,7 +623,7 @@ B=50 simulated reference sets, k = 1..10; spaceH0="scaledPCA"
 </div>
 <p>Next, <em>qtm()</em> of <strong>tmap</strong> package is used to plot the choropleth map showing the cluster formed.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qtm</span>(shan_sf_cluster, <span class="st">"CLUSTER"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">qtm</span>(shan_sf_cluster,<span class="st">"CLUSTER"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="In-class_Ex3_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -651,9 +654,75 @@ B=50 simulated reference sets, k = 1..10; spaceH0="scaledPCA"
 <section id="new-chapter-in-hand-on-exercise-3" class="level2">
 <h2 class="anchored" data-anchor-id="new-chapter-in-hand-on-exercise-3">New Chapter in Hand-on Exercise 3</h2>
 <section id="spatially-constrained-clustering-clustgeo-method" class="level3">
-<h3 class="anchored" data-anchor-id="spatially-constrained-clustering-clustgeo-method">Spatially Constrained Clustering ClustGeo Method</h3>
+<h3 class="anchored" data-anchor-id="spatially-constrained-clustering-clustgeo-method">9. Spatially Constrained Clustering ClustGeo Method</h3>
+<p>In this section, we gain hands-on experience on using functions of <strong>ClustGeo</strong> package to perform non-spatially constrained hierarchical cluster analysis and spatially constrained cluster analysis.</p>
+</section>
+<section id="ward-like-hierarchical-clustering-clustgeo" class="level3">
+<h3 class="anchored" data-anchor-id="ward-like-hierarchical-clustering-clustgeo">9.1. Ward-like Hierarchical Clustering: ClustGeo</h3>
+<p><strong>ClustGeo</strong> package provides function called <em>hclustgo()</em> to perform a typical Ward-like hierarchical clustering, similar to <em>hclust()</em> of base R <strong>stats</strong>.</p>
+<p>To perform non-spatially constrained hierarchical clustering, we only need to provide the function of a dissimilarity matrix, as shown in the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>nongeo_cluster <span class="ot">&lt;-</span> <span class="fu">hclustgeo</span>(proxmat)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nongeo_cluster, <span class="at">cex =</span> <span class="fl">0.5</span>)</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rect.hclust</span>(nongeo_cluster,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>            <span class="at">k =</span> <span class="dv">6</span>,</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">border =</span> <span class="dv">2</span> <span class="sc">:</span> <span class="dv">5</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex3_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>Note that the dissimilarity matrix must be an object of class <strong>dist</strong>, i.e.&nbsp;an object obtained with the function <em>dist()</em>.</p>
+</section>
+<section id="mapping-the-clusters-formed" class="level3">
+<h3 class="anchored" data-anchor-id="mapping-the-clusters-formed">9.2. Mapping the Clusters Formed</h3>
+<p>Similar to our Hands-on Exercise 3, we can plot the clusters on a categorical area shaded map by using the steps below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">cutree</span>(nongeo_cluster, <span class="at">k =</span> <span class="dv">6</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>shan_sf_ngeo_clust <span class="ot">&lt;-</span> <span class="fu">cbind</span>(shan_sf, <span class="fu">as.matrix</span>(groups)) <span class="sc">%&gt;%</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">CLUSTER</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">as.matrix.groups.</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, <em>qtm()</em> of <strong>tmap</strong> package is used to plot the choropleth map showing the cluster formed. We compare this (right plot) to the hierarchical clustering <code>h</code> formed by <em>hclust()</em> of base R <strong>stats</strong> (left plot).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>hclust.map <span class="ot">&lt;-</span> <span class="fu">qtm</span>(shan_sf_cluster,</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"CLUSTER"</span>) <span class="sc">+</span> </span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_borders</span>(<span class="at">alpha =</span> <span class="fl">0.5</span>) </span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>hclustgeo.map <span class="ot">&lt;-</span> <span class="fu">qtm</span>(shan_sf_ngeo_clust, <span class="st">"CLUSTER"</span>)</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(hclust.map, hclustgeo.map,</span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>             <span class="at">asp=</span><span class="cn">NA</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex3_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that clusters 3, 4 and 6 are exactly the same across both methods. Furthermore, both plots show clusters that jump across different parts of Shan State geographically.</p>
+</section>
+<section id="spatially-constrained-hierarchical-clustering" class="level3">
+<h3 class="anchored" data-anchor-id="spatially-constrained-hierarchical-clustering">9.3. Spatially Constrained Hierarchical Clustering</h3>
+<p>Before we can perform spatially constrained hierarchical clustering, a spatial distance matrix will be derived by using <a href="https://r-spatial.github.io/sf/reference/geos_measures.html"><em>st_distance()</em></a> of <strong>sf</strong> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dist <span class="ot">&lt;-</span> <span class="fu">st_distance</span>(shan_sf, shan_sf)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>distmat <span class="ot">&lt;-</span> <span class="fu">as.dist</span>(dist)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Note that <em>as.dist()</em> is used to convert the data frame into a matrix.</p>
+<p>Next, choicealpha() is used to determine a suitable value for the mixing parameter alpha, as shown in the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>cr <span class="ot">&lt;-</span> <span class="fu">choicealpha</span>(proxmat, </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>                  distmat, </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>                  <span class="at">range.alpha =</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="fl">0.1</span>), </span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>                  <span class="at">K =</span> <span class="dv">6</span>, </span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>                  <span class="at">graph =</span> <span class="cn">TRUE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex3_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex3_files/figure-html/unnamed-chunk-27-2.png" class="img-fluid" width="672"></p>
+</div>
+</div>
 <blockquote class="blockquote">
-<p><code>choicealpha()</code> is for us to balance 2 matrice.</p>
+<p><code>choicealpha()</code> is for us to balance 2 matrices.</p>
 <p>Balance out the homogeneity in attributes space (D0) and geographical space (spatial, e.g Queen’s contiguity weight matrix) (D1).</p>
 <p>Ranges from 0 to 1</p>
 <p>0-stage = only considering attribute space without consideration of attribute homogeneity</p>
@@ -662,19 +731,45 @@ B=50 simulated reference sets, k = 1..10; spaceH0="scaledPCA"
 <p><em>ClustGeo is more rigid in terms of algorithm - only accepts Ward</em></p>
 <p><em>But more flexible in terms of being able to use either contiguity-based or distance-based weight matrix</em></p>
 <p><code>seq(0, 1, 0.1)</code>: 0.1 = interval (increment) between 0 and 1 in the plotting</p>
-<p><code>K = 6</code>: Note that “K” in this argument is in upper case!! Different from <em>hclust()</em>.</p>
+<p><code>K = 6</code>: Note that “K” in this argument is in <u><strong>upper case</strong></u>!! Different from <em>hclust()</em>.</p>
 <p>2 graphs plotted</p>
 <ol type="1">
 <li><p>1st graph based on raw</p></li>
-<li><p>2nd graph based on normalisation values -&gt; if we find that our data is highly skewed</p></li>
+<li><p>2nd graph based on normalisation values -&gt; if we find that our data is highly skewed. We will look at this in this exercise.</p></li>
 </ol>
 <p>Helps us determine the optimal alpha value -&gt; aim is to have as high Qnorm as possible</p>
 <p>Based on 2nd graph: can either choose either alpha 0.2 or 0.3.</p>
 <p>Sharp increase in spatial homogeneity with &lt;20% drop in attribute homogeneity from 0.1 to 0.2 alpha value.</p>
-<p>Compare a few alpha values to see how the map changes</p>
+<p>In practice, we should compare a few alpha values to see how the map changes.</p>
 </blockquote>
+<p>With reference to the graphs above, <code>alpha = 0.3</code> will be used as shown in the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>clustG <span class="ot">&lt;-</span> <span class="fu">hclustgeo</span>(proxmat, distmat, <span class="at">alpha =</span> <span class="fl">0.3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Next, <em>cutree()</em> is used to derive the cluster object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>groups <span class="ot">&lt;-</span> <span class="fu">as.factor</span>(<span class="fu">cutree</span>(clustG, <span class="at">k =</span> <span class="dv">6</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We will then join back the group list with <code>shan_sf</code> polygon feature data frame by using the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>shan_sf_Gcluster <span class="ot">&lt;-</span> <span class="fu">cbind</span>(shan_sf, <span class="fu">as.matrix</span>(groups)) <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="st">`</span><span class="at">CLUSTER</span><span class="st">`</span> <span class="ot">=</span> <span class="st">`</span><span class="at">as.matrix.groups.</span><span class="st">`</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>We can now plot the map of the newly delineated spatially constrained clusters. We do so by comparing it (on the right plot) side-by-side with the Ward-like hierarchical clustering that we did earlier without considering the spatial component (on the left plot).</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>hclustgeo.map <span class="ot">&lt;-</span> <span class="fu">qtm</span>(shan_sf_ngeo_clust, <span class="st">"CLUSTER"</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>hclustgeo0.<span class="fl">3.</span>map <span class="ot">&lt;-</span> <span class="fu">qtm</span>(shan_sf_Gcluster, <span class="st">"CLUSTER"</span>)</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_arrange</span>(hclustgeo.map, hclustgeo0.<span class="fl">3.</span>map,</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>             <span class="at">asp=</span><span class="cn">NA</span>, <span class="at">ncol=</span><span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="In-class_Ex3_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+<p>We see that now the clusters are no longer all over the place, but follows a more geospatial-related set of rules. At the same time, it is not completely geospatial either, with some clusters still spanning across different regions, e.g.&nbsp;cluster 4.</p>
 <blockquote class="blockquote">
-<p>Interpretation -&gt; see heatmaply OR boxplot (summary stats)</p>
+<p>To interpret the clusters, we can use <em>heatmaply()</em> to study the features of each cluster, <u><strong>OR</strong></u> do a boxplot (summary statistics) to do so.</p>
 </blockquote>
 
 

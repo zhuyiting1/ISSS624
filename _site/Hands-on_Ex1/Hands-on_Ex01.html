@@ -1070,18 +1070,13 @@ dbl (2): Pop, Time
 <span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="st">`</span><span class="at">ECONOMY ACTIVE</span><span class="st">`</span> <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: `funs()` was deprecated in dplyr 0.8.0.
-Please use a list of either functions or lambdas: 
+ℹ Please use a list of either functions or lambdas:
 
-  # Simple named list: 
-  list(mean = mean, median = median)
+# Simple named list: list(mean = mean, median = median)
 
-  # Auto named with `tibble::lst()`: 
-  tibble::lst(mean, median)
+# Auto named with `tibble::lst()`: tibble::lst(mean, median)
 
-  # Using lambdas
-  list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+# Using lambdas list(~ mean(., trim = .2), ~ median(., na.rm = TRUE))</code></pre>
 </div>
 </div>
 <p>Next, <em>left_join()</em> from <strong>dplyr</strong> is used to join the geographical data from <span class="math inline">\(mpsz\)</span> and attribute table from <span class="math inline">\(popdata2020\)</span> using planning subzone names, in this case SUBZONE_N and SZ, as common identifiers. Left join with reference to <span class="math inline">\(mpsz\)</span> is used to ensure that the output mpsz_pop2020 will be a simple features dataframe.</p>

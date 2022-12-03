@@ -56,7 +56,7 @@ Above is to by default [not display]{.underline} any code chunks in the global e
 ```{r}
 pacman::p_load(rgdal, spdep, tmap, sf, 
                ggpubr, cluster, factoextra, NbClust, 
-               heatmaply, corrplot, psych, tidyverse)
+               heatmaply, corrplot, psych, tidyverse, ClustGeo)
 ```
 
 ### [Loading shapefile data]{.underline}
@@ -325,7 +325,7 @@ shan_sf_cluster <- cbind(shan_sf, as.matrix(groups)) %>%
 Next, *qtm()* of **tmap** package is used to plot the choropleth map showing the cluster formed.
 
 ```{r}
-qtm(shan_sf_cluster, "CLUSTER")
+qtm(shan_sf_cluster,"CLUSTER")
 ```
 
 > 6 clusters plot -\> good for visual
@@ -354,9 +354,76 @@ shan_sp <- as_Spatial(shan_sf)
 
 ## New Chapter in Hand-on Exercise 3
 
-### Spatially Constrained Clustering ClustGeo Method
+### 9. Spatially Constrained Clustering ClustGeo Method
 
-> `choicealpha()` is for us to balance 2 matrice.
+In this section, we gain hands-on experience on using functions of **ClustGeo** package to perform non-spatially constrained hierarchical cluster analysis and spatially constrained cluster analysis.
+
+### 9.1. Ward-like Hierarchical Clustering: ClustGeo
+
+**ClustGeo** package provides function called *hclustgo()* to perform a typical Ward-like hierarchical clustering, similar to *hclust()* of base R **stats**.
+
+To perform non-spatially constrained hierarchical clustering, we only need to provide the function of a dissimilarity matrix, as shown in the code chunk below.
+
+```{r}
+nongeo_cluster <- hclustgeo(proxmat)
+plot(nongeo_cluster, cex = 0.5)
+rect.hclust(nongeo_cluster,
+            k = 6,
+            border = 2 : 5)
+```
+
+Note that the dissimilarity matrix must be an object of class **dist**, i.e. an object obtained with the function *dist()*.
+
+### 9.2. Mapping the Clusters Formed
+
+Similar to our Hands-on Exercise 3, we can plot the clusters on a categorical area shaded map by using the steps below.
+
+```{r}
+groups <- as.factor(cutree(nongeo_cluster, k = 6))
+```
+
+```{r}
+shan_sf_ngeo_clust <- cbind(shan_sf, as.matrix(groups)) %>%
+  rename(`CLUSTER` = `as.matrix.groups.`)
+```
+
+Next, *qtm()* of **tmap** package is used to plot the choropleth map showing the cluster formed. We compare this (right plot) to the hierarchical clustering `h` formed by *hclust()* of base R **stats** (left plot).
+
+```{r}
+hclust.map <- qtm(shan_sf_cluster,
+                  "CLUSTER") + 
+  tm_borders(alpha = 0.5) 
+
+hclustgeo.map <- qtm(shan_sf_ngeo_clust, "CLUSTER")
+
+tmap_arrange(hclust.map, hclustgeo.map,
+             asp=NA, ncol=2)
+```
+
+We see that clusters 3, 4 and 6 are exactly the same across both methods. Furthermore, both plots show clusters that jump across different parts of Shan State geographically.
+
+### 9.3. Spatially Constrained Hierarchical Clustering
+
+Before we can perform spatially constrained hierarchical clustering, a spatial distance matrix will be derived by using [*st_distance()*](https://r-spatial.github.io/sf/reference/geos_measures.html) of **sf** package.
+
+```{r}
+dist <- st_distance(shan_sf, shan_sf)
+distmat <- as.dist(dist)
+```
+
+Note that *as.dist()* is used to convert the data frame into a matrix.
+
+Next, choicealpha() is used to determine a suitable value for the mixing parameter alpha, as shown in the code chunk below.
+
+```{r}
+cr <- choicealpha(proxmat, 
+                  distmat, 
+                  range.alpha = seq(0, 1, 0.1), 
+                  K = 6, 
+                  graph = TRUE)
+```
+
+> `choicealpha()` is for us to balance 2 matrices.
 >
 > Balance out the homogeneity in attributes space (D0) and geographical space (spatial, e.g Queen's contiguity weight matrix) (D1).
 >
@@ -374,13 +441,13 @@ shan_sp <- as_Spatial(shan_sf)
 >
 > `seq(0, 1, 0.1)`: 0.1 = interval (increment) between 0 and 1 in the plotting
 >
-> `K = 6`: Note that "K" in this argument is in upper case!! Different from *hclust()*.
+> `K = 6`: Note that "K" in this argument is in [**upper case**]{.underline}!! Different from *hclust()*.
 >
 > 2 graphs plotted
 >
 > 1.  1st graph based on raw
 >
-> 2.  2nd graph based on normalisation values -\> if we find that our data is highly skewed
+> 2.  2nd graph based on normalisation values -\> if we find that our data is highly skewed. We will look at this in this exercise.
 >
 > Helps us determine the optimal alpha value -\> aim is to have as high Qnorm as possible
 >
@@ -388,6 +455,38 @@ shan_sp <- as_Spatial(shan_sf)
 >
 > Sharp increase in spatial homogeneity with \<20% drop in attribute homogeneity from 0.1 to 0.2 alpha value.
 >
-> Compare a few alpha values to see how the map changes
+> In practice, we should compare a few alpha values to see how the map changes.
 
-> Interpretation -\> see heatmaply OR boxplot (summary stats)
+With reference to the graphs above, `alpha = 0.3` will be used as shown in the code chunk below.
+
+```{r}
+clustG <- hclustgeo(proxmat, distmat, alpha = 0.3)
+```
+
+Next, *cutree()* is used to derive the cluster object.
+
+```{r}
+groups <- as.factor(cutree(clustG, k = 6))
+```
+
+We will then join back the group list with `shan_sf` polygon feature data frame by using the code chunk below.
+
+```{r}
+shan_sf_Gcluster <- cbind(shan_sf, as.matrix(groups)) %>%
+  rename(`CLUSTER` = `as.matrix.groups.`)
+```
+
+We can now plot the map of the newly delineated spatially constrained clusters. We do so by comparing it (on the right plot) side-by-side with the Ward-like hierarchical clustering that we did earlier without considering the spatial component (on the left plot).
+
+```{r}
+hclustgeo.map <- qtm(shan_sf_ngeo_clust, "CLUSTER")
+
+hclustgeo0.3.map <- qtm(shan_sf_Gcluster, "CLUSTER")
+
+tmap_arrange(hclustgeo.map, hclustgeo0.3.map,
+             asp=NA, ncol=2)
+```
+
+We see that now the clusters are no longer all over the place, but follows a more geospatial-related set of rules. At the same time, it is not completely geospatial either, with some clusters still spanning across different regions, e.g. cluster 4.
+
+> To interpret the clusters, we can use *heatmaply()* to study the features of each cluster, [**OR**]{.underline} do a boxplot (summary statistics) to do so.
