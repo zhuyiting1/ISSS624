@@ -282,10 +282,14 @@ st_geometry(nga_wp26392)
 
 We see that the bounding box values have changed from the decimal degree format where the minimum and maximum values of x and y were between 2.7^o^ and 14.7^o^, to between 26,663m and 1,344,157m (MapTools, 2022; epsg.io, 2022).
 
-We set [*tmap_mode()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tmap_mode) of **tmap** to "view" to activate interactive viewing mode instead of static maps, to better zoom into any of the 774 LGAs for further analysis if needed.
+We set [*tmap_mode()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tmap_mode) of **tmap** to "view" to activate interactive viewing mode instead of static maps, to better zoom into any of the 774 LGAs for further analysis if needed. Nevertheless, for the purpose of limiting the file size in view of the limited memory on GitHub, we will use the "plot" option to display static maps in this report.
 
 ```{r}
 tmap_mode("view")
+```
+
+```{r}
+tmap_mode("plot")
 ```
 
 In the code chunk below, we plot the **wgs84** and `crs = 26392` versions of the Nigerian LGA using [*tm_shape()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tm_shape) of **tmap**, and note that the latter appears to flatten the mapping area out a little more than the former. We can also see that the plots are now in interactive mode.

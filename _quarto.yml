@@ -2,7 +2,7 @@ project:
   type: website
 
 website:
-  title: "Learn with Yiting - ISSS624"
+  title: "Learn with Yiting - Geospatial Analytics"
   navbar:
     left: 
       - text: Hands-on Exercises
@@ -13,6 +13,8 @@ website:
             href: Hands-on_Ex2/Hands-on_Ex2.qmd
           - text: Hands-on Exercise 3
             href: Hands-on_Ex3/Hands-on_Ex3.qmd
+          - text: Hands-on Exercise 4
+            href: Hands-on_Ex4/Hands-on_Ex4.qmd
       - text: In-class Exercises
         menu:
           - text: In-class Exercise 1
@@ -21,10 +23,14 @@ website:
             href: In-class_Ex/In-class_Ex2/In-class_Ex2.qmd
           - text: In-class Exercise 3
             href: In-class_Ex/In-class_Ex3/In-class_Ex3.qmd
+          - text: In-class Exercise 4
+            href: In-class_Ex/In-class_Ex4/In-class_Ex4.qmd
       - text: Take-home Exercises
         menu:
           - text: Take-home Exercise 1
             href: Take-home_Ex/Take-home_Ex1/Take-home_Ex1.qmd
+          - text: Take-home Exercise 2
+            href: Take-home_Ex/Take-home_Ex2/Take-home_Ex2.qmd
     right:
       - href: index.qmd
         text: Home

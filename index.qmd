@@ -1,5 +1,5 @@
 ---
-title: "ISSS624"
+title: "Learn with Yiting - Geospatial Analytics"
 ---
 
 Welcome to ISSS624 Geospatial Analytics Applications!

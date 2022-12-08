@@ -1,9 +1,5 @@
 ---
-title: "About"
+title: "Acknowledgement"
 ---
 
-About this site
-
-```{r}
-1 + 1
-```
+This website is made possible thanks to the unreserved knowledge imparted on me by Dr. Kam Tin Seong, Associate Professor of Information Systems (Practice), Singapore Management University (SMU).

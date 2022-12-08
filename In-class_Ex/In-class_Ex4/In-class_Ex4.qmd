@@ -1,0 +1,10 @@
+---
+title: "In-class Exercise 4"
+author: Zhu Yiting
+date: "10 Dec 2022"
+execute: 
+  warning: false
+  message: false
+format: html
+editor: visual
+---

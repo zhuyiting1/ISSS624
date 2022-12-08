@@ -21,8 +21,8 @@ This exercise aims to delineate homogeneous regions by using geographically refe
 
 1.  Convert GIS polygon data into R's simple feature data.frame by using appropriate functions of **sf** package.
 2.  Convert simple feature data.frame into R's SpatialPolygonDataFrame object by using appropriate functions of **sf** package.
-3.  Perform cluster analysis using *hclust()* of Base R.
-4.  Perform spatially constrained cluster analysis using *skater()* of Base R.
+3.  Perform cluster analysis using *hclust()* of **Base R**.
+4.  Perform spatially constrained cluster analysis using *skater()* of **Base R**.
 5.  Visualise analysis output using **ggplot2** and **tmap** packages.
 
 ## 2. Getting Started
@@ -106,7 +106,7 @@ summary(ict)
 
 The highest number among the maximum values is 62,388 households for television, which is consistent with our knowledge of it being a common source of entertainment and communication method in this era.
 
-### 4.3. Deriving New Variables Using dplyr **Package**
+### 4.3. Deriving New Variables Using **dplyr** Package
 
 The unit of measurement of the values are the number of households. Using these values directly will be biased by the underlying total number of households. In general, the townships with relative higher total number of households will also have higher absolute number of households owning radio, television, etc.
 
@@ -138,7 +138,7 @@ The derived proportions range between 1.041 for the Internet and 842.4 for telev
 
 ### 4.4. Joining Geospatial and Aspatial Data
 
-## We combine both sets of data into a single data.frame using [*left_join()*](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr**, which appends the second data.frame to the first based on the observations in the first. The `shan_sf` simple feature data.frame will be used as the base data object, and the `ict_derived` data.frame will be used as the join table.
+We combine both sets of data into a single data.frame using [*left_join()*](https://dplyr.tidyverse.org/reference/mutate-joins.html) of **dplyr**, which appends the second data.frame to the first based on the observations in the first. The `shan_sf` simple feature data.frame will be used as the base data object, and the `ict_derived` data.frame will be used as the join table.
 
 As there are 4 variables which are common across both data sets, namely `DT`, `DT_PCODE`, `TS`, and `TS_PCODE`, we will specify the criteria for joining, in this case by `TS_PCODE`. We do so using the code chunk below.
 
@@ -780,7 +780,7 @@ str(clust6)
 
 The most interesting component of this list structure is the groups vector containing the labels of the cluster to which each observation belongs (as before, the label itself is arbitary). This is followed by a detailed summary for each of the clusters in the edges.groups list. Sum of squares measures are given as ssto for the total and ssw to show the effect of each of the cuts on the overall criterion.
 
-We can check the cluster assignment by using the `groups` arguement of `clust6` in the conde chunk below.
+We can check the cluster assignment by using the `groups` argument of `clust6` in the code chunk below.
 
 ```{r}
 ccs6 <- clust6$groups
