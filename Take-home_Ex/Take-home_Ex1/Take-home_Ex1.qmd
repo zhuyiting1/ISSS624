@@ -543,6 +543,7 @@ The LGA with no neighbour is Bakassi, and that with the most number of neighbour
 Plotting the Nigeria LGAs using *tm_shape()*, [*tm_polygons()*](https://search.r-project.org/CRAN/refmans/tmap/html/tm_polygons.html) and *tm_text()* of **tmap**, we could visualise the polygons representing the LGAs (*tm_polygons()* fills the polygons and draws the polygon borders) with text displaying the name of each LGA within. A close-up screenshot of the Bakassi LGA is shown below. It has 0 neighbours by contiguity method as it does not share its borders with any other Nigeria LGAs, and is separated from its closest LGA, Akpabuyo, by the Atlantic Ocean. In fact, since 2008, Bakassi Penisula was transferred from Nigerian control to that of Cameroon, under the Greentree Agreement (Library of Congress, 2013).
 
 ```{r}
+#| eval: false
 tm_shape(nga_wp26392) +
   tm_polygons() +
   tm_text("shapeName", size = 1.2)
