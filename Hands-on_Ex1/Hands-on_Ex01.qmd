@@ -1,5 +1,9 @@
 ---
 title: "Hands-on Exercise 1: Geospatial Data Wrangling with R"
+execute: 
+  warning: false
+  message: false
+  freeze: auto
 editor: visual
 ---
 

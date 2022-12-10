@@ -5,6 +5,7 @@ date: "9 Dec 2022"
 execute: 
   warning: false
   message: false
+  freeze: auto
 format: html
 editor: visual
 ---
@@ -50,7 +51,7 @@ pacman::p_load(sf, tidyverse, ggpubr, tmap, spdep,
 
 ### 4.1. Importing Geospatial Data
 
-Rhe geospatial data used in this hands-on exercise is called `MP14_SUBZONE_WEB_PL`. It is in ESRI shapefile format. The shapefile consists of URA Master Plan 2014\'s planning subzone boundaries. Polygon features are used to represent these geographic boundaries. The GIS data is in **svy21** projected coordinates systems.
+Rhe geospatial data used in this hands-on exercise is called `MP14_SUBZONE_WEB_PL`. It is in ESRI shapefile format. The shapefile consists of URA Master Plan 2014's planning subzone boundaries. Polygon features are used to represent these geographic boundaries. The GIS data is in **svy21** projected coordinates systems.
 
 The code chunk below is used to import *MP_SUBZONE_WEB_PL* shapefile by using [*st_read()*](https://www.rdocumentation.org/packages/sf/versions/0.2-2/topics/st_read) of **sf** packages.
 
@@ -264,7 +265,7 @@ condo.slr <- lm(formula = SELLING_PRICE ~ AREA_SQM,
                 data = condo_resale.sf)
 ```
 
-*lm()* returns an object of class **lm** or for multiple responses of class **c(\"mlm\", \"lm\")**.
+*lm()* returns an object of class **lm** or for multiple responses of class **c("mlm", "lm")**.
 
 The functions *summary()* and *anova()* can be used to obtain and print a summary and analysis of variance table of the results. The generic accessor functions coefficients, effects, fitted.values and residuals extract various useful features of the value returned by *lm()*.
 
@@ -284,7 +285,7 @@ Since p-value \< 2.2 \* 10^16^ is smaller than 0.05, at 5% significance level, w
 
 The `Coefficients` section of the report reveals that the p-values of both the estimates of the `Intercept` and `AREA_SQM` are smaller than 0.05. In view of this, the null hypothesis of the B~0~ (`Intercept`) and B~1~ (`AREA_SQM`) are equal to 0 will be rejected. As a results, there is sufficient evidence to support that that the B~0~ and B~1~ are good parameter estimates of the `SELLING_PRICE`.
 
-To visualise the best fit curve on a scatterplot, we can incorporate *lm()* as a method function in ggplot\'s geometry as shown in the code chunk below.
+To visualise the best fit curve on a scatterplot, we can incorporate *lm()* as a method function in ggplot's geometry as shown in the code chunk below.
 
 ```{r}
 ggplot(data=condo_resale.sf,  
@@ -315,7 +316,7 @@ corrplot(cor(condo_resale[, 5:23]),
          type = "upper")
 ```
 
-Matrix reorder is very important for mining the hiden structure and patter in the matrix. There are four methods in corrplot (parameter order), named \"AOE\", \"FPC\", \"hclust\", \"alphabet\". In the code chunk above, AOE order is used. It orders the variables by using the *angular order of the eigenvectors* method suggested by [Michael Friendly](https://www.datavis.ca/papers/corrgram.pdf).
+Matrix reorder is very important for mining the hiden structure and patter in the matrix. There are four methods in corrplot (parameter order), named "AOE", "FPC", "hclust", "alphabet". In the code chunk above, AOE order is used. It orders the variables by using the *angular order of the eigenvectors* method suggested by [Michael Friendly](https://www.datavis.ca/papers/corrgram.pdf).
 
 From the scatterplot matrix, it is clear that `FREEHOLD` is highly correlated to `LEASEHOLD_99YR` (r = -0.84). In view of this, it is wiser to only include either one of them in the subsequent model building. As a result, `LEASEHOLD_99YR` is [excluded]{.underline} in the subsequent model building.
 
@@ -409,7 +410,7 @@ tbl_regression(condo.mlr1,
 
 Information on more customisation options is available at [Tutorial: tbl_regression](https://www.danieldsjoberg.com/gtsummary/articles/tbl_regression.html).
 
-### 8.5. Checking for Multicollinearity 
+### 8.5. Checking for Multicollinearity
 
 In this sub-section, we will use [**olsrr**](https://olsrr.rsquaredacademy.com/)package which is specially programmed for performing OLS regression. It provides a collection of very useful methods for building better multiple linear regression models:
 
@@ -525,7 +526,7 @@ tmap_mode("plot")
 
 The figure above reveal that there is sign of spatial autocorrelation, as the residuals do not appear to be distributed at random over the geographical space.
 
-To validate that our hypothesis, the Moran\'s I test will be performed
+To validate that our hypothesis, the Moran's I test will be performed
 
 First, we determine the minimum distance to ensure that all subzones have at least 1 neighbour, using the following steps:
 
@@ -564,13 +565,13 @@ nb_lw <- nb2listw(nb, style = 'W')
 summary(nb_lw)
 ```
 
-Thereafter, [*lm.morantest()*](https://r-spatial.github.io/spdep/reference/lm.morantest.html) of **spdep** package is used to perform Moran\'s I test for residual spatial autocorrelation
+Thereafter, [*lm.morantest()*](https://r-spatial.github.io/spdep/reference/lm.morantest.html) of **spdep** package is used to perform Moran's I test for residual spatial autocorrelation
 
 ```{r}
 lm.morantest(condo.mlr1, nb_lw)
 ```
 
-The Global Moran\'s I test for residual spatial autocorrelation shows that it\'s p-value is less than 2.2 \* 10^16^, which is less than the alpha value of 0.05. Hence, we will reject the null hypothesis that the residuals are randomly distributed.
+The Global Moran's I test for residual spatial autocorrelation shows that it's p-value is less than 2.2 \* 10^16^, which is less than the alpha value of 0.05. Hence, we will reject the null hypothesis that the residuals are randomly distributed.
 
 Since the Observed Global Moran I = 0.1424418 which is greater than 0, we can infer than the residuals resemble positive cluster distribution.
 
@@ -715,7 +716,7 @@ In addition to regression residuals, the output feature class table includes fie
 
 -   Coefficient Standard Error: these values measure the reliability of each coefficient estimate. Confidence in those estimates are higher when standard errors are small in relation to the actual coefficient values. Large standard errors may indicate problems with local collinearity.
 
-They are all stored in a **SpatialPointsDataFrame** or **SpatialPolygonsDataFrame** object integrated with fit.points, GWR coefficient estimates, y value, predicted values, coefficient standard errors and t-values in its \"data\" slot in an object called `SDF` of the output list.
+They are all stored in a **SpatialPointsDataFrame** or **SpatialPolygonsDataFrame** object integrated with fit.points, GWR coefficient estimates, y value, predicted values, coefficient standard errors and t-values in its "data" slot in an object called `SDF` of the output list.
 
 #### 9.3.1. Converting SDF into **sf** data.frame
 

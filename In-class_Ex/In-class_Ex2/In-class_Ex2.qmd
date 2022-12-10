@@ -4,6 +4,7 @@ author: Zhu Yiting
 execute: 
   warning: false
   message: false
+  freeze: auto
 format: html
 editor: visual
 ---
@@ -191,7 +192,7 @@ freq(data=wpt_nonfunctional,
 
 ### 6.6. Extracting Water Point with Unknown Class
 
-Finally, for completeness, we also need to extract the water points with unknown status (missing `status_cle` field), using the code chunk below. Using *[str()](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str)* of R's **utils**, we confirm that the number of observations (10,656) tallies with that in the earlier frequency bar chart plotted using *freq()* of **funModeling**.
+Finally, for completeness, we also need to extract the water points with unknown status (missing `status_cle` field), using the code chunk below. Using [*str()*](https://www.rdocumentation.org/packages/utils/versions/3.6.2/topics/str) of R's **utils**, we confirm that the number of observations (10,656) tallies with that in the earlier frequency bar chart plotted using *freq()* of **funModeling**.
 
 ```{r}
 #| eval: false
@@ -217,7 +218,7 @@ nga_wp <- nga %>%
     st_intersects(nga, wpt_unknown)))
 ```
 
-Note that the symbol used is \" \` \" (backtick) and not \" \' \" (apostrophe). This is used when there is space and hyphen (-) in the variable name (e.g. `total wpt`).
+Note that the symbol used is " \` " (backtick) and not " ' " (apostrophe). This is used when there is space and hyphen (-) in the variable name (e.g. `total wpt`).
 
 Thereafter, we compute the percentage functional and percentage non-functional water points as `pct_functional` and `pct_non-functional`, using *mutate()* of **dplyr** in the code chunk below.
 

@@ -1,5 +1,9 @@
 ---
 title: "Hands-on Exercise 2"
+execute: 
+  warning: false
+  message: false
+  freeze: auto
 editor: visual
 ---
 

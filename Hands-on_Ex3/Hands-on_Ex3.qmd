@@ -4,6 +4,7 @@ author: Zhu Yiting
 execute: 
   warning: false
   message: false
+  freeze: auto
 format: html
 editor: visual
 ---

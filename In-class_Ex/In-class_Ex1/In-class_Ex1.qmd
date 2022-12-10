@@ -1,5 +1,9 @@
 ---
 title: "In-class Exercise 1"
+execute: 
+  warning: false
+  message: false
+  freeze: auto
 editor: visual
 ---
 

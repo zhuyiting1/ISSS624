@@ -5,6 +5,7 @@ date: "10 Dec 2022"
 execute: 
   warning: false
   message: false
+  freeze: auto
 format: html
 editor: visual
 ---
