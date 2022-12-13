@@ -1,0 +1,14 @@
+---
+title: "In-class Exercise 5"
+author: Zhu Yiting
+date: "17 Dec 2022"
+execute: 
+  warning: false
+  message: false
+  freeze: auto
+format: html
+theme:
+  light: flatly
+  dark: darkly
+editor: visual
+---
