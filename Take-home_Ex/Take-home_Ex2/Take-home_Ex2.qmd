@@ -333,7 +333,7 @@ Hence, in this study, we will focus on the 6 variables above to explore clusteri
 The code chunk below derives 8 new variables from the 6 fields in the aspatial attributes data set, using the [*filter()*](https://dplyr.tidyverse.org/reference/filter.html) function of **dplyr**. They are:
 
 1.  `wp_functional`: To group all types of functional water points together, including those that are functional but need repair.
-2.   `wp_nonfunctional`: For non-functional water points including those which are abandoned or decommissioned. Water points with unknown functional status are excluded, as including all categories of functional status would result in multicollinearity since they add up to 100% and are hence dependent on each other.
+2.  `wp_nonfunctional`: For non-functional water points including those which are abandoned or decommissioned. Water points with unknown functional status are excluded, as including all categories of functional status would result in multicollinearity since they add up to 100% and are hence dependent on each other.
 3.  `wp_handpump`: Water points which transport water from source to point of collection using the handpump method.
 4.  `wp_usage_less_than_1000`: Water points which have a recommended maximum user of less than 1,000 per water point.
 5.  `wp_usage_1000`: Water points which have a recommended maximum user of 1,000 per water point. There are no water point with above 1,000 recommended users based on the EDA.
@@ -447,7 +447,15 @@ As mentioned in the previous section, we will use the saved `nga_wp.rds` file fo
 nga_wp <- read_rds("data/geospatial/nga_wp.rds")
 ```
 
-We set [*tmap_mode()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tmap_mode) of **tmap** to `plot` to display the static maps.
+As we have performed *st_intersects()* for point-in-polygon count, we can use *st_transform()* of **sf** to convert the data from an ellipsoid **wgs84** CRS to a planar projected CRS via mathematical reprojection of the coordinates, prior to distance calculations and map visualisation. This is done using EPSG: 26392 for Minna / Nigeria Mid Belt (Spatial Reference, 2022), in the code chunk below. We also check that the transformation has been done correctly using *st_geometry()* of **sf**, where the projected CRS field indicates `Minna / Nigeria Mid Belt`.
+
+```{r}
+nga_wp <- st_transform(nga_wp,
+                       crs = 26392)
+st_geometry(nga_wp)
+```
+
+Next, we set [*tmap_mode()*](https://www.rdocumentation.org/packages/tmap/versions/3.3-3/topics/tmap_mode) of **tmap** to `plot` to display the static maps.
 
 ```{r}
 tmap_mode("plot")
@@ -739,7 +747,7 @@ ac <- function(x) {
 map_dbl(m, ac)
 ```
 
-With reference to the output above, we can see that Ward\'s method provides the strongest clustering structure, with the highest value among the four methods assessed. Hence, in the subsequent analysis, only Ward\'s method will be used.
+With reference to the output above, we can see that Ward's method provides the strongest clustering structure, with the highest value among the four methods assessed. Hence, in the subsequent analysis, only Ward's method will be used.
 
 ### 12.3. Determining Optimal Number of Clusters
 
@@ -826,7 +834,7 @@ In the dendrogram displayed above, each leaf corresponds to one observation. As 
 
 The height of the fusion, provided on the vertical axis, indicates the (dis)similarity between two observations. The higher the height of the fusion, the less similar the observations are. Note that, conclusions about the proximity of two observations can be drawn only based on the height where branches containing those two observations first are fused. We cannot use the proximity of two observations along the horizontal axis as a criteria of their similarity.
 
-It\'s also possible to draw the dendrogram with a border around the selected clusters by using [*rect.hclust()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/rect.hclust.html) of **R stats**. The argument `border` is used to specify the border colors for the rectangles.
+It's also possible to draw the dendrogram with a border around the selected clusters by using [*rect.hclust()*](https://stat.ethz.ch/R-manual/R-devel/library/stats/html/rect.hclust.html) of **R stats**. The argument `border` is used to specify the border colors for the rectangles.
 
 ```{r}
 plot(hclust_ward.tsf.man, cex = 0.2)
@@ -1233,8 +1241,14 @@ nga_wp_ngeo_clust %>%
   summarise(mean_wp_functional = mean(wp_functional),
             mean_wp_nonfunctional = mean(wp_nonfunctional),
             mean_wp_usage_1000 = mean(wp_usage_1000),
-            mean_wp_government = mean(wp_government),
-            mean_pct_functional = mean(pct_functional),
+            mean_wp_government = mean(wp_government))
+```
+
+```{r}
+nga_wp_ngeo_clust %>% 
+  st_set_geometry(NULL) %>%
+  group_by(CLUSTER) %>%
+  summarise(mean_pct_functional = mean(pct_functional),
             mean_pct_nonfunctional = mean(pct_nonfunctional),
             mean_pct_handpump = mean(pct_handpump),
             mean_pct_usage_1000 = mean(pct_usage_1000),
@@ -1256,6 +1270,8 @@ Centralina Regional Council (accessed 2022 December 14). *Why Regionalism Matter
 esri (accessed 2022 December 14). How Spatially Constrained Multivariate Clustering works. <https://pro.arcgis.com/en/pro-app/2.9/tool-reference/spatial-statistics/how-spatially-constrained-multivariate-clustering-works.htm>
 
 sfdep (accessed 2022 December 14). *Graph based neighbors.* <https://sfdep.josiahparry.com/reference/st_nb_delaunay.html>
+
+Spatial Reference (2022). *EPSG: 26392.* <https://spatialreference.org/ref/epsg/26392/>
 
 Study.com (2022 June 16). *Overview, Examples and Principles of Regionalization.* <https://study.com/learn/lesson/the-regionalization-process-overview-examples-principles.html>
 
