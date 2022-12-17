@@ -140,7 +140,7 @@ What we have done above are to:
 
 -   recode usage_capacity as factor (it only has 3 classes) instead of numerical data type. This is because the calibration of logit function will be different.
 
-We also check the `wp_clean` object in the Environment panel. We see that the number of observations dropped by 4 from 4,760 to 4,756, which signifies that the 4 missing values from the XX and YY fields are successfully removed. We also check that the `status` field has been correctly recoded to `Factor w/ 2 levels "300", "1000"`.
+We also check the `wp_clean` object in the Environment panel. We see that the number of observations dropped by 4 from 4,760 to 4,756, which signifies that the 4 missing values from the `water_point_population` and `local_population_1km` fields are successfully removed. We also check that the `status` field has been correctly recoded to `Factor w/ 2 levels "300", "1000"`.
 
 ## Correlation Analysis
 
@@ -208,12 +208,359 @@ blr_confusion_matrix(model, cutoff = 0.5)
 
 The validity of a cut-off (here we use 0.5) is measured using sensitivity, specificity and accuracy.
 
--   Sensitivity: The % of correctly classified events out of all events = TP / (TP + FN)
+-   Sensitivity: The % of correctly classified positive events out of all predicted positive events = TP / (TP + FN).
 
--   Specificity: The % of correctly classified
+-   Specificity: The % of correctly classified negative events out of all predicted negative events = TN / (TN + FP).
 
--   Accuracy: The % of correctly classified events out of all events = (TP  + TN) / (TP + FP + TN + FN)
+-   Accuracy: The % of correctly classified events out of all events = (TP  + TN) / (TP + FP + TN + FN).
+
+-   Note that TP = true positve, TN = true negative, FP = false positive and FN = false negative.
 
 From the output, we see that the model gives us an accuracy of 0.6739, which is a good start as it is better than guessing (0.5).
 
-The sensitivity and specificity are 0.7207 and 0.6154 respectively. This shows that the true positives are slightly higher than the true negative prediction rates.
+The sensitivity and specificity are 0.7207 and 0.6154 respectively. This shows that the true positives (functional water points) are slightly higher than the true negative prediction rates (non-functional water points).
+
+## Building Geographically Weighted Logistic Regression (gwLR) Model
+
+### Converting from sf to sp Data Frame
+
+Next, we need to convert the sf data frame into spatial point data frame for GWR model building. This is done using the code chunk below.
+
+```{r}
+wp_sp <- wp_clean %>%
+  select(c(status,
+           distance_to_primary_road,
+           distance_to_secondary_road,
+           distance_to_tertiary_road,
+           distance_to_city,
+           distance_to_town,
+           water_point_population,
+           local_population_1km,
+           is_urban,
+           usage_capacity,
+           water_source_clean)) %>%
+  as_Spatial()
+wp_sp
+```
+
+Note that we use the cleaned version of the water point sf data frame for consistency in the geometrics with our model building (4 water points with missing values excluded).
+
+### Building Fixed Bandwidth GWR Model
+
+```{r}
+#| eval: false
+bw.fixed <- bw.ggwr(status ~ distance_to_primary_road +
+                      distance_to_secondary_road +
+                      distance_to_tertiary_road +
+                      distance_to_city +
+                      distance_to_town +
+                      is_urban +
+                      usage_capacity +
+                      water_source_clean +
+                      water_point_population +
+                      local_population_1km,
+                      data = wp_sp,
+                    family = "binomial",
+                    approach  = "AIC",
+                    kernel = "gaussian",
+                    adaptive = FALSE, # for fixed bandwidth
+                    longlat = FALSE) # input data have been converted to projected CRS
+```
+
+## Model Assessment
+
+```{r}
+#| eval: false
+bw.fixed
+```
+
+\[1\] 2599.672
+
+We get the above output. We feed it into the `bw` argument in [*ggwr.basic()*](https://www.rdocumentation.org/packages/GWmodel/versions/2.2-9/topics/ggwr.basic) of **GWmodel** in the code chunk below.
+
+```{r}
+gwlr.fixed <- ggwr.basic(status ~ distance_to_primary_road +
+                           distance_to_secondary_road +
+                           distance_to_tertiary_road +
+                           distance_to_city +
+                           distance_to_town +
+                           is_urban +
+                           usage_capacity +
+                           water_source_clean +
+                           water_point_population +
+                           local_population_1km,
+                      data = wp_sp,
+                      bw = 2599.672,
+                      family = "binomial",
+                      kernel = "gaussian",
+                      adaptive = FALSE,
+                      longlat = FALSE)
+```
+
+We look at the results below. Similar to when we build multiple linear regression model, the report has 2 sections - generalised regression (global model) results and geographically weighted (GW) regression results. Note that the global model does not have AICc result, so AIC should be used to compare the 2 models.
+
+```{r}
+gwlr.fixed
+```
+
+Comparing the AIC values of the 2 models, we see that it is lower for the GW regression model at 4,414.606 then for the global regression model at 5,712.
+
+## Converting SDF into sf Data Frame
+
+To assess the performance of the gwLR, we will first convert the SDF object in as data frame by using te code chunk below.
+
+```{r}
+gwr.fixed <- as.data.frame(gwlr.fixed$SDF)
+```
+
+Next, we will label `yhat` values (probability values for functional water points) greater or equal to 0.5 as 1 and otherwise 0. The result of the logic comparison operation will be saved into a field called `most`.
+
+```{r}
+gwr.fixed <- gwr.fixed %>%
+  mutate(most = ifelse(
+    gwr.fixed$yhat >= 0.5, T, F))
+```
+
+## Confusion Matrix
+
+Next, we use [*confusionMatrix()*](https://www.rdocumentation.org/packages/caret/versions/3.45/topics/confusionMatrix) of **caret** to display the confusion matrix of the GW model using fixed bandwidth method.
+
+```{r}
+gwr.fixed$y <- as.factor(gwr.fixed$y)
+gwr.fixed$most <- as.factor(gwr.fixed$most)
+CM <- confusionMatrix(data = gwr.fixed$most, # predicted outcome
+                      reference = gwr.fixed$y, # reference y
+                      positive = "TRUE") # setting positive class to "TRUE"
+CM
+```
+
+We see that the accuracy (0.8837 vs 0.6739), sensitivity (0.9005 vs 0.7207) and specificity (0.8628 vs 0.6154) values have all improved from the non-gwLR global model. By using the gwLR model, we can explain the functional and non-functional water points better now which allows better management of water points through localised strategies (e.g. look at the local neighbourhood regions within Osun state).
+
+## Visualising gwLR
+
+Before we visualise the results of the gwLR model, we clean up the data set for plotting by selecting the relevant data fields (mainly the `status` column which is the dependent or predicted variable) into a new sf data frame object `wp_sf_select` in the code chunk below.
+
+```{r}
+wp_sf_select <- wp_clean %>%
+  select(c(ADM2_EN, ADM2_PCODE,
+           ADM1_EN, ADM1_PCODE,
+           status))
+```
+
+We then combine it with `gwr.fixed` which has the predicted values of the water point status, in the form of probabilities between 0 and 1.
+
+```{r}
+gwr_sf.fixed <- cbind(wp_sf_select, gwr.fixed)
+```
+
+The code chunk below is used to create an interactive point symbol map.
+
+```{r}
+tmap_mode("view")
+
+actual <- tm_shape(osun) +
+  tmap_options(check.and.fix = TRUE) +
+  tm_polygons(alpha = 0.4) +
+  tm_shape(wp) +
+  tm_dots(col = "status",
+          alpha = 0.6,
+          palette = "YlOrRd") +
+  tm_view(set.zoom.limits = c(9, 12))
+
+prob_T <- tm_shape(osun) +
+  tm_polygons(alpha = 0.4) +
+  tm_shape(gwr_sf.fixed) + 
+  tm_dots(col = "yhat",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(9, 12))
+
+tmap_arrange(actual, prob_T, 
+             asp = 1, ncol = 2, sync = TRUE)
+```
+
+We see that the predictions are largely aligned with the actual status of the water points, in line with the 88% accuracy rate.
+
+```{r}
+#| echo: false
+#| eval: false
+tertiary_TV <- tm_shape(osun) +
+  tm_polygons(alpha = 0.1) +
+  tm_shape(gwr_sf.fixed) +
+  tm_dots(col = "distance_to_tertiary_road_TV",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(8, 14))
+tertiary_TV
+# tmap_arrange(tertiary_SE, tertiary_TV, 
+#             asp = 1, ncol = 2, sync = TRUE)
+```
+
+## Employing Only Statistically Significant Variables in Global and gwLR Models
+
+As we earlier saw that 2 of the 10 variables, distance_to_primary_road and distance_to_secondary_road, are not statistically significant (p-values \> 0.05), we should build logistic regression models without these 2 variables.
+
+Hence, we repeat the relevant steps above to replicate the model building, assessment and visualisation process in the following code chunks, starting with constructing the model with only the 8 statistically significant variables.
+
+### Building Global Model
+
+```{r}
+model_refined <- glm(status ~ distance_to_tertiary_road +
+               distance_to_city +
+               distance_to_town +
+               is_urban +
+               usage_capacity +
+               water_source_clean +
+               water_point_population +
+               local_population_1km,
+             data = wp_clean,
+             family = binomial(link = "logit"))
+
+blr_regress(model_refined)
+```
+
+We check and see that the remaining variables are all statistically significant to the linear regression model (p-values \< 0.05).
+
+### Confusion Matrix for Global Model
+
+The code chunk below calculates and displays the confusion matrix for the refined model. We will discuss the results together with that for the refined gwLR model in the subsequent subsection.
+
+```{r}
+blr_confusion_matrix(model_refined, cutoff = 0.5)
+```
+
+### Determining Fixed Bandwidth for GWR Model
+
+```{r}
+#| eval: false
+bw.fixed_refined <- bw.ggwr(status ~ distance_to_tertiary_road +
+                      distance_to_city +
+                      distance_to_town +
+                      is_urban +
+                      usage_capacity +
+                      water_source_clean +
+                      water_point_population +
+                      local_population_1km,
+                      data = wp_sp,
+                    family = "binomial",
+                    approach  = "AIC",
+                    kernel = "gaussian",
+                    adaptive = FALSE, # for fixed bandwidth
+                    longlat = FALSE) # input data have been converted to projected CRS
+```
+
+```{r}
+#| eval: false
+bw.fixed_refined
+```
+
+\[1\] 2377.371
+
+The output for bw.fixed_refined is given above. We will use this optimal fixed distance value for model assessment in the next subsection.
+
+### Model Assessment
+
+```{r}
+gwlr.fixed_refined <- ggwr.basic(status ~ distance_to_tertiary_road +
+                           distance_to_city +
+                           distance_to_town +
+                           is_urban +
+                           usage_capacity +
+                           water_source_clean +
+                           water_point_population +
+                           local_population_1km,
+                      data = wp_sp,
+                      bw = 2377.371,
+                      family = "binomial",
+                      kernel = "gaussian",
+                      adaptive = FALSE,
+                      longlat = FALSE)
+```
+
+```{r}
+gwlr.fixed_refined
+```
+
+The AIC values of the 4 models are summarised in the table below.
+
+| AIC values                               | Global model | gwLR      |
+|------------------------------------------|--------------|-----------|
+| All variables                            | 5,712        | 4,414.606 |
+| Statistically significant variables only | 5,708.9      | 4,418.776 |
+
+We see that both gwLR models have lower AIC values than their global model counter parts. Between the 2 gwLR models, the one with all 10 variables have a slightly lower AIC value (4,414.606) than the one with only the 8 statistically significant variables (4,418.776).
+
+### Converting SDF into sf Data Frame
+
+```{r}
+gwr.fixed_refined <- as.data.frame(gwlr.fixed_refined$SDF)
+```
+
+### Assigning Cutoff Value of 0.5
+
+```{r}
+gwr.fixed_refined <- gwr.fixed_refined %>%
+  mutate(most = ifelse(
+    gwr.fixed_refined$yhat >= 0.5, T, F))
+```
+
+### Confusion Matrix for gwLR
+
+We similarly call the confusion matrix and statistics using *confusionMatrix()* of **caret** in the code chunk below.
+
+```{r}
+gwr.fixed_refined$y <- as.factor(gwr.fixed_refined$y)
+gwr.fixed_refined$most <- as.factor(gwr.fixed_refined$most)
+CM_refined <- confusionMatrix(data = gwr.fixed_refined$most,
+                      reference = gwr.fixed_refined$y,
+                      positive = "TRUE")
+CM_refined
+```
+
+We see that the accuracy (0.8837 vs 0.6739), sensitivity (0.8628 vs 0.7207) and specificity (0.9005 vs 0.6154) values have all improved from the non-gwLR global model. By using the gwLR model, we can explain the non-functional water points better now which allows better management of water points through localised strategies (e.g. look at the local neighbourhood regions within Osun state).
+
+The performance measures of the 4 logistic regression models are summarised in the table below.
+
+| Performance Measure | Global regression with 10 variables | gwLR with 10 variables | Global regression with 8 variables | gwLR with 8 variables |
+|---------------------|-------------------------------------|------------------------|------------------------------------|-----------------------|
+| Accuracy            | 0.6739                              | 0.8837                 | 0.6726                             | 0.8846                |
+| Sensitivity         | 0.7207                              | 0.9005                 | 0.7188                             | 0.8986                |
+| Specificity         | 0.6154                              | 0.8628                 | 0.6149                             | 0.8671                |
+
+We see that the model accuracy and specificity improve very slightly by removing the non-statistically significant variables from the gwLR model, but the sensitivity drops slightly. Nevertheless, as we would be more interested in finding non-functional water points for maintenance etc., the gwLR model with 8 variables would be more useful with a higher specificity.
+
+### Visualising gwLR
+
+Now we combined the prediction from the refined gwLR model with the water point sf data frame with selected variables for visualisation.
+
+```{r}
+gwr_sf.fixed_refined <- cbind(wp_sf_select, gwr.fixed_refined)
+```
+
+We can similarly visualise the actual versus predicted functional (more red) and non-functional (more yellow) water points using the code chunk below.
+
+```{r}
+tmap_mode("view")
+
+actual <- tm_shape(osun) +
+  tmap_options(check.and.fix = TRUE) +
+  tm_polygons(alpha = 0.4) +
+  tm_shape(wp) +
+  tm_dots(col = "status",
+          alpha = 0.6,
+          palette = "YlOrRd") +
+  tm_view(set.zoom.limits = c(9, 12))
+
+prob_T_refined <- tm_shape(osun) +
+  tm_polygons(alpha = 0.4) +
+  tm_shape(gwr_sf.fixed_refined) + 
+  tm_dots(col = "yhat",
+          border.col = "gray60",
+          border.lwd = 1) +
+  tm_view(set.zoom.limits = c(9, 12))
+
+tmap_arrange(actual, prob_T_refined, 
+             asp = 1, ncol = 2, sync = TRUE)
+```
+
+We see that the predictions are largely aligned with the actual status of the water points, in line with the 88% accuracy rate.
