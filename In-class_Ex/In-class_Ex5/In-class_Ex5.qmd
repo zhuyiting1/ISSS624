@@ -12,3 +12,208 @@ theme:
   dark: darkly
 editor: visual
 ---
+
+## Objective
+
+In this in-class exercise, we wish to build a logistic regression model for the water point status (functional or non-functional) at Osun state, Nigeria.
+
+## Getting started
+
+The code chunk below installs and loads the following R packages:
+
+-   sf
+
+-   tidyverse
+
+-   funModeling
+
+-   blorr - for logistic regression
+
+-   corrplot
+
+-   ggpubr
+
+-   sf
+
+-   spdep
+
+-   GWmodel
+
+-   tmap
+
+-   skimr - to do EDA
+
+-   caret - for error matrix and comparison (of models?)
+
+```{r}
+pacman::p_load(sf, tidyverse, funModeling,
+               blorr, corrplot, ggpubr, 
+               sf, spdep, GWmodel,
+               tmap, skimr, caret)
+```
+
+## Importing the Analytical Data
+
+The code chunk below brings the datasets into R.
+
+```{r}
+osun <- read_rds("rds/Osun.rds")
+```
+
+```{r}
+wp <- read_rds("rds/Osun_wp_sf.rds")
+```
+
+`osun` contains the ADM2 polygon boundaries for Osun state of Nigeria, and wp is the water point data in Osun state of Nigeria.
+
+The rds files have been pre-processed and wrangled (e.g. cleaning up of variables and variable names).
+
+Next, we check the `status` field of the `wp` sf data frame object. Note that the data type for this field is `logi`, i.e. it only takes the values of `TRUE` or `FALSE`. This was recoded from the field `status_clean` of the water point data set, where
+
+-   observations without the status information (`NaN`) are filtered away,
+
+-   all remaining values that indicates that the water point is functional are recoded as `T`, and
+
+-   the rest are recoded as `F`.
+
+```{r}
+wp %>%
+  freq(input = "status")
+```
+
+We see that there are 2,642 TRUE values and 2,118 FALSE values.
+
+Bear in mind that linear and logistic regression models do not like missing values - the entire record across all variables would be removed if one or more of the variables have missing values. Hence, it is important to check upfront for missing values and exclude variables which have a significant proportion of missing values (e.g. 20%).
+
+Next, we plot the distribution of the water points by status using **tmap**, as shown in the code chunk below.
+
+```{r}
+tmap_mode("view")
+tm_shape(osun) +
+  tmap_options(check.and.fix = TRUE) +
+  tm_polygons(alpha = 0.4) +
+  tm_shape(wp) +
+  tm_dots(col = "status",
+          alpha = 0.6) +
+  tm_view(set.zoom.limits = c(9, 12))
+```
+
+We set *tmap_mode()* back to "plot" option after plotting.
+
+```{r}
+tmap_mode("plot")
+```
+
+## Exploratory Data Analysis (EDA)
+
+We look at the summary statistics of the water point dataset with **skimr** for preliminary variable selection, in the following code chunk.
+
+```{r}
+wp %>%
+  skim()
+```
+
+For example, we note that 1/4 of `install_year` are missing values. Hence, despite the variable being useful, we need to drop this variable from the logistic regression model building.
+
+Based on the EDA, we will use the following variables for our model building, in the code chunk below.
+
+```{r}
+wp_clean <- wp %>%
+  filter_at(vars(status,
+                 distance_to_primary_road,
+                 distance_to_secondary_road,
+                 distance_to_tertiary_road,
+                 distance_to_city,
+                 distance_to_town,
+                 water_point_population,
+                 local_population_1km,
+                 usage_capacity,
+                 is_urban,
+                 water_source_clean),
+            all_vars(!is.na(.))) %>%
+  mutate(usage_capacity = as.factor(usage_capacity))
+```
+
+What we have done above are to:
+
+-   exclude missing values (filtering for `all_vars(!is.na(.))`); and
+
+-   recode usage_capacity as factor (it only has 3 classes) instead of numerical data type. This is because the calibration of logit function will be different.
+
+We also check the `wp_clean` object in the Environment panel. We see that the number of observations dropped by 4 from 4,760 to 4,756, which signifies that the 4 missing values from the XX and YY fields are successfully removed. We also check that the `status` field has been correctly recoded to `Factor w/ 2 levels "300", "1000"`.
+
+## Correlation Analysis
+
+We first extract the desired variables from `wp_clean` into a new object `osun_wp`, and remove the geometry column by setting *st_set_geometry()* to `NULL` so that we can do a correlation matrix plot.
+
+```{r}
+osun_wp <- wp_clean %>%
+  select(c(7, 35:39, 42:43, 46:47, 57)) %>%
+  st_set_geometry(NULL)
+```
+
+Next, we plot the correlation matrix for all the numerical data fields.
+
+```{r, fig.height=8, fig.width=8}
+cluster_vars.cor = cor(
+  osun_wp[,2:7])
+corrplot.mixed(cluster_vars.cor,
+               lower = "ellipse",
+               upper = "number",
+               tl.pos = "lt",
+               diag = "l",
+               tl.col = "black")
+```
+
+We see that none of the variables are highly correlated with any other variable (r no more than 0.85). Hence, we will keep all the variables for logistic regression model building in the next section.
+
+## Building a Logistic Regression Model
+
+In the code chunk below, [*glm()*](https://www.rdocumentation.org/packages/stats/versions/3.6.2/topics/glm) of R **stats** is used to calibrate a logistic regression for the water point status.
+
+```{r}
+model <- glm(status ~ distance_to_primary_road +
+               distance_to_secondary_road +
+               distance_to_tertiary_road +
+               distance_to_city +
+               distance_to_town +
+               is_urban +
+               usage_capacity +
+               water_source_clean +
+               water_point_population +
+               local_population_1km,
+             data = wp_clean,
+             family = binomial(link = "logit"))
+```
+
+Instead of using a typical R report, we use [*blr_regress()*](https://www.rdocumentation.org/packages/blorr/versions/0.3.0/topics/blr_regress) of **blorr** to generate the model report in scientific literature reporting format.
+
+```{r}
+blr_regress(model)
+```
+
+At 95% confidence level, variables with p-value less than 0.05 are statistically significant. These are all independent variables except `distance_to_primary_road` and `distance_to_secondary_road`.
+
+For interpretation of logistic regression report:
+
+-   Categorical variables: A positive value implies an above average correlation and a negative value implies a below average correlation, while the magnitude of the coefficient does not matter for categorical variables;
+
+-   Continuous variables: a positive value implies a direct correlation and a negative value implies an inverse correlation, while the magnitude of the value gives the strength of the correlation.
+
+We generate the confusion matrix for the model using [*blr_confusion_matrix()*](https://blorr.rsquaredacademy.com/reference/blr_confusion_matrix.html) of **blorr**.
+
+```{r}
+blr_confusion_matrix(model, cutoff = 0.5)
+```
+
+The validity of a cut-off (here we use 0.5) is measured using sensitivity, specificity and accuracy.
+
+-   Sensitivity: The % of correctly classified events out of all events = TP / (TP + FN)
+
+-   Specificity: The % of correctly classified
+
+-   Accuracy: The % of correctly classified events out of all events = (TP  + TN) / (TP + FP + TN + FN)
+
+From the output, we see that the model gives us an accuracy of 0.6739, which is a good start as it is better than guessing (0.5).
+
+The sensitivity and specificity are 0.7207 and 0.6154 respectively. This shows that the true positives are slightly higher than the true negative prediction rates.
